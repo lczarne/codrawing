@@ -19,6 +19,7 @@
 		25BC7C6417F37FF900A295FC /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25BC7C6217F37FF900A295FC /* MainStoryboard_iPhone.storyboard */; };
 		25BC7C6717F37FF900A295FC /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25BC7C6517F37FF900A295FC /* MainStoryboard_iPad.storyboard */; };
 		25BC7C6A17F37FF900A295FC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BC7C6917F37FF900A295FC /* ViewController.m */; };
+		25BC7C7217F38C8900A295FC /* EditingEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BC7C7117F38C8900A295FC /* EditingEvent.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,8 @@
 		25BC7C6617F37FF900A295FC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		25BC7C6817F37FF900A295FC /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		25BC7C6917F37FF900A295FC /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		25BC7C7017F38C8900A295FC /* EditingEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditingEvent.h; sourceTree = "<group>"; };
+		25BC7C7117F38C8900A295FC /* EditingEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditingEvent.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +94,8 @@
 				25BC7C6517F37FF900A295FC /* MainStoryboard_iPad.storyboard */,
 				25BC7C6817F37FF900A295FC /* ViewController.h */,
 				25BC7C6917F37FF900A295FC /* ViewController.m */,
+				25BC7C7017F38C8900A295FC /* EditingEvent.h */,
+				25BC7C7117F38C8900A295FC /* EditingEvent.m */,
 				25BC7C5117F37FF900A295FC /* Supporting Files */,
 			);
 			path = CoDrawing;
@@ -180,6 +185,7 @@
 				25BC7C5717F37FF900A295FC /* main.m in Sources */,
 				25BC7C5B17F37FF900A295FC /* AppDelegate.m in Sources */,
 				25BC7C6A17F37FF900A295FC /* ViewController.m in Sources */,
+				25BC7C7217F38C8900A295FC /* EditingEvent.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
