@@ -8,15 +8,17 @@
 
 #import "ViewController.h"
 #import "EditingEvent.h"
+#import "SocketIO.h"
 
-@interface ViewController ()
+@interface ViewController () <SocketIODelegate>
 
 @property (nonatomic, strong) NSMutableArray *drawPointsArray;
 @property (nonatomic, strong) NSMutableArray *eventsArray;
+@property (nonatomic, strong) SocketIO *socketIO;
 
 @end
 
-@implementation ViewController
+@implementation ViewController 
 
 CGPoint lastPoint;
 CGFloat red;
@@ -29,7 +31,6 @@ int currentEventID;
 BOOL mouseSwiped;
 
 - (IBAction)clearDrawing:(id)sender {
-    
     UIImage *clearImage = [[UIImage alloc] init];
     self.drawingImageView.image = clearImage;
     self.tempDrawingImageView.image = clearImage;
@@ -37,8 +38,20 @@ BOOL mouseSwiped;
     self.eventsArray = [[NSMutableArray alloc] init];
 }
 
+- (void)testWebSocekts
+{
+    NSString *socketHostString = @"192.168.0.15";
+    int port = 8882;
+    self.socketIO = [[SocketIO alloc] initWithDelegate:self];
+    [self.socketIO connectToHost:socketHostString onPort:port];
+    [self.socketIO sendMessage:@"Hello from iOS"];
+    NSLog(@"message test done");
+}
+
 - (void)viewDidLoad
 {
+    [self testWebSocekts];
+    
     red = 0.0/255.0;
     green = 0.0/255.0;
     blue = 0.0/255.0;
@@ -59,6 +72,8 @@ BOOL mouseSwiped;
     lastPoint = [touch locationInView:self.view];
     
     [self.drawPointsArray addObject:[NSValue valueWithCGPoint:lastPoint]];
+    
+    [self sendSocketControlEvent:1];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -84,9 +99,13 @@ BOOL mouseSwiped;
     UIGraphicsEndImageContext();
     
     lastPoint = currentPoint;
+    
+    [self sendSocketPaint:currentPoint];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    [self sendSocketControlEvent:0];
     
     if(!mouseSwiped) {
         UIGraphicsBeginImageContext(self.view.frame.size);
@@ -110,8 +129,6 @@ BOOL mouseSwiped;
     UIGraphicsEndImageContext();
     
     [self finishDrawingEvent];
-    
-    
 }
 
 - (void)finishDrawingEvent
@@ -132,5 +149,36 @@ BOOL mouseSwiped;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (void)sendSocketControlEvent:(int)controlState
+{
+    NSDictionary *stateDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:controlState] forKey:@"value"];
+    [self.socketIO sendEvent:@"control" withData:stateDict];
+}
+
+- (void)sendSocketPaint:(CGPoint)socketPaintPoint
+{
+    NSNumber* xNumber = [NSNumber numberWithFloat:socketPaintPoint.x];
+    NSNumber* yNumber = [NSNumber numberWithFloat:socketPaintPoint.y];
+    
+    NSDictionary *paintPointDict = [NSDictionary dictionaryWithObjects:@[xNumber,yNumber] forKeys:@[@"x",@"y"]];
+    
+    [self.socketIO sendEvent:@"paint" withData:paintPointDict];
+}
+
+#pragma mark - SocketIODelegate
+
+- (void)socketIODidConnect:(SocketIO *)socket
+{
+    NSLog(@"connected: %@",socket);
+}
+
+- (void) socketIO:(SocketIO *)socket didReceiveEvent:(SocketIOPacket *)packet
+{
+    NSLog(@"packet received: %@",packet);
+}
+
+
+
 
 @end

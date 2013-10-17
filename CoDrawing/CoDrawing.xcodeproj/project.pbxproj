@@ -20,6 +20,17 @@
 		25BC7C6717F37FF900A295FC /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25BC7C6517F37FF900A295FC /* MainStoryboard_iPad.storyboard */; };
 		25BC7C6A17F37FF900A295FC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BC7C6917F37FF900A295FC /* ViewController.m */; };
 		25BC7C7217F38C8900A295FC /* EditingEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BC7C7117F38C8900A295FC /* EditingEvent.m */; };
+		25F5D03E18108C1F002B8D47 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D03718108C1F002B8D47 /* base64.c */; };
+		25F5D03F18108C1F002B8D47 /* NSData+SRB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D03A18108C1F002B8D47 /* NSData+SRB64Additions.m */; };
+		25F5D04018108C1F002B8D47 /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D03D18108C1F002B8D47 /* SRWebSocket.m */; };
+		25F5D04418108C84002B8D47 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F5D04318108C84002B8D47 /* libicucore.dylib */; };
+		25F5D04618108C89002B8D47 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F5D04518108C89002B8D47 /* CFNetwork.framework */; };
+		25F5D04818108C8F002B8D47 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F5D04718108C8F002B8D47 /* Security.framework */; };
+		25F5D05518108E3C002B8D47 /* SocketIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D04B18108E3C002B8D47 /* SocketIO.m */; };
+		25F5D05618108E3C002B8D47 /* SocketIOJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D04D18108E3C002B8D47 /* SocketIOJSONSerialization.m */; };
+		25F5D05718108E3C002B8D47 /* SocketIOPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D04F18108E3C002B8D47 /* SocketIOPacket.m */; };
+		25F5D05818108E3C002B8D47 /* SocketIOTransportWebsocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D05218108E3C002B8D47 /* SocketIOTransportWebsocket.m */; };
+		25F5D05918108E3C002B8D47 /* SocketIOTransportXHR.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D05418108E3C002B8D47 /* SocketIOTransportXHR.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +53,28 @@
 		25BC7C6917F37FF900A295FC /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		25BC7C7017F38C8900A295FC /* EditingEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditingEvent.h; sourceTree = "<group>"; };
 		25BC7C7117F38C8900A295FC /* EditingEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditingEvent.m; sourceTree = "<group>"; };
+		25F5D03718108C1F002B8D47 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base64.c; sourceTree = "<group>"; };
+		25F5D03818108C1F002B8D47 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
+		25F5D03918108C1F002B8D47 /* NSData+SRB64Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SRB64Additions.h"; sourceTree = "<group>"; };
+		25F5D03A18108C1F002B8D47 /* NSData+SRB64Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SRB64Additions.m"; sourceTree = "<group>"; };
+		25F5D03B18108C1F002B8D47 /* SocketRocket-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SocketRocket-Prefix.pch"; sourceTree = "<group>"; };
+		25F5D03C18108C1F002B8D47 /* SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRWebSocket.h; sourceTree = "<group>"; };
+		25F5D03D18108C1F002B8D47 /* SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRWebSocket.m; sourceTree = "<group>"; };
+		25F5D04118108C49002B8D47 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		25F5D04318108C84002B8D47 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		25F5D04518108C89002B8D47 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		25F5D04718108C8F002B8D47 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		25F5D04A18108E3C002B8D47 /* SocketIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIO.h; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIO.h"; sourceTree = "<group>"; };
+		25F5D04B18108E3C002B8D47 /* SocketIO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketIO.m; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIO.m"; sourceTree = "<group>"; };
+		25F5D04C18108E3C002B8D47 /* SocketIOJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIOJSONSerialization.h; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIOJSONSerialization.h"; sourceTree = "<group>"; };
+		25F5D04D18108E3C002B8D47 /* SocketIOJSONSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketIOJSONSerialization.m; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIOJSONSerialization.m"; sourceTree = "<group>"; };
+		25F5D04E18108E3C002B8D47 /* SocketIOPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIOPacket.h; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIOPacket.h"; sourceTree = "<group>"; };
+		25F5D04F18108E3C002B8D47 /* SocketIOPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketIOPacket.m; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIOPacket.m"; sourceTree = "<group>"; };
+		25F5D05018108E3C002B8D47 /* SocketIOTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIOTransport.h; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIOTransport.h"; sourceTree = "<group>"; };
+		25F5D05118108E3C002B8D47 /* SocketIOTransportWebsocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIOTransportWebsocket.h; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIOTransportWebsocket.h"; sourceTree = "<group>"; };
+		25F5D05218108E3C002B8D47 /* SocketIOTransportWebsocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketIOTransportWebsocket.m; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIOTransportWebsocket.m"; sourceTree = "<group>"; };
+		25F5D05318108E3C002B8D47 /* SocketIOTransportXHR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIOTransportXHR.h; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIOTransportXHR.h"; sourceTree = "<group>"; };
+		25F5D05418108E3C002B8D47 /* SocketIOTransportXHR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketIOTransportXHR.m; path = "../../../../../Users/lczarne/Downloads/socket.IO-objc-master/SocketIOTransportXHR.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,8 +82,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25BC7C4B17F37FF900A295FC /* UIKit.framework in Frameworks */,
 				25BC7C4D17F37FF900A295FC /* Foundation.framework in Frameworks */,
+				25F5D04818108C8F002B8D47 /* Security.framework in Frameworks */,
+				25F5D04618108C89002B8D47 /* CFNetwork.framework in Frameworks */,
+				25F5D04418108C84002B8D47 /* libicucore.dylib in Frameworks */,
+				25BC7C4B17F37FF900A295FC /* UIKit.framework in Frameworks */,
 				25BC7C4F17F37FF900A295FC /* CoreGraphics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -61,6 +97,10 @@
 		25BC7C3E17F37FF900A295FC = {
 			isa = PBXGroup;
 			children = (
+				25F5D04718108C8F002B8D47 /* Security.framework */,
+				25F5D04518108C89002B8D47 /* CFNetwork.framework */,
+				25F5D04318108C84002B8D47 /* libicucore.dylib */,
+				25F5D04118108C49002B8D47 /* MessageUI.framework */,
 				25BC7C5017F37FF900A295FC /* CoDrawing */,
 				25BC7C4917F37FF900A295FC /* Frameworks */,
 				25BC7C4817F37FF900A295FC /* Products */,
@@ -88,6 +128,7 @@
 		25BC7C5017F37FF900A295FC /* CoDrawing */ = {
 			isa = PBXGroup;
 			children = (
+				25F5D03518108C10002B8D47 /* Extern */,
 				25BC7C5917F37FF900A295FC /* AppDelegate.h */,
 				25BC7C5A17F37FF900A295FC /* AppDelegate.m */,
 				25BC7C6217F37FF900A295FC /* MainStoryboard_iPhone.storyboard */,
@@ -113,6 +154,48 @@
 				25BC7C6017F37FF900A295FC /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		25F5D03518108C10002B8D47 /* Extern */ = {
+			isa = PBXGroup;
+			children = (
+				25F5D04918108E22002B8D47 /* Socket.IO-objc */,
+				25F5D03618108C1F002B8D47 /* SocketRocket */,
+			);
+			name = Extern;
+			sourceTree = "<group>";
+		};
+		25F5D03618108C1F002B8D47 /* SocketRocket */ = {
+			isa = PBXGroup;
+			children = (
+				25F5D03718108C1F002B8D47 /* base64.c */,
+				25F5D03818108C1F002B8D47 /* base64.h */,
+				25F5D03918108C1F002B8D47 /* NSData+SRB64Additions.h */,
+				25F5D03A18108C1F002B8D47 /* NSData+SRB64Additions.m */,
+				25F5D03B18108C1F002B8D47 /* SocketRocket-Prefix.pch */,
+				25F5D03C18108C1F002B8D47 /* SRWebSocket.h */,
+				25F5D03D18108C1F002B8D47 /* SRWebSocket.m */,
+			);
+			name = SocketRocket;
+			path = "Extern/submodules/socket-rocket/SocketRocket";
+			sourceTree = SOURCE_ROOT;
+		};
+		25F5D04918108E22002B8D47 /* Socket.IO-objc */ = {
+			isa = PBXGroup;
+			children = (
+				25F5D04A18108E3C002B8D47 /* SocketIO.h */,
+				25F5D04B18108E3C002B8D47 /* SocketIO.m */,
+				25F5D04C18108E3C002B8D47 /* SocketIOJSONSerialization.h */,
+				25F5D04D18108E3C002B8D47 /* SocketIOJSONSerialization.m */,
+				25F5D04E18108E3C002B8D47 /* SocketIOPacket.h */,
+				25F5D04F18108E3C002B8D47 /* SocketIOPacket.m */,
+				25F5D05018108E3C002B8D47 /* SocketIOTransport.h */,
+				25F5D05118108E3C002B8D47 /* SocketIOTransportWebsocket.h */,
+				25F5D05218108E3C002B8D47 /* SocketIOTransportWebsocket.m */,
+				25F5D05318108E3C002B8D47 /* SocketIOTransportXHR.h */,
+				25F5D05418108E3C002B8D47 /* SocketIOTransportXHR.m */,
+			);
+			name = "Socket.IO-objc";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,6 +269,14 @@
 				25BC7C5B17F37FF900A295FC /* AppDelegate.m in Sources */,
 				25BC7C6A17F37FF900A295FC /* ViewController.m in Sources */,
 				25BC7C7217F38C8900A295FC /* EditingEvent.m in Sources */,
+				25F5D03E18108C1F002B8D47 /* base64.c in Sources */,
+				25F5D03F18108C1F002B8D47 /* NSData+SRB64Additions.m in Sources */,
+				25F5D04018108C1F002B8D47 /* SRWebSocket.m in Sources */,
+				25F5D05518108E3C002B8D47 /* SocketIO.m in Sources */,
+				25F5D05618108E3C002B8D47 /* SocketIOJSONSerialization.m in Sources */,
+				25F5D05718108E3C002B8D47 /* SocketIOPacket.m in Sources */,
+				25F5D05818108E3C002B8D47 /* SocketIOTransportWebsocket.m in Sources */,
+				25F5D05918108E3C002B8D47 /* SocketIOTransportXHR.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +409,7 @@
 				25BC7C6F17F37FF900A295FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
