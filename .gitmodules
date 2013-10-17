@@ -1,0 +1,3 @@
+[submodule "CoDrawing/Extern"]
+	path = CoDrawing/Extern
+	url = https://github.com/pkyeck/socket.IO-objc.git
