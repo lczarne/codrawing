@@ -1,0 +1,81 @@
+<html>
+<script src="/js/socket.io.js"></script> 
+<script src="/js/paper/paper.js"></script>
+<script type="text/paperscript" canvas="myCanvas">
+
+
+   var socket = io.connect('http://192.168.0.15');
+  socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
+
+  socket.on('connect',function(){
+    console.log('connected 3');
+    socket.send('hello from client');
+    document.addEventListener('mousemove',mouseMoveHandler);
+    document.addEventListener('mouseup',mouseUpHandler);
+    document.addEventListener('mousedown',mouseDownHandler);
+  });
+
+  function mouseMoveHandler(event){
+    if (drag.value == 1) {
+      var coordinates = new Object();
+      coordinates.x = event.clientX;
+      coordinates.y = event.clientY;
+      //console.log("my coordinates: "+coordinates.x+" "+coordinates.y);
+      socket.emit("paint",coordinates);
+    };
+  }
+
+  var drag = new Object();
+  drag.value = 0;
+  var start = 0;
+  var painting = 0;
+  var currentPoint = new Point();
+
+  function mouseDownHandler(event){
+
+    drag.value = 1;
+    socket.emit("control",drag);
+  }
+  function mouseUpHandler(event){
+    drag.value = 0;
+    socket.emit("control",drag);
+  }
+
+
+
+  socket.on('serverPaint',function(msg){
+    if (painting) {
+      console.log("my server coordinates: "+msg.x+" "+msg.y);
+      var newPoint = new Point(msg.x,msg.y);
+      if (start) {
+        start = 0;
+        path = new Path();
+        path.strokeColor = 'black';
+        currentPoint = newPoint;
+      };
+
+      path.moveTo(currentPoint);
+      path.lineTo(newPoint);
+      currentPoint = newPoint;
+      paper.view.draw();
+    };
+  });
+
+  socket.on('serverControl',function(msg){
+    painting = msg.value;
+    console.log('control from server '+painting);
+    if (painting == 1) {
+      console.log('start');
+      start = 1;
+    };
+  });
+
+
+</script>
+<body>
+  <canvas id="myCanvas" resize></canvas>
+</body>
+</html>

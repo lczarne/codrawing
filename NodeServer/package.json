@@ -1,0 +1,11 @@
+{
+    "name": "ws-test",
+    "description": "Web socket test",
+    "version": "0.0.1",
+    "author": "Lukasz Czarnecki",
+    "dependencies": {
+    	"express": "*",
+    	"socket.io": "*",
+    	"websocket.io": "*"
+    	}
+}
