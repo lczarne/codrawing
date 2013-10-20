@@ -20,6 +20,7 @@
 		25BC7C6717F37FF900A295FC /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25BC7C6517F37FF900A295FC /* MainStoryboard_iPad.storyboard */; };
 		25BC7C6A17F37FF900A295FC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BC7C6917F37FF900A295FC /* ViewController.m */; };
 		25BC7C7217F38C8900A295FC /* EditingEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BC7C7117F38C8900A295FC /* EditingEvent.m */; };
+		25D05C741812FC6C00A5FA6B /* RemoteDrawingSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D05C731812FC6C00A5FA6B /* RemoteDrawingSyncManager.m */; };
 		25F5D03E18108C1F002B8D47 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D03718108C1F002B8D47 /* base64.c */; };
 		25F5D03F18108C1F002B8D47 /* NSData+SRB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D03A18108C1F002B8D47 /* NSData+SRB64Additions.m */; };
 		25F5D04018108C1F002B8D47 /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F5D03D18108C1F002B8D47 /* SRWebSocket.m */; };
@@ -53,6 +54,8 @@
 		25BC7C6917F37FF900A295FC /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		25BC7C7017F38C8900A295FC /* EditingEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditingEvent.h; sourceTree = "<group>"; };
 		25BC7C7117F38C8900A295FC /* EditingEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditingEvent.m; sourceTree = "<group>"; };
+		25D05C721812FC6C00A5FA6B /* RemoteDrawingSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDrawingSyncManager.h; sourceTree = "<group>"; };
+		25D05C731812FC6C00A5FA6B /* RemoteDrawingSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteDrawingSyncManager.m; sourceTree = "<group>"; };
 		25F5D03718108C1F002B8D47 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base64.c; sourceTree = "<group>"; };
 		25F5D03818108C1F002B8D47 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
 		25F5D03918108C1F002B8D47 /* NSData+SRB64Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SRB64Additions.h"; sourceTree = "<group>"; };
@@ -135,6 +138,8 @@
 				25BC7C6517F37FF900A295FC /* MainStoryboard_iPad.storyboard */,
 				25BC7C6817F37FF900A295FC /* ViewController.h */,
 				25BC7C6917F37FF900A295FC /* ViewController.m */,
+				25D05C721812FC6C00A5FA6B /* RemoteDrawingSyncManager.h */,
+				25D05C731812FC6C00A5FA6B /* RemoteDrawingSyncManager.m */,
 				25BC7C7017F38C8900A295FC /* EditingEvent.h */,
 				25BC7C7117F38C8900A295FC /* EditingEvent.m */,
 				25BC7C5117F37FF900A295FC /* Supporting Files */,
@@ -277,6 +282,7 @@
 				25F5D05718108E3C002B8D47 /* SocketIOPacket.m in Sources */,
 				25F5D05818108E3C002B8D47 /* SocketIOTransportWebsocket.m in Sources */,
 				25F5D05918108E3C002B8D47 /* SocketIOTransportXHR.m in Sources */,
+				25D05C741812FC6C00A5FA6B /* RemoteDrawingSyncManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,13 +8,15 @@
 
 #import "ViewController.h"
 #import "EditingEvent.h"
-#import "SocketIO.h"
+#import "RemoteDrawingSyncManager.h"
 
-@interface ViewController () <SocketIODelegate>
+@interface ViewController ()
 
 @property (nonatomic, strong) NSMutableArray *drawPointsArray;
 @property (nonatomic, strong) NSMutableArray *eventsArray;
-@property (nonatomic, strong) SocketIO *socketIO;
+@property (nonatomic, strong) RemoteDrawingSyncManager *remoteDrawingManager;
+@property (nonatomic) BOOL start;
+@property (nonatomic) BOOL painting;
 
 @end
 
@@ -38,20 +40,10 @@ BOOL mouseSwiped;
     self.eventsArray = [[NSMutableArray alloc] init];
 }
 
-- (void)testWebSocekts
-{
-    NSString *socketHostString = @"192.168.0.15";
-    int port = 8882;
-    self.socketIO = [[SocketIO alloc] initWithDelegate:self];
-    [self.socketIO connectToHost:socketHostString onPort:port];
-    [self.socketIO sendMessage:@"Hello from iOS"];
-    NSLog(@"message test done");
-}
-
 - (void)viewDidLoad
 {
-    [self testWebSocekts];
-    
+    self.remoteDrawingManager = [[RemoteDrawingSyncManager alloc] init];
+    self.remoteDrawingManager.delegate = self;
     red = 0.0/255.0;
     green = 0.0/255.0;
     blue = 0.0/255.0;
@@ -65,23 +57,35 @@ BOOL mouseSwiped;
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
     mouseSwiped = NO;
-    UITouch *touch = [touches anyObject];
-    lastPoint = [touch locationInView:self.view];
-    
-    [self.drawPointsArray addObject:[NSValue valueWithCGPoint:lastPoint]];
-    
-    [self sendSocketControlEvent:1];
+    [self.remoteDrawingManager sendSocketControlEvent:1];
+    //UITouch *touch = [touches anyObject];
+    //[self startLineWithPoint:[touch locationInView:self.view]];
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{    
     mouseSwiped = YES;
-    UITouch *touch = [touches anyObject];
-    CGPoint currentPoint = [touch locationInView:self.view];
-    
+    UITouch *touch = [touches anyObject];    
+    [self.remoteDrawingManager sendSocketPaint:[touch locationInView:self.view]];
+//    [self continueLineWithPoint:[touch locationInView:self.view]];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self.remoteDrawingManager sendSocketControlEvent:0];
+}
+
+- (void)startLineWithPoint:(CGPoint)startPoint
+{
+    lastPoint = startPoint;
+    [self.drawPointsArray addObject:[NSValue valueWithCGPoint:lastPoint]];
+}
+
+- (void)continueLineWithPoint:(CGPoint)currentPoint
+{
     [self.drawPointsArray addObject:[NSValue valueWithCGPoint:currentPoint]];
     
     UIGraphicsBeginImageContext(self.view.frame.size);
@@ -99,14 +103,10 @@ BOOL mouseSwiped;
     UIGraphicsEndImageContext();
     
     lastPoint = currentPoint;
-    
-    [self sendSocketPaint:currentPoint];
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    [self sendSocketControlEvent:0];
-    
+- (void)finishLine
+{
     if(!mouseSwiped) {
         UIGraphicsBeginImageContext(self.view.frame.size);
         [self.tempDrawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
@@ -150,35 +150,30 @@ BOOL mouseSwiped;
     // Dispose of any resources that can be recreated.
 }
 
-- (void)sendSocketControlEvent:(int)controlState
+#pragma mark - RemoteDrawingSyncManagerDelegate
+
+- (void)remoteDrawingControlStateReceived:(int)controlState
 {
-    NSDictionary *stateDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:controlState] forKey:@"value"];
-    [self.socketIO sendEvent:@"control" withData:stateDict];
+    self.painting = controlState;
+    if (controlState == 1) {
+        self.start = YES;
+    }
+    else if (controlState == 0){
+        [self finishLine];
+    }
 }
 
-- (void)sendSocketPaint:(CGPoint)socketPaintPoint
+-(void)remoteDrawingPaintPointReceived:(CGPoint)pointReceived
 {
-    NSNumber* xNumber = [NSNumber numberWithFloat:socketPaintPoint.x];
-    NSNumber* yNumber = [NSNumber numberWithFloat:socketPaintPoint.y];
-    
-    NSDictionary *paintPointDict = [NSDictionary dictionaryWithObjects:@[xNumber,yNumber] forKeys:@[@"x",@"y"]];
-    
-    [self.socketIO sendEvent:@"paint" withData:paintPointDict];
+    if (self.painting) {
+        if (self.start) {
+            self.start = NO;
+            [self startLineWithPoint:pointReceived];
+        }
+        else {
+            [self continueLineWithPoint:pointReceived];
+        }
+    }
 }
-
-#pragma mark - SocketIODelegate
-
-- (void)socketIODidConnect:(SocketIO *)socket
-{
-    NSLog(@"connected: %@",socket);
-}
-
-- (void) socketIO:(SocketIO *)socket didReceiveEvent:(SocketIOPacket *)packet
-{
-    NSLog(@"packet received: %@",packet);
-}
-
-
-
 
 @end

@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RemoteDrawingSyncManager.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <RemoteDrawingSyncManagerDelegate>
 @property (weak, nonatomic) IBOutlet UIImageView *drawingImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *tempDrawingImageView;
 
