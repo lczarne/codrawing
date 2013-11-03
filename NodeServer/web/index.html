@@ -20,11 +20,7 @@
 
   function mouseMoveHandler(event){
     if (drag.value == 1) {
-      var coordinates = new Object();
-      coordinates.x = event.clientX;
-      coordinates.y = event.clientY;
-      //console.log("my coordinates: "+coordinates.x+" "+coordinates.y);
-      socket.emit("paint",coordinates);
+      sendPaint(event,1);
     };
   }
 
@@ -35,43 +31,78 @@
   var currentPoint = new Point();
 
   function mouseDownHandler(event){
-
     drag.value = 1;
-    socket.emit("control",drag);
+    sendPaint(event,0);
+    //socket.emit("control",drag);
   }
   function mouseUpHandler(event){
     drag.value = 0;
-    socket.emit("control",drag);
+    sendPaint(event,2);
+    //socket.emit("control",drag);
+  }
+
+  function sendPaint(event,state){
+    var coordinates = new Object();
+      coordinates.x = event.clientX;
+      coordinates.y = event.clientY;
+      var eventToSend = new Object();
+      eventToSend.paint = coordinates;
+      eventToSend.state = state;
+      socket.emit("paint",eventToSend);
   }
 
 
 
   socket.on('serverPaint',function(msg){
-    if (painting) {
-      console.log("my server coordinates: "+msg.x+" "+msg.y);
-      var newPoint = new Point(msg.x,msg.y);
-      if (start) {
-        start = 0;
-        path = new Path();
-        path.strokeColor = 'black';
-        currentPoint = newPoint;
-      };
 
-      path.moveTo(currentPoint);
-      path.lineTo(newPoint);
-      currentPoint = newPoint;
-      paper.view.draw();
-    };
+    var state = msg.state;
+    switch(state)
+    {
+      case 0: {
+        painting = 1;
+        start = 1;
+      }
+        break;
+      case 1: {
+        
+        if (painting) {
+          console.log("my server coordinates: "+msg.paint.x+" "+msg.paint.y);
+          var newPoint = new Point(msg.paint.x,msg.paint.y);
+          if (start) {
+            start = 0;
+            path = new Path();
+            path.strokeColor = 'black';
+            currentPoint = newPoint;
+          };
+
+          path.moveTo(currentPoint);
+          path.lineTo(newPoint);
+          currentPoint = newPoint;
+          paper.view.draw();
+        }
+        
+      }
+      break;
+      case 1: {
+        painting = 0;
+        
+      }
+      break;
+      default:
+    }
+
+
+    
   });
 
-  socket.on('serverControl',function(msg){
-    painting = msg.value;
-    console.log('control from server '+painting);
-    if (painting == 1) {
-      console.log('start');
-      start = 1;
-    };
-  });
+  // socket.on('serverControl',function(msg){
+  //   painting = msg.value;
+  //   console.log('control from server '+painting);
+  //   if (painting == 1) {
+  //     console.log('start');
+  //     start = 1;
+  //   };
+  // });
 
 
 </script>

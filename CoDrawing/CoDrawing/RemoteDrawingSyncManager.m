@@ -41,14 +41,14 @@
     [self.socketIO sendEvent:@"control" withData:stateDict];
 }
 
-- (void)sendSocketPaint:(CGPoint)socketPaintPoint
+- (void)sendPaintEventWith:(CGPoint)socketPaintPoint state:(NSNumber *)state
 {
     NSNumber* xNumber = [NSNumber numberWithFloat:socketPaintPoint.x];
     NSNumber* yNumber = [NSNumber numberWithFloat:socketPaintPoint.y];
     
     NSDictionary *paintPointDict = [NSDictionary dictionaryWithObjects:@[xNumber,yNumber] forKeys:@[@"x",@"y"]];
-    
-    [self.socketIO sendEvent:@"paint" withData:paintPointDict];
+    NSDictionary *paintInfoToSend = [NSDictionary dictionaryWithObjects:@[paintPointDict, state] forKeys:@[@"paint",@"state"]];
+    [self.socketIO sendEvent:@"paint" withData:paintInfoToSend];
 }
 
 #pragma mark - SocketIODelegate
@@ -72,21 +72,28 @@
             if (eventName) {
                 
                 if ([eventName isEqualToString:@"serverPaint"]) {
-                    CGPoint paintPoint = CGPointZero;
-                    NSNumber *paintXNumber = [properData objectForKey:@"x"];
-                    NSNumber *paintYNumber = [properData objectForKey:@"y"];
-                    if (paintXNumber && paintYNumber) {
-                        paintPoint.x = paintXNumber.intValue;
-                        paintPoint.y = paintYNumber.intValue;
-                        [self.delegate remoteDrawingPaintPointReceived:paintPoint];
-                    }
+                    
+                    //temp - new way
+                    [self.delegate remotePaintReceived:properData];
+                    
+//                    NSDictionary *paintDict = properData[@"paint"];
+//                    
+//                    CGPoint paintPoint = CGPointZero;
+//                    NSNumber *paintXNumber = [paintDict objectForKey:@"x"];
+//                    NSNumber *paintYNumber = [paintDict objectForKey:@"y"];
+//                    
+//                    if (paintXNumber && paintYNumber) {
+//                        paintPoint.x = paintXNumber.intValue;
+//                        paintPoint.y = paintYNumber.intValue;
+//                        [self.delegate remoteDrawingPaintPointReceived:paintPoint];
+//                    }
                 }
-                else if ([eventName isEqualToString:@"serverControl"]){
-                    NSNumber *receivedControlState = [properData objectForKey:@"value"];
-                    if (receivedControlState) {
-                        [self.delegate remoteDrawingControlStateReceived:receivedControlState.intValue];
-                    }
-                }
+//                else if ([eventName isEqualToString:@"serverControl"]){
+//                    NSNumber *receivedControlState = [properData objectForKey:@"value"];
+//                    if (receivedControlState) {
+//                        [self.delegate remoteDrawingControlStateReceived:receivedControlState.intValue];
+//                    }
+//                }
                 
             }
 

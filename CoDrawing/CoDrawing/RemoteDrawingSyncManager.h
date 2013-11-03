@@ -10,8 +10,7 @@
 
 @protocol RemoteDrawingSyncManagerDelegate
 
-- (void)remoteDrawingPaintPointReceived:(CGPoint)pointReceived;
-- (void)remoteDrawingControlStateReceived:(int)controlState;
+- (void)remotePaintReceived:(NSDictionary *)paintEvent;
 
 @end
 
@@ -21,6 +20,6 @@
 
 - (id)init;
 - (void)sendSocketControlEvent:(int)controlState;
-- (void)sendSocketPaint:(CGPoint)socketPaintPoint;
+- (void)sendPaintEventWith:(CGPoint)socketPaintPoint state:(NSNumber *)state;
 
 @end

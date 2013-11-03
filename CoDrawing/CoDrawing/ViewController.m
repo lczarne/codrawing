@@ -9,20 +9,20 @@
 #import "ViewController.h"
 #import "EditingEvent.h"
 #import "RemoteDrawingSyncManager.h"
+#import "RemoteDrawer.h"
 
 @interface ViewController ()
 
-@property (nonatomic, strong) NSMutableArray *drawPointsArray;
-@property (nonatomic, strong) NSMutableArray *eventsArray;
+@property (nonatomic, strong) NSMutableDictionary *remoteDrawers;
 @property (nonatomic, strong) RemoteDrawingSyncManager *remoteDrawingManager;
 @property (nonatomic) BOOL start;
 @property (nonatomic) BOOL painting;
+@property (nonatomic) CGPoint lastPoint;
 
 @end
 
 @implementation ViewController 
 
-CGPoint lastPoint;
 CGFloat red;
 CGFloat green;
 CGFloat blue;
@@ -35,19 +35,20 @@ BOOL mouseSwiped;
 - (IBAction)clearDrawing:(id)sender {
     UIImage *clearImage = [[UIImage alloc] init];
     self.drawingImageView.image = clearImage;
-    self.tempDrawingImageView.image = clearImage;
-    self.drawPointsArray = [[NSMutableArray alloc] init];
-    self.eventsArray = [[NSMutableArray alloc] init];
+    self.tempDrawingImageView.image = [clearImage copy];
+    self.tempDrawingImageView.backgroundColor = [UIColor clearColor];
+    self.drawingImageView.backgroundColor = [UIColor clearColor];
 }
 
 - (void)viewDidLoad
 {
     self.remoteDrawingManager = [[RemoteDrawingSyncManager alloc] init];
     self.remoteDrawingManager.delegate = self;
+    self.remoteDrawers = [[NSMutableDictionary alloc] initWithCapacity:10];
     red = 0.0/255.0;
     green = 0.0/255.0;
     blue = 0.0/255.0;
-    brush = 10.0;
+    brush = 2.0;
     opacity = 1.0;
     currentEventID = 0;
     
@@ -60,36 +61,32 @@ BOOL mouseSwiped;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     mouseSwiped = NO;
-    [self.remoteDrawingManager sendSocketControlEvent:1];
-    //UITouch *touch = [touches anyObject];
-    //[self startLineWithPoint:[touch locationInView:self.view]];
+    UITouch *touch = [touches anyObject];
+    [self.remoteDrawingManager sendPaintEventWith:[touch locationInView:self.view] state:@0];
+    self.lastPoint = [touch locationInView:self.view];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {    
     mouseSwiped = YES;
-    UITouch *touch = [touches anyObject];    
-    [self.remoteDrawingManager sendSocketPaint:[touch locationInView:self.view]];
-//    [self continueLineWithPoint:[touch locationInView:self.view]];
+    UITouch *touch = [touches anyObject];
+    CGPoint nextPoint = [touch locationInView:self.view];
+    [self.remoteDrawingManager sendPaintEventWith:nextPoint state:@1];
+    [self continueLineWithPoint:nextPoint lastPoint:self.lastPoint drawingImageView:self.tempDrawingImageView];
+    self.lastPoint = nextPoint;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [self.remoteDrawingManager sendSocketControlEvent:0];
+    UITouch *touch = [touches anyObject];
+    CGPoint endPoint = [touch locationInView:self.view];
+    [self.remoteDrawingManager sendPaintEventWith:endPoint state:@2];
 }
 
-- (void)startLineWithPoint:(CGPoint)startPoint
+- (void)continueLineWithPoint:(CGPoint)currentPoint lastPoint:(CGPoint)lastPoint drawingImageView:(UIImageView *)drawingImageView
 {
-    lastPoint = startPoint;
-    [self.drawPointsArray addObject:[NSValue valueWithCGPoint:lastPoint]];
-}
-
-- (void)continueLineWithPoint:(CGPoint)currentPoint
-{
-    [self.drawPointsArray addObject:[NSValue valueWithCGPoint:currentPoint]];
-    
     UIGraphicsBeginImageContext(self.view.frame.size);
-    [self.tempDrawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    [drawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     CGContextMoveToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
     CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), currentPoint.x, currentPoint.y);
     CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
@@ -98,18 +95,16 @@ BOOL mouseSwiped;
     CGContextSetBlendMode(UIGraphicsGetCurrentContext(),kCGBlendModeNormal);
     
     CGContextStrokePath(UIGraphicsGetCurrentContext());
-    self.tempDrawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
-    [self.tempDrawingImageView setAlpha:opacity];
+    drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    [drawingImageView setAlpha:opacity];
     UIGraphicsEndImageContext();
-    
-    lastPoint = currentPoint;
 }
 
-- (void)finishLine
+- (void)finishLineWithLastPoint:(CGPoint)lastPoint DrawingImageView:(UIImageView *)drawingImageView
 {
     if(!mouseSwiped) {
         UIGraphicsBeginImageContext(self.view.frame.size);
-        [self.tempDrawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        [drawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
         CGContextSetLineWidth(UIGraphicsGetCurrentContext(), brush);
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), red, green, blue, opacity);
@@ -117,31 +112,16 @@ BOOL mouseSwiped;
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
         CGContextStrokePath(UIGraphicsGetCurrentContext());
         CGContextFlush(UIGraphicsGetCurrentContext());
-        self.tempDrawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
+        drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
     }
     
     UIGraphicsBeginImageContext(self.drawingImageView.frame.size);
     [self.drawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) blendMode:kCGBlendModeNormal alpha:1.0];
-    [self.tempDrawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) blendMode:kCGBlendModeNormal alpha:opacity];
+    [drawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) blendMode:kCGBlendModeNormal alpha:opacity];
     self.drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
-    self.tempDrawingImageView.image = nil;
+    drawingImageView.image = nil;
     UIGraphicsEndImageContext();
-    
-    [self finishDrawingEvent];
-}
-
-- (void)finishDrawingEvent
-{
-    EditingEvent *newEvent = [[EditingEvent alloc] init];
-    newEvent.eventObject = self.drawPointsArray;
-    newEvent.eventType = 0;
-    newEvent.identifier = currentEventID;
-    
-    [self.eventsArray addObject:newEvent];
-    
-    currentEventID++;
-    self.drawPointsArray = [[NSMutableArray alloc] init];
 }
 
 - (void)didReceiveMemoryWarning
@@ -152,28 +132,66 @@ BOOL mouseSwiped;
 
 #pragma mark - RemoteDrawingSyncManagerDelegate
 
-- (void)remoteDrawingControlStateReceived:(int)controlState
+
+- (void)remotePaintReceived:(NSDictionary *)paintEvent
 {
-    self.painting = controlState;
-    if (controlState == 1) {
-        self.start = YES;
-    }
-    else if (controlState == 0){
-        [self finishLine];
+    int identifier = [paintEvent[@"ID"] intValue];
+    int state = [paintEvent[@"state"] intValue];
+    NSDictionary *pointDict = paintEvent[@"paint"];
+    CGPoint paintPoint = CGPointMake([pointDict[@"x"] floatValue], [pointDict[@"y"] floatValue]);
+    
+    //RemoteDrawer *remoteDrawer = self.remoteDrawersImageViews
+    NSNumber *remoteDrawerKey = [NSNumber numberWithInt:identifier];
+    
+    
+    switch (state) {
+        case 0:
+            [self addNewRemoteDrawer:remoteDrawerKey point:paintPoint];
+            break;
+        case 1:
+            [self drawWithRemoteDrawer:remoteDrawerKey point:paintPoint];
+            break;
+        case 2:
+            [self finishRemoteDrawer:remoteDrawerKey point:paintPoint];
+            break;
+        default:
+            break;
     }
 }
 
--(void)remoteDrawingPaintPointReceived:(CGPoint)pointReceived
+- (void)addNewRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)startingPoint
 {
-    if (self.painting) {
-        if (self.start) {
-            self.start = NO;
-            [self startLineWithPoint:pointReceived];
-        }
-        else {
-            [self continueLineWithPoint:pointReceived];
-        }
+    RemoteDrawer *drawer = self.remoteDrawers[remotedrawerID];
+    if (!drawer) {
+        drawer = [[RemoteDrawer alloc] initWithSuperView:self.view];
+        [self.remoteDrawers setObject:drawer forKey:remotedrawerID];
     }
+    drawer.lastPoint = startingPoint;
+}
+
+- (void)drawWithRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)nextPoint
+{
+    RemoteDrawer *drawer = self.remoteDrawers[remotedrawerID];
+    if (drawer) {
+        [self continueLineWithPoint:nextPoint lastPoint:drawer.lastPoint drawingImageView:drawer.remoteDrawerImageView];
+        drawer.lastPoint = nextPoint;
+    }
+}
+
+- (void)finishRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)nextPoint
+{
+    RemoteDrawer *drawer = self.remoteDrawers[remotedrawerID];
+    if (drawer) {
+        [self finishLineWithLastPoint:drawer.lastPoint DrawingImageView:drawer.remoteDrawerImageView];
+        [self deleteDrawer:drawer forKey:remotedrawerID];
+    }
+
+}
+
+- (void)deleteDrawer:(RemoteDrawer *)remoteDrawer forKey:(NSNumber *)remoteDrawerKey
+{
+    [remoteDrawer prepareToDelete];
+    [self.remoteDrawers removeObjectForKey:remoteDrawerKey];
 }
 
 @end

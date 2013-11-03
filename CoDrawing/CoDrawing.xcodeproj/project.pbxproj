@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		259337181825BDA80044B183 /* RemoteDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 259337171825BDA80044B183 /* RemoteDrawer.m */; };
 		25BC7C4B17F37FF900A295FC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BC7C4A17F37FF900A295FC /* UIKit.framework */; };
 		25BC7C4D17F37FF900A295FC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BC7C4C17F37FF900A295FC /* Foundation.framework */; };
 		25BC7C4F17F37FF900A295FC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BC7C4E17F37FF900A295FC /* CoreGraphics.framework */; };
@@ -35,6 +36,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		259337161825BDA80044B183 /* RemoteDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDrawer.h; sourceTree = "<group>"; };
+		259337171825BDA80044B183 /* RemoteDrawer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteDrawer.m; sourceTree = "<group>"; };
 		25BC7C4717F37FF900A295FC /* CoDrawing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoDrawing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25BC7C4A17F37FF900A295FC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		25BC7C4C17F37FF900A295FC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -142,6 +145,8 @@
 				25D05C731812FC6C00A5FA6B /* RemoteDrawingSyncManager.m */,
 				25BC7C7017F38C8900A295FC /* EditingEvent.h */,
 				25BC7C7117F38C8900A295FC /* EditingEvent.m */,
+				259337161825BDA80044B183 /* RemoteDrawer.h */,
+				259337171825BDA80044B183 /* RemoteDrawer.m */,
 				25BC7C5117F37FF900A295FC /* Supporting Files */,
 			);
 			path = CoDrawing;
@@ -231,6 +236,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Łukasz Czarnecki";
+				TargetAttributes = {
+					25BC7C4617F37FF900A295FC = {
+						DevelopmentTeam = 3XMEJVN798;
+					};
+				};
 			};
 			buildConfigurationList = 25BC7C4217F37FF900A295FC /* Build configuration list for PBXProject "CoDrawing" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -272,6 +282,7 @@
 			files = (
 				25BC7C5717F37FF900A295FC /* main.m in Sources */,
 				25BC7C5B17F37FF900A295FC /* AppDelegate.m in Sources */,
+				259337181825BDA80044B183 /* RemoteDrawer.m in Sources */,
 				25BC7C6A17F37FF900A295FC /* ViewController.m in Sources */,
 				25BC7C7217F38C8900A295FC /* EditingEvent.m in Sources */,
 				25F5D03E18108C1F002B8D47 /* base64.c in Sources */,
@@ -377,10 +388,13 @@
 		25BC7C6E17F37FF900A295FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CoDrawing/CoDrawing-Prefix.pch";
 				INFOPLIST_FILE = "CoDrawing/CoDrawing-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -388,10 +402,13 @@
 		25BC7C6F17F37FF900A295FC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CoDrawing/CoDrawing-Prefix.pch";
 				INFOPLIST_FILE = "CoDrawing/CoDrawing-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

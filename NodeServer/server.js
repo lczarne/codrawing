@@ -17,18 +17,36 @@ io.sockets.on('connection', function (socket) {
 	count++;
 
   socket.on('paint',function(msg){
+    
+    var paintEvent = new Object();
+    var socketID = getSocketID(this);
+    paintEvent.ID = socketID;
+    paintEvent.paint = msg.paint;
+    paintEvent.state = msg.state;
+
   	for (var i = sockets.length - 1; i >= 0; i--) {
-  		sockets[i].emit('serverPaint',msg);
+  		sockets[i].emit('serverPaint',paintEvent);
+      console.log('PAINT: %j',paintEvent);
   	};
   })
 
-  socket.on('control',function(msg){
-  	for (var i = sockets.length - 1; i >= 0; i--) {
-  		sockets[i].emit('serverControl',msg);
-  	};
-  })
+  // socket.on('control',function(msg){
+  // 	for (var i = sockets.length - 1; i >= 0; i--) {
+  // 		sockets[i].emit('serverControl',msg);
+  // 	};
+  // })
 
 
 });
+
+function getSocketID(socket)
+{
+  for (var i = sockets.length - 1; i >= 0; i--) {
+    if (sockets[i] == socket) {
+      return i;
+    };    
+  }
+  return -1;
+}
 
 //app.listen(8881);
