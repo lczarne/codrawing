@@ -18,34 +18,45 @@
     document.addEventListener('mousedown',mouseDownHandler);
   });
 
-  function mouseMoveHandler(event){
-    if (drag.value == 1) {
-      sendPaint(event,1);
-    };
-  }
 
   var drag = new Object();
   drag.value = 0;
   var start = 0;
   var painting = 0;
   var currentPoint = new Point();
+  var path = new Path();
 
   var RemoteDrawer = function(currentPoint,path){
     this.currentPoint = currentPoint;
     this.path = path;
   }
-
   var remoteDrawers = new Array();
+
 
   function mouseDownHandler(event){
     drag.value = 1;
     sendPaint(event,0);
-    //socket.emit("control",drag);
+
+    currentPoint = new Point(event.clientX,event.clientY);
+    path = new Path();
+    path.strokeColor = 'black';
   }
+
+  function mouseMoveHandler(event){
+    if (drag.value == 1) {
+      sendPaint(event,1);
+
+      var newPoint = new Point(event.clientX,event.clientY);
+      path.moveTo(currentPoint);
+      path.lineTo(newPoint);
+      currentPoint = newPoint;
+      paper.view.draw();
+    };
+  }
+
   function mouseUpHandler(event){
     drag.value = 0;
     sendPaint(event,2);
-    //socket.emit("control",drag);
   }
 
   function sendPaint(event,state){
@@ -94,18 +105,7 @@
       default:
     }
 
-
-    
   });
-
-  // socket.on('serverControl',function(msg){
-  //   painting = msg.value;
-  //   console.log('control from server '+painting);
-  //   if (painting == 1) {
-  //     console.log('start');
-  //     start = 1;
-  //   };
-  // });
 
 
 </script>
