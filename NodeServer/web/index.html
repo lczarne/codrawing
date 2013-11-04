@@ -37,7 +37,7 @@
     drag.value = 1;
     sendPaint(event,0);
 
-    currentPoint = new Point(event.clientX,event.clientY);
+    currentPoint = new Point(event.offsetX,event.offsetY);
     path = new Path();
     path.strokeColor = 'black';
   }
@@ -46,7 +46,7 @@
     if (drag.value == 1) {
       sendPaint(event,1);
 
-      var newPoint = new Point(event.clientX,event.clientY);
+      var newPoint = new Point(event.offsetX,event.offsetY);
       path.moveTo(currentPoint);
       path.lineTo(newPoint);
       currentPoint = newPoint;
@@ -61,8 +61,8 @@
 
   function sendPaint(event,state){
     var coordinates = new Object();
-      coordinates.x = event.clientX;
-      coordinates.y = event.clientY;
+      coordinates.x = event.offsetX;
+      coordinates.y = event.offsetY;
       var eventToSend = new Object();
       eventToSend.paint = coordinates;
       eventToSend.state = state;
