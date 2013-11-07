@@ -4,7 +4,7 @@
 <script type="text/paperscript" canvas="myCanvas">
 
 
-   var socket = io.connect('http://192.168.0.12');
+   var socket = io.connect('http://192.168.0.15');
   socket.on('news', function (data) {
     console.log(data);
     socket.emit('my other event', { my: 'data' });
@@ -18,33 +18,51 @@
     document.addEventListener('mousedown',mouseDownHandler);
   });
 
-  function mouseMoveHandler(event){
-    if (drag.value == 1) {
-      sendPaint(event,1);
-    };
-  }
 
   var drag = new Object();
   drag.value = 0;
   var start = 0;
   var painting = 0;
   var currentPoint = new Point();
+  var path = new Path();
+
+  var RemoteDrawer = function(currentPoint,path){
+    this.currentPoint = currentPoint;
+    this.path = path;
+  }
+  var remoteDrawers = new Array();
+
 
   function mouseDownHandler(event){
     drag.value = 1;
     sendPaint(event,0);
-    //socket.emit("control",drag);
+
+    currentPoint = new Point(event.offsetX,event.offsetY);
+    path = new Path();
+    path.strokeColor = 'black';
   }
+
+  function mouseMoveHandler(event){
+    if (drag.value == 1) {
+      sendPaint(event,1);
+
+      var newPoint = new Point(event.offsetX,event.offsetY);
+      path.moveTo(currentPoint);
+      path.lineTo(newPoint);
+      currentPoint = newPoint;
+      paper.view.draw();
+    };
+  }
+
   function mouseUpHandler(event){
     drag.value = 0;
     sendPaint(event,2);
-    //socket.emit("control",drag);
   }
 
   function sendPaint(event,state){
     var coordinates = new Object();
-      coordinates.x = event.clientX;
-      coordinates.y = event.clientY;
+      coordinates.x = event.offsetX;
+      coordinates.y = event.offsetY;
       var eventToSend = new Object();
       eventToSend.paint = coordinates;
       eventToSend.state = state;
@@ -55,54 +73,39 @@
 
   socket.on('serverPaint',function(msg){
 
+    console.log("msg: %j",msg);
     var state = msg.state;
     switch(state)
     {
       case 0: {
-        painting = 1;
-        start = 1;
+          var newPoint = new Point(msg.paint.x,msg.paint.y);
+          var newPath = new Path();
+          newPath.strokeColor = 'black';
+          var newDrawer = new RemoteDrawer(newPoint,newPath);
+          remoteDrawers[msg.ID] = newDrawer;
       }
         break;
       case 1: {
         
-        if (painting) {
           console.log("my server coordinates: "+msg.paint.x+" "+msg.paint.y);
           var newPoint = new Point(msg.paint.x,msg.paint.y);
-          if (start) {
-            start = 0;
-            path = new Path();
-            path.strokeColor = 'black';
-            currentPoint = newPoint;
-          };
 
-          path.moveTo(currentPoint);
-          path.lineTo(newPoint);
-          currentPoint = newPoint;
+          var currentDrawer = remoteDrawers[msg.ID];
+          currentDrawer.path.moveTo(currentDrawer.currentPoint);
+          currentDrawer.path.lineTo(newPoint);
+          currentDrawer.currentPoint = newPoint;
           paper.view.draw();
-        }
         
       }
       break;
-      case 1: {
-        painting = 0;
+      case 2: {
         
       }
       break;
       default:
     }
 
-
-    
   });
-
-  // socket.on('serverControl',function(msg){
-  //   painting = msg.value;
-  //   console.log('control from server '+painting);
-  //   if (painting == 1) {
-  //     console.log('start');
-  //     start = 1;
-  //   };
-  // });
 
 
 </script>
