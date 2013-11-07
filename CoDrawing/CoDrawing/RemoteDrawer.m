@@ -10,14 +10,16 @@
 
 @implementation RemoteDrawer
 
-- (id)initWithSuperView:(UIView *)superView
+- (id)initWithSuperView:(UIScrollView *)superView
 {
     self = [super init];
     if (!self) {
         return nil;
     }
     
-    self.remoteDrawerImageView = [[UIImageView alloc] initWithFrame:superView.frame];
+    CGRect newFrame = CGRectMake(0, 0, superView.contentSize.width, superView.contentSize.height);
+    
+    self.remoteDrawerImageView = [[UIImageView alloc] initWithFrame:newFrame];
     self.remoteDrawerImageView.backgroundColor = [UIColor clearColor];
     [superView addSubview:self.remoteDrawerImageView];
     return self;

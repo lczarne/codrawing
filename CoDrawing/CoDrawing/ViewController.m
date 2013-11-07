@@ -11,7 +11,7 @@
 #import "RemoteDrawingSyncManager.h"
 #import "RemoteDrawer.h"
 
-@interface ViewController ()
+@interface ViewController () <UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSMutableDictionary *remoteDrawers;
 @property (nonatomic, strong) RemoteDrawingSyncManager *remoteDrawingManager;
@@ -38,6 +38,10 @@ BOOL mouseSwiped;
     self.tempDrawingImageView.image = [clearImage copy];
     self.tempDrawingImageView.backgroundColor = [UIColor clearColor];
     self.drawingImageView.backgroundColor = [UIColor clearColor];
+//    UIImage *image = [UIImage imageNamed:@"rondo.png"];
+//    self.drawingImageView.image = image;
+//    //self.tempDrawingImageView.image = image;
+    
 }
 
 - (void)viewDidLoad
@@ -45,6 +49,15 @@ BOOL mouseSwiped;
     self.remoteDrawingManager = [[RemoteDrawingSyncManager alloc] init];
     self.remoteDrawingManager.delegate = self;
     self.remoteDrawers = [[NSMutableDictionary alloc] initWithCapacity:10];
+    self.drawingScrollView.contentSize = self.drawingImageView.frame.size;
+
+    self.drawingScrollView.maximumZoomScale = 1.0;
+    self.drawingScrollView.minimumZoomScale = 0.5;
+    self.drawingScrollView.zoomScale = 1.0;
+    
+    self.drawingScrollView.delegate = self;
+    
+
     red = 0.0/255.0;
     green = 0.0/255.0;
     blue = 0.0/255.0;
@@ -62,15 +75,15 @@ BOOL mouseSwiped;
 {
     mouseSwiped = NO;
     UITouch *touch = [touches anyObject];
-    [self.remoteDrawingManager sendPaintEventWith:[touch locationInView:self.view] state:@0];
-    self.lastPoint = [touch locationInView:self.view];
+    [self.remoteDrawingManager sendPaintEventWith:[touch locationInView:self.drawingImageView] state:@0];
+    self.lastPoint = [touch locationInView:self.drawingImageView];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {    
     mouseSwiped = YES;
     UITouch *touch = [touches anyObject];
-    CGPoint nextPoint = [touch locationInView:self.view];
+    CGPoint nextPoint = [touch locationInView:self.drawingImageView];
     [self.remoteDrawingManager sendPaintEventWith:nextPoint state:@1];
     [self continueLineWithPoint:nextPoint lastPoint:self.lastPoint drawingImageView:self.tempDrawingImageView];
     self.lastPoint = nextPoint;
@@ -79,34 +92,38 @@ BOOL mouseSwiped;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     UITouch *touch = [touches anyObject];
-    CGPoint endPoint = [touch locationInView:self.view];
+    CGPoint endPoint = [touch locationInView:self.drawingImageView];
     [self.remoteDrawingManager sendPaintEventWith:endPoint state:@2];
+}
+
+- (void)startDrawingOnImageView:(UIImageView *)drawingImageView
+{
+    UIGraphicsBeginImageContextWithOptions(self.drawingImageView.frame.size, self.drawingImageView.opaque, 0.0);
+    [drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height)];
 }
 
 - (void)continueLineWithPoint:(CGPoint)currentPoint lastPoint:(CGPoint)lastPoint drawingImageView:(UIImageView *)drawingImageView
 {
-    UIGraphicsBeginImageContext(self.view.frame.size);
-    [drawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     CGContextMoveToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
     CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), currentPoint.x, currentPoint.y);
     CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
-    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), brush );
+    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), self.drawingScrollView.zoomScale*2 );
     CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), red, green, blue, 1.0);
     CGContextSetBlendMode(UIGraphicsGetCurrentContext(),kCGBlendModeNormal);
     
     CGContextStrokePath(UIGraphicsGetCurrentContext());
     drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     [drawingImageView setAlpha:opacity];
-    UIGraphicsEndImageContext();
+    //UIGraphicsEndImageContext();
 }
 
 - (void)finishLineWithLastPoint:(CGPoint)lastPoint DrawingImageView:(UIImageView *)drawingImageView
 {
     if(!mouseSwiped) {
-        UIGraphicsBeginImageContext(self.view.frame.size);
-        [drawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        UIGraphicsBeginImageContextWithOptions(self.drawingImageView.frame.size, self.drawingImageView.opaque, 0.0);
+        [drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height)];
         CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
-        CGContextSetLineWidth(UIGraphicsGetCurrentContext(), brush);
+        CGContextSetLineWidth(UIGraphicsGetCurrentContext(), self.drawingScrollView.zoomScale*2);
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), red, green, blue, opacity);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
@@ -116,9 +133,9 @@ BOOL mouseSwiped;
         UIGraphicsEndImageContext();
     }
     
-    UIGraphicsBeginImageContext(self.drawingImageView.frame.size);
-    [self.drawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) blendMode:kCGBlendModeNormal alpha:1.0];
-    [drawingImageView.image drawInRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) blendMode:kCGBlendModeNormal alpha:opacity];
+    UIGraphicsBeginImageContextWithOptions(self.drawingImageView.frame.size, self.drawingImageView.opaque, 0.0);
+    [self.drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height) blendMode:kCGBlendModeNormal alpha:1.0];
+    [drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height) blendMode:kCGBlendModeNormal alpha:opacity];
     self.drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     drawingImageView.image = nil;
     UIGraphicsEndImageContext();
@@ -138,7 +155,7 @@ BOOL mouseSwiped;
     int identifier = [paintEvent[@"ID"] intValue];
     int state = [paintEvent[@"state"] intValue];
     NSDictionary *pointDict = paintEvent[@"paint"];
-    CGPoint paintPoint = CGPointMake([pointDict[@"x"] floatValue], [pointDict[@"y"] floatValue]);
+    CGPoint paintPoint = CGPointMake([pointDict[@"x"] floatValue]*self.drawingScrollView.zoomScale, [pointDict[@"y"] floatValue]*self.drawingScrollView.zoomScale);
     
     //RemoteDrawer *remoteDrawer = self.remoteDrawersImageViews
     NSNumber *remoteDrawerKey = [NSNumber numberWithInt:identifier];
@@ -163,7 +180,8 @@ BOOL mouseSwiped;
 {
     RemoteDrawer *drawer = self.remoteDrawers[remotedrawerID];
     if (!drawer) {
-        drawer = [[RemoteDrawer alloc] initWithSuperView:self.view];
+        drawer = [[RemoteDrawer alloc] initWithSuperView:self.drawingScrollView];
+        [self startDrawingOnImageView:drawer.remoteDrawerImageView];
         [self.remoteDrawers setObject:drawer forKey:remotedrawerID];
     }
     drawer.lastPoint = startingPoint;
@@ -192,6 +210,11 @@ BOOL mouseSwiped;
 {
     [remoteDrawer prepareToDelete];
     [self.remoteDrawers removeObjectForKey:remoteDrawerKey];
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return self.drawingImageView;
 }
 
 @end

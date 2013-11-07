@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		259337181825BDA80044B183 /* RemoteDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 259337171825BDA80044B183 /* RemoteDrawer.m */; };
+		2593371A18296FE60044B183 /* rondo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2593371918296FE60044B183 /* rondo.png */; };
 		25BC7C4B17F37FF900A295FC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BC7C4A17F37FF900A295FC /* UIKit.framework */; };
 		25BC7C4D17F37FF900A295FC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BC7C4C17F37FF900A295FC /* Foundation.framework */; };
 		25BC7C4F17F37FF900A295FC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BC7C4E17F37FF900A295FC /* CoreGraphics.framework */; };
@@ -38,6 +39,7 @@
 /* Begin PBXFileReference section */
 		259337161825BDA80044B183 /* RemoteDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDrawer.h; sourceTree = "<group>"; };
 		259337171825BDA80044B183 /* RemoteDrawer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteDrawer.m; sourceTree = "<group>"; };
+		2593371918296FE60044B183 /* rondo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rondo.png; sourceTree = "<group>"; };
 		25BC7C4717F37FF900A295FC /* CoDrawing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoDrawing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25BC7C4A17F37FF900A295FC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		25BC7C4C17F37FF900A295FC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -155,6 +157,7 @@
 		25BC7C5117F37FF900A295FC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2593371918296FE60044B183 /* rondo.png */,
 				25BC7C5217F37FF900A295FC /* CoDrawing-Info.plist */,
 				25BC7C5317F37FF900A295FC /* InfoPlist.strings */,
 				25BC7C5617F37FF900A295FC /* main.m */,
@@ -270,6 +273,7 @@
 				25BC7C6117F37FF900A295FC /* Default-568h@2x.png in Resources */,
 				25BC7C6417F37FF900A295FC /* MainStoryboard_iPhone.storyboard in Resources */,
 				25BC7C6717F37FF900A295FC /* MainStoryboard_iPad.storyboard in Resources */,
+				2593371A18296FE60044B183 /* rondo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
