@@ -14,7 +14,7 @@
 @property (nonatomic) CGPoint lastPoint;
 
 
-- (id)initWithSuperView:(UIScrollView *)superView;
+- (id)initWithSuperView:(UIView *)superView;
 - (void)prepareToDelete;
 
 @end

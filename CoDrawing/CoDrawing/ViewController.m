@@ -18,6 +18,9 @@
 @property (nonatomic) BOOL start;
 @property (nonatomic) BOOL painting;
 @property (nonatomic) CGPoint lastPoint;
+@property (nonatomic, strong) UIPanGestureRecognizer *drawingPanGesture;
+@property (nonatomic, strong) UIPanGestureRecognizer *navgationPanGesture;
+@property (weak, nonatomic) IBOutlet UIButton *modeButton;
 
 @end
 
@@ -31,6 +34,22 @@ CGFloat opacity;
 int currentEventID;
 
 BOOL mouseSwiped;
+BOOL drawingMode = YES;
+
+- (IBAction)changeMode:(id)sender {
+    if (drawingMode) {
+        drawingMode = NO;
+        [self.drawingScrollView removeGestureRecognizer:self.drawingPanGesture];
+        [self.modeButton setTitle:@"navigation" forState:UIControlStateNormal]; ;
+    }
+    else {
+        drawingMode = YES;
+        [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
+        [self.modeButton setTitle:@"drawing" forState:UIControlStateNormal];
+        CGPoint offset = self.drawingScrollView.contentOffset;
+        [self.drawingScrollView setContentOffset:offset animated:NO];
+    }
+}
 
 - (IBAction)clearDrawing:(id)sender {
     UIImage *clearImage = [[UIImage alloc] init];
@@ -57,6 +76,16 @@ BOOL mouseSwiped;
     
     self.drawingScrollView.delegate = self;
     
+    self.drawingPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(drawingScroll:)];
+    self.drawingPanGesture.minimumNumberOfTouches = 1;
+    self.drawingPanGesture.maximumNumberOfTouches = 1;
+    
+    [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
+    self.modeButton.titleLabel.text = @"drawing";
+    
+    UITapGestureRecognizer *tapToZoom = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handelDoubleTap:)];
+    tapToZoom.numberOfTapsRequired = 2;
+    [self.drawingScrollView addGestureRecognizer:tapToZoom];
 
     red = 0.0/255.0;
     green = 0.0/255.0;
@@ -71,29 +100,94 @@ BOOL mouseSwiped;
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)drawingScroll:(UIPanGestureRecognizer *)gesture
+{
+    CGPoint touch = [gesture locationInView:self.drawingScrollView];
+    touch.x /= self.drawingScrollView.zoomScale;
+    touch.y /= self.drawingScrollView.zoomScale;
+    if (gesture.state == UIGestureRecognizerStateBegan){
+        [self drawingBegan:touch];
+    }
+    else if (gesture.state == UIGestureRecognizerStateChanged){
+        [self drawingMoved:touch];
+    }
+    else if (gesture.state == UIGestureRecognizerStateEnded){
+        [self drawingEnded:touch];
+    }
+}
+
+- (void)handelDoubleTap:(UITapGestureRecognizer *)gesture
+{
+    if(self.drawingScrollView.zoomScale > self.drawingScrollView.minimumZoomScale){
+        [self.drawingScrollView setZoomScale:self.drawingScrollView.minimumZoomScale animated:YES];
+    }
+    else {
+        CGPoint touch = [gesture locationInView:self.drawingImageView];
+        CGSize scrollViewSize = self.drawingScrollView.bounds.size;
+        
+        CGFloat w = scrollViewSize.width / self.drawingScrollView.maximumZoomScale;
+        CGFloat h = scrollViewSize.height / self.drawingScrollView.maximumZoomScale;
+        CGFloat x = touch.x - (w/2);
+        CGFloat y = touch.y - (h/2);
+        
+        CGRect rectTozoom=CGRectMake(x, y, w, h);
+
+        [self.drawingScrollView zoomToRect:rectTozoom animated:YES];
+    }
+    
+}
+
+
+//- (void)navigationScroll:(UIPanGestureRecognizer *)gesture
+//{
+//    CGPoint translation = [gesture translationInView:self.drawingScrollView];
+//    CGPoint newOffset = self.drawingScrollView.contentOffset;
+//    
+//    
+//    NSLog(@"left: %f",self.drawingScrollView.zoomScale);
+//        NSLog(@"right: %f",self.drawingScrollView.contentScaleFactor);
+//    newOffset.x += translation.x;
+//    
+//    
+//    
+//    CGFloat abstractWidth = self.drawingScrollView.frame.size.width + (self.drawingScrollView.contentSize.width - self.drawingScrollView.frame.size.width) * (1 - self.drawingScrollView.zoomScale);
+//    
+//    if (newOffset.x < 0) {
+//        newOffset.x = 0;
+//    }
+//    if (newOffset.x + abstractWidth> self.drawingScrollView.contentSize.width) {
+//        newOffset.x = self.drawingScrollView.contentSize.width - abstractWidth;
+//    }
+//    newOffset.y += translation.y;
+//    if (newOffset.y < 0) {
+//        newOffset.y = 0;
+//    }
+//    if (newOffset.y > self.drawingScrollView.contentSize.height) {
+//        newOffset.y = self.drawingScrollView.contentSize.height;
+//    }
+//    [self.drawingScrollView setContentOffset:newOffset];
+//}
+
+- (void)drawingBegan:(CGPoint)touch
 {
     mouseSwiped = NO;
-    UITouch *touch = [touches anyObject];
-    [self.remoteDrawingManager sendPaintEventWith:[touch locationInView:self.drawingImageView] state:@0];
-    self.lastPoint = [touch locationInView:self.drawingImageView];
+    [self.remoteDrawingManager sendPaintEventWith:touch state:@0];
+    self.lastPoint = touch;
+    [self startDrawingOnImageView:self.tempDrawingImageView];
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)drawingMoved:(CGPoint)touch
 {    
     mouseSwiped = YES;
-    UITouch *touch = [touches anyObject];
-    CGPoint nextPoint = [touch locationInView:self.drawingImageView];
-    [self.remoteDrawingManager sendPaintEventWith:nextPoint state:@1];
-    [self continueLineWithPoint:nextPoint lastPoint:self.lastPoint drawingImageView:self.tempDrawingImageView];
-    self.lastPoint = nextPoint;
+    [self.remoteDrawingManager sendPaintEventWith:touch state:@1];
+    [self continueLineWithPoint:touch lastPoint:self.lastPoint drawingImageView:self.tempDrawingImageView];
+    self.lastPoint = touch;
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)drawingEnded:(CGPoint)touch
 {
-    UITouch *touch = [touches anyObject];
-    CGPoint endPoint = [touch locationInView:self.drawingImageView];
-    [self.remoteDrawingManager sendPaintEventWith:endPoint state:@2];
+    [self.remoteDrawingManager sendPaintEventWith:touch state:@2];
+    [self finishLineWithLastPoint:touch DrawingImageView:self.tempDrawingImageView];
 }
 
 - (void)startDrawingOnImageView:(UIImageView *)drawingImageView
@@ -155,11 +249,10 @@ BOOL mouseSwiped;
     int identifier = [paintEvent[@"ID"] intValue];
     int state = [paintEvent[@"state"] intValue];
     NSDictionary *pointDict = paintEvent[@"paint"];
-    CGPoint paintPoint = CGPointMake([pointDict[@"x"] floatValue]*self.drawingScrollView.zoomScale, [pointDict[@"y"] floatValue]*self.drawingScrollView.zoomScale);
+    CGPoint paintPoint = CGPointMake([pointDict[@"x"] floatValue], [pointDict[@"y"] floatValue]);
     
     //RemoteDrawer *remoteDrawer = self.remoteDrawersImageViews
     NSNumber *remoteDrawerKey = [NSNumber numberWithInt:identifier];
-    
     
     switch (state) {
         case 0:
@@ -180,7 +273,7 @@ BOOL mouseSwiped;
 {
     RemoteDrawer *drawer = self.remoteDrawers[remotedrawerID];
     if (!drawer) {
-        drawer = [[RemoteDrawer alloc] initWithSuperView:self.drawingScrollView];
+        drawer = [[RemoteDrawer alloc] initWithSuperView:self.drawingScrollView.subviews[0]];
         [self startDrawingOnImageView:drawer.remoteDrawerImageView];
         [self.remoteDrawers setObject:drawer forKey:remotedrawerID];
     }
@@ -214,7 +307,7 @@ BOOL mouseSwiped;
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
-    return self.drawingImageView;
+    return scrollView.subviews[0];
 }
 
 @end
