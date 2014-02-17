@@ -25,8 +25,11 @@ io.sockets.on('connection', function (socket) {
     paintEvent.state = msg.state;
 
   	for (var i = sockets.length - 1; i >= 0; i--) {
-  		sockets[i].emit('serverPaint',paintEvent);
-      console.log('PAINT: %j',paintEvent);
+      if (i != socketID) {
+        sockets[i].emit('serverPaint',paintEvent);
+        console.log('PAINT: %j',paintEvent);
+      };
+  		
   	};
   })
 

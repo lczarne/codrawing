@@ -27,7 +27,7 @@
 
 - (void)setupSocket
 {
-    NSString *socketHostString = @"192.168.0.15";
+    NSString *socketHostString = @"192.168.0.12";
     int port = 8882;
     self.socketIO = [[SocketIO alloc] initWithDelegate:self];
     [self.socketIO connectToHost:socketHostString onPort:port];

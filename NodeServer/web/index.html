@@ -4,7 +4,7 @@
 <script type="text/paperscript" canvas="myCanvas">
 
 
-   var socket = io.connect('http://192.168.0.15');
+   var socket = io.connect('http://192.168.0.12');
   socket.on('news', function (data) {
     console.log(data);
     socket.emit('my other event', { my: 'data' });
