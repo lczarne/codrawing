@@ -6,6 +6,7 @@
     "dependencies": {
     	"express": "*",
     	"socket.io": "*",
-    	"websocket.io": "*"
+    	"websocket.io": "*",
+		"mongoose": "*"
     	}
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>5109A3F7-C11C-4B45-841F-6BCCB51DA04F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>CoDrawing</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>904EE36D-BDCB-4EBD-84CE-BFAB11FB9811</key>
+		<string>https://github.com/square/SocketRocket.git</string>
+		<key>CA934B2E-4D13-413B-A372-E461D29578AD</key>
+		<string>https://bitbucket.org/lczarne/codrawing.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>CoDrawing/CoDrawing.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>904EE36D-BDCB-4EBD-84CE-BFAB11FB9811</key>
+		<string>../../Extern/submodules/socket-rocket</string>
+		<key>CA934B2E-4D13-413B-A372-E461D29578AD</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://bitbucket.org/lczarne/codrawing.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>CA934B2E-4D13-413B-A372-E461D29578AD</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CA934B2E-4D13-413B-A372-E461D29578AD</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CoDrawing</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>904EE36D-BDCB-4EBD-84CE-BFAB11FB9811</string>
+			<key>IDESourceControlWCCName</key>
+			<string>socket-rocket</string>
+		</dict>
+	</array>
+</dict>
+</plist>
