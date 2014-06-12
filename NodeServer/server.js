@@ -10,7 +10,7 @@ app.use(express.static('web'));
 
 //setup mongo
 
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/myMongo');
 var db = mongoose.connection;
 db.on('error',console.error.bind(console,'connection error:'));
 db.once('open', function callback(){
@@ -26,12 +26,11 @@ var eventSchema = mongoose.Schema({
     y: Number
   }
 });
+eventSchema.path('eventID').index({unique: true});
 
 eventSchema.methods.printMe = function(){
   console.log("Hi, my eventID = "+this.eventID);
 };
-
-eventSchema.path('eventID').index({unique: true});
 
 var Event = mongoose.model('Event',eventSchema);
 
@@ -65,12 +64,21 @@ function savingEventCallback(error, newEvent) {
 //   console.log(events);
 // });
 
+function sendDrawingStateToSocket(socket) {
+  Event.find(function (err,events) {
+    socket.emit('drawingState',events);
+  });
+}
+
+
 //setup websockets
 
 var count = 0;
 var sockets = new Array();
 
 io.sockets.on('connection', function (socket) {
+
+  sendDrawingStateToSocket(socket);
 
 	sockets[count] = socket;
 	count++;

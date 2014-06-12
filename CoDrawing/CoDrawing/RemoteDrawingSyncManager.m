@@ -27,8 +27,10 @@
 
 - (void)setupSocket
 {
-    NSString *socketHostString = @"54.200.33.146";
-    int port = 80;
+    //Amazon EC2 instance address
+    //NSString *socketHostString = @"54.200.33.146";
+    NSString *socketHostString = @"192.168.0.10";
+    int port = 8882;
     self.socketIO = [[SocketIO alloc] initWithDelegate:self];
     [self.socketIO connectToHost:socketHostString onPort:port];
     [self.socketIO sendMessage:@"Hello from iOS"];
@@ -72,28 +74,11 @@
             if (eventName) {
                 
                 if ([eventName isEqualToString:@"serverPaint"]) {
-                    
-                    //temp - new way
                     [self.delegate remotePaintReceived:properData];
-                    
-//                    NSDictionary *paintDict = properData[@"paint"];
-//                    
-//                    CGPoint paintPoint = CGPointZero;
-//                    NSNumber *paintXNumber = [paintDict objectForKey:@"x"];
-//                    NSNumber *paintYNumber = [paintDict objectForKey:@"y"];
-//                    
-//                    if (paintXNumber && paintYNumber) {
-//                        paintPoint.x = paintXNumber.intValue;
-//                        paintPoint.y = paintYNumber.intValue;
-//                        [self.delegate remoteDrawingPaintPointReceived:paintPoint];
-//                    }
                 }
-//                else if ([eventName isEqualToString:@"serverControl"]){
-//                    NSNumber *receivedControlState = [properData objectForKey:@"value"];
-//                    if (receivedControlState) {
-//                        [self.delegate remoteDrawingControlStateReceived:receivedControlState.intValue];
-//                    }
-//                }
+                else if ([eventName isEqualToString:@"drawingState"]){
+                    NSLog(@"DRAWING_STATE: %@",properData);
+                }
                 
             }
 

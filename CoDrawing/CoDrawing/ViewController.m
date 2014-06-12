@@ -57,10 +57,6 @@ BOOL drawingMode = YES;
     self.tempDrawingImageView.image = [clearImage copy];
     self.tempDrawingImageView.backgroundColor = [UIColor clearColor];
     self.drawingImageView.backgroundColor = [UIColor clearColor];
-//    UIImage *image = [UIImage imageNamed:@"rondo.png"];
-//    self.drawingImageView.image = image;
-//    //self.tempDrawingImageView.image = image;
-    
 }
 
 - (void)viewDidLoad
@@ -95,9 +91,7 @@ BOOL drawingMode = YES;
     currentEventID = 0;
     
     [self clearDrawing:nil];
-    
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)drawingScroll:(UIPanGestureRecognizer *)gesture
@@ -134,39 +128,7 @@ BOOL drawingMode = YES;
 
         [self.drawingScrollView zoomToRect:rectTozoom animated:YES];
     }
-    
 }
-
-
-//- (void)navigationScroll:(UIPanGestureRecognizer *)gesture
-//{
-//    CGPoint translation = [gesture translationInView:self.drawingScrollView];
-//    CGPoint newOffset = self.drawingScrollView.contentOffset;
-//    
-//    
-//    NSLog(@"left: %f",self.drawingScrollView.zoomScale);
-//        NSLog(@"right: %f",self.drawingScrollView.contentScaleFactor);
-//    newOffset.x += translation.x;
-//    
-//    
-//    
-//    CGFloat abstractWidth = self.drawingScrollView.frame.size.width + (self.drawingScrollView.contentSize.width - self.drawingScrollView.frame.size.width) * (1 - self.drawingScrollView.zoomScale);
-//    
-//    if (newOffset.x < 0) {
-//        newOffset.x = 0;
-//    }
-//    if (newOffset.x + abstractWidth> self.drawingScrollView.contentSize.width) {
-//        newOffset.x = self.drawingScrollView.contentSize.width - abstractWidth;
-//    }
-//    newOffset.y += translation.y;
-//    if (newOffset.y < 0) {
-//        newOffset.y = 0;
-//    }
-//    if (newOffset.y > self.drawingScrollView.contentSize.height) {
-//        newOffset.y = self.drawingScrollView.contentSize.height;
-//    }
-//    [self.drawingScrollView setContentOffset:newOffset];
-//}
 
 - (void)drawingBegan:(CGPoint)touch
 {
@@ -198,16 +160,18 @@ BOOL drawingMode = YES;
 
 - (void)continueLineWithPoint:(CGPoint)currentPoint lastPoint:(CGPoint)lastPoint drawingImageView:(UIImageView *)drawingImageView
 {
-    CGContextMoveToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
-    CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), currentPoint.x, currentPoint.y);
-    CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
-    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), self.drawingScrollView.zoomScale*2 );
-    CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), red, green, blue, 1.0);
-    CGContextSetBlendMode(UIGraphicsGetCurrentContext(),kCGBlendModeNormal);
-    
-    CGContextStrokePath(UIGraphicsGetCurrentContext());
-    drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
-    [drawingImageView setAlpha:opacity];
+    @autoreleasepool {
+        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
+        CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), currentPoint.x, currentPoint.y);
+        CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
+        CGContextSetLineWidth(UIGraphicsGetCurrentContext(), self.drawingScrollView.zoomScale*2 );
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), red, green, blue, 1.0);
+        CGContextSetBlendMode(UIGraphicsGetCurrentContext(),kCGBlendModeNormal);
+
+        CGContextStrokePath(UIGraphicsGetCurrentContext());
+        drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
+        [drawingImageView setAlpha:opacity];
+    }
     //UIGraphicsEndImageContext();
 }
 
