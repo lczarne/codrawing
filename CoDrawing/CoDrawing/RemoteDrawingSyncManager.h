@@ -11,6 +11,7 @@
 @protocol RemoteDrawingSyncManagerDelegate
 
 - (void)remotePaintReceived:(NSDictionary *)paintEvent;
+- (void)remoteDrawingStateReceived:(NSArray *)stateArray;
 
 @end
 

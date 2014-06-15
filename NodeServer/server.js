@@ -70,7 +70,13 @@ function sendDrawingStateToSocket(socket) {
   });
 }
 
+function clearState() {
+  Event.remove({},function (err){
+    console.log("Events collection cleared.")
+  });
+}
 
+clearState();
 //setup websockets
 
 var count = 0;
@@ -87,7 +93,7 @@ io.sockets.on('connection', function (socket) {
     
     var paintEvent = new Object();
     var socketID = getSocketID(this);
-    paintEvent.ID = socketID;
+    paintEvent.socketID = socketID;
     paintEvent.paint = msg.paint;
     paintEvent.state = msg.state;
     saveSocketEvent(paintEvent);
@@ -106,7 +112,7 @@ var eventCounter = 0;
 function saveSocketEvent(socketEvent) {
   var eventToSave = new Event();
   eventToSave.eventID = eventCounter++;
-  eventToSave.socketID = socketEvent.ID;
+  eventToSave.socketID = socketEvent.socketID;
   eventToSave.state = socketEvent.state;
   eventToSave.paint = socketEvent.paint;
   eventToSave.save(savingEventCallback)

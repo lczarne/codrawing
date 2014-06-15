@@ -20,7 +20,13 @@
 @property (nonatomic) CGPoint lastPoint;
 @property (nonatomic, strong) UIPanGestureRecognizer *drawingPanGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *navgationPanGesture;
-@property (weak, nonatomic) IBOutlet UIButton *modeButton;
+@property (nonatomic, strong) UIPanGestureRecognizer *mediaPanGesture;
+@property (weak, nonatomic) IBOutlet UIButton *clearButton;
+@property (weak, nonatomic) IBOutlet UIButton *navigationButton;
+@property (weak, nonatomic) IBOutlet UIButton *drawingButton;
+@property (weak, nonatomic) IBOutlet UIButton *mediaButton;
+@property (nonatomic, strong) UIView *mediaSelectionView;
+@property CGPoint mediaSelectionStartPoint;
 
 @end
 
@@ -36,22 +42,10 @@ int currentEventID;
 BOOL mouseSwiped;
 BOOL drawingMode = YES;
 
-- (IBAction)changeMode:(id)sender {
-    if (drawingMode) {
-        drawingMode = NO;
-        [self.drawingScrollView removeGestureRecognizer:self.drawingPanGesture];
-        [self.modeButton setTitle:@"navigation" forState:UIControlStateNormal]; ;
-    }
-    else {
-        drawingMode = YES;
-        [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
-        [self.modeButton setTitle:@"drawing" forState:UIControlStateNormal];
-        CGPoint offset = self.drawingScrollView.contentOffset;
-        [self.drawingScrollView setContentOffset:offset animated:NO];
-    }
-}
 
 - (IBAction)clearDrawing:(id)sender {
+    [self resetButtonColors];
+    self.clearButton.titleLabel.textColor = [UIColor redColor];
     UIImage *clearImage = [[UIImage alloc] init];
     self.drawingImageView.image = clearImage;
     self.tempDrawingImageView.image = [clearImage copy];
@@ -59,8 +53,43 @@ BOOL drawingMode = YES;
     self.drawingImageView.backgroundColor = [UIColor clearColor];
 }
 
+- (IBAction)navigationMode:(id)sender {
+    [self resetButtonColors];
+    [self resetGestureRecognizers];
+    self.navigationButton.titleLabel.textColor = [UIColor redColor];
+}
+
+- (IBAction)drawingMode:(id)sender {
+    [self resetButtonColors];
+    [self resetGestureRecognizers];
+    [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
+    self.drawingButton.titleLabel.textColor = [UIColor redColor];
+    CGPoint offset = self.drawingScrollView.contentOffset;
+    [self.drawingScrollView setContentOffset:offset animated:NO];
+}
+
+- (IBAction)mediaMode:(id)sender {
+    [self resetGestureRecognizers];
+    [self.drawingScrollView addGestureRecognizer:self.mediaPanGesture];
+    [self resetButtonColors];
+    self.mediaButton.titleLabel.textColor = [UIColor redColor];
+}
+
+- (void)resetGestureRecognizers {
+    [self.drawingScrollView removeGestureRecognizer:self.drawingPanGesture];
+    [self.drawingScrollView removeGestureRecognizer:self.mediaPanGesture];
+}
+
+- (void)resetButtonColors {
+    self.clearButton.titleLabel.textColor = [UIColor blueColor];
+    self.navigationButton.titleLabel.textColor = [UIColor blueColor];
+    self.drawingButton.titleLabel.textColor = [UIColor blueColor];
+    self.mediaButton.titleLabel.textColor = [UIColor blueColor];
+}
+
 - (void)viewDidLoad
 {
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     self.remoteDrawingManager = [[RemoteDrawingSyncManager alloc] init];
     self.remoteDrawingManager.delegate = self;
     self.remoteDrawers = [[NSMutableDictionary alloc] initWithCapacity:10];
@@ -72,12 +101,13 @@ BOOL drawingMode = YES;
     
     self.drawingScrollView.delegate = self;
     
-    self.drawingPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(drawingScroll:)];
-    self.drawingPanGesture.minimumNumberOfTouches = 1;
-    self.drawingPanGesture.maximumNumberOfTouches = 1;
-    
+    self.drawingPanGesture = [self setupDrawingGesture];
     [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
-    self.modeButton.titleLabel.text = @"drawing";
+    
+    self.mediaPanGesture = [self setupMediaGesture];
+    
+    self.mediaSelectionView = [self setupMediaSelectionView];
+    [self.drawingScrollView addSubview:self.mediaSelectionView];
     
     UITapGestureRecognizer *tapToZoom = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handelDoubleTap:)];
     tapToZoom.numberOfTapsRequired = 2;
@@ -94,6 +124,28 @@ BOOL drawingMode = YES;
     [super viewDidLoad];
 }
 
+- (UIPanGestureRecognizer *)setupDrawingGesture {
+    UIPanGestureRecognizer *drawingGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(drawingScroll:)];
+    drawingGesture.minimumNumberOfTouches = 1;
+    drawingGesture.maximumNumberOfTouches = 1;
+    return drawingGesture;
+}
+
+- (UIPanGestureRecognizer *)setupMediaGesture {
+    UIPanGestureRecognizer *mediaGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(mediaAreaSelection:)];
+    mediaGesture.minimumNumberOfTouches = 1;
+    mediaGesture.maximumNumberOfTouches = 1;
+    return mediaGesture;
+}
+
+- (UIView *)setupMediaSelectionView {
+    UIView *mediaSelectionView = [[UIView alloc] init];
+    mediaSelectionView.backgroundColor = [UIColor blueColor];
+    mediaSelectionView.alpha = .25f;
+    mediaSelectionView.hidden = YES;
+    return mediaSelectionView;
+}
+
 - (void)drawingScroll:(UIPanGestureRecognizer *)gesture
 {
     CGPoint touch = [gesture locationInView:self.drawingScrollView];
@@ -107,6 +159,38 @@ BOOL drawingMode = YES;
     }
     else if (gesture.state == UIGestureRecognizerStateEnded){
         [self drawingEnded:touch];
+    }
+}
+
+- (void)mediaAreaSelection:(UIPanGestureRecognizer *)gesture {
+    CGPoint touch = [gesture locationInView:self.drawingScrollView];
+    touch.x /= self.drawingScrollView.zoomScale;
+    touch.y /= self.drawingScrollView.zoomScale;
+    if (gesture.state == UIGestureRecognizerStateBegan){
+        self.mediaSelectionStartPoint = touch;
+        self.mediaSelectionView.frame = CGRectMake(touch.x, touch.y, 0, 0);
+        self.mediaSelectionView.hidden = NO;
+    }
+    else if (gesture.state == UIGestureRecognizerStateChanged){
+        CGFloat minX = MIN(self.mediaSelectionStartPoint.x, touch.x);
+        CGFloat minY = MIN(self.mediaSelectionStartPoint.y, touch.y);
+        CGFloat maxX = MAX(self.mediaSelectionStartPoint.x, touch.x);
+        CGFloat maxY = MAX(self.mediaSelectionStartPoint.y, touch.y);
+
+        
+        CGRect leftTop = CGRectMake(minX, minY, 0, 0);
+        CGRect rightBottom = CGRectMake(maxX, maxY, 0, 0);
+        CGRect selectionRect = CGRectUnion(leftTop, rightBottom);
+        
+        self.mediaSelectionView.frame = selectionRect;
+    }
+    else if (gesture.state == UIGestureRecognizerStateEnded){
+        UIView *newMedia = [[UIView alloc] initWithFrame:self.mediaSelectionView.frame];
+        newMedia.backgroundColor = [UIColor yellowColor];
+        newMedia.alpha = .5f;
+        [self.drawingScrollView addSubview:newMedia];
+        self.mediaSelectionView.hidden = YES;
+        
     }
 }
 
@@ -210,7 +294,7 @@ BOOL drawingMode = YES;
 
 - (void)remotePaintReceived:(NSDictionary *)paintEvent
 {
-    int identifier = [paintEvent[@"ID"] intValue];
+    int identifier = [paintEvent[@"socketID"] intValue];
     int state = [paintEvent[@"state"] intValue];
     NSDictionary *pointDict = paintEvent[@"paint"];
     CGPoint paintPoint = CGPointMake([pointDict[@"x"] floatValue], [pointDict[@"y"] floatValue]);
@@ -230,6 +314,12 @@ BOOL drawingMode = YES;
             break;
         default:
             break;
+    }
+}
+
+- (void)remoteDrawingStateReceived:(NSArray *)stateArray {
+    for (NSDictionary *paintEvent in stateArray) {
+        [self remotePaintReceived:paintEvent];
     }
 }
 

@@ -67,7 +67,7 @@
     if ([dataReceived isKindOfClass:[NSDictionary class]]) {
         NSArray *arguments = [dataReceived objectForKey:@"args"];
         if ([arguments isKindOfClass:[NSArray class]] && arguments.count >0) {
-            NSDictionary *properData = arguments[0];
+            id properData = arguments[0];
             
             NSString *eventName = [dataReceived objectForKey:@"name"];
             
@@ -77,7 +77,7 @@
                     [self.delegate remotePaintReceived:properData];
                 }
                 else if ([eventName isEqualToString:@"drawingState"]){
-                    NSLog(@"DRAWING_STATE: %@",properData);
+                    [self.delegate remoteDrawingStateReceived:properData];
                 }
                 
             }

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="6154.17" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="2">
     <dependencies>
-        <deployment defaultVersion="1552" identifier="iOS"/>
         <development version="4600" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3746"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6153.11"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -35,38 +34,72 @@
                                     </view>
                                 </subviews>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="8Yx-05-9N9">
-                                <rect key="frame" x="10" y="10" width="50" height="31"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Clear">
-                                    <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="clearDrawing:" destination="2" eventType="touchUpInside" id="EXn-Ew-NxC"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="X9U-Oy-wZR">
-                                <rect key="frame" x="67" y="10" width="83" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="drawing">
-                                    <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="changeMode:" destination="2" eventType="touchUpInside" id="VKu-VK-pQL"/>
-                                </connections>
-                            </button>
+                            <view contentMode="scaleToFill" id="hRb-r8-NHD">
+                                <rect key="frame" x="90" y="0.0" width="389" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="8Yx-05-9N9">
+                                        <rect key="frame" x="48" y="9" width="50" height="31"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Clear">
+                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="clearDrawing:" destination="2" eventType="touchUpInside" id="o0M-od-apz"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="X9U-Oy-wZR">
+                                        <rect key="frame" x="108" y="9" width="83" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="navigation">
+                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="navigationMode:" destination="2" eventType="touchUpInside" id="XwP-gj-SEb"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="M5l-FU-c3p">
+                                        <rect key="frame" x="258" y="9" width="83" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="media">
+                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="mediaMode:" destination="2" eventType="touchUpInside" id="R8P-Bm-Vjg"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="bsc-CL-yfd">
+                                        <rect key="frame" x="191" y="9" width="83" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="drawing">
+                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="drawingMode:" destination="2" eventType="touchUpInside" id="Pb1-x1-adC"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.14999999999999999" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="clearButton" destination="8Yx-05-9N9" id="qhr-TC-3lC"/>
+                        <outlet property="drawingButton" destination="bsc-CL-yfd" id="did-a8-6dg"/>
                         <outlet property="drawingImageView" destination="brc-zm-Xat" id="lGr-j9-r7A"/>
                         <outlet property="drawingScrollView" destination="ZY7-8A-zlG" id="bPi-w9-s2W"/>
-                        <outlet property="modeButton" destination="X9U-Oy-wZR" id="Emh-lH-WVU"/>
+                        <outlet property="mediaButton" destination="M5l-FU-c3p" id="j1d-Y5-6Vf"/>
+                        <outlet property="navigationButton" destination="X9U-Oy-wZR" id="6Zn-TR-cjz"/>
                         <outlet property="tempDrawingImageView" destination="Quh-ws-fdg" id="YGc-e5-bPg"/>
                     </connections>
                 </viewController>
