@@ -3,10 +3,16 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var mongoose = require('mongoose');
+var fs = require('fs');
+var path = require('path');
 
 server.listen(8882);
 
 app.use(express.static('web'));
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.multipart({uploadDir: 'web/public/img'}));
+app.use(express.multipart());
 
 //setup mongo
 
@@ -127,4 +133,22 @@ function getSocketID(socket)
   }
   return -1;
 }
+
+//Images upload
+app.post('/api/images',function(req,res) {
+  console.log(req);
+  var serverPath = req.files.myImage.path;
+  var pathComponents = serverPath.split('/');
+  pathComponents.shift();
+  serverPath = pathComponents.join('/');
+
+  res.send({
+      path: serverPath
+  });
+});
+
+
+
+
+
 
