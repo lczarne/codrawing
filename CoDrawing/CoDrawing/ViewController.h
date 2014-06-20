@@ -13,5 +13,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *drawingImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *tempDrawingImageView;
 @property (weak, nonatomic) IBOutlet UIScrollView *drawingScrollView;
+@property (weak, nonatomic) IBOutlet UIView *zoomableView;
 
 @end

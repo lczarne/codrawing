@@ -101,6 +101,7 @@
                         <outlet property="mediaButton" destination="M5l-FU-c3p" id="j1d-Y5-6Vf"/>
                         <outlet property="navigationButton" destination="X9U-Oy-wZR" id="6Zn-TR-cjz"/>
                         <outlet property="tempDrawingImageView" destination="Quh-ws-fdg" id="YGc-e5-bPg"/>
+                        <outlet property="zoomableView" destination="sbp-SQ-bkx" id="tE0-Ml-NDA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>

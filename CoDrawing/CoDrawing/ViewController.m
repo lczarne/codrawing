@@ -107,7 +107,7 @@ BOOL drawingMode = YES;
     self.mediaPanGesture = [self setupMediaGesture];
     
     self.mediaSelectionView = [self setupMediaSelectionView];
-    [self.drawingScrollView addSubview:self.mediaSelectionView];
+    [self.zoomableView addSubview:self.mediaSelectionView];
     
     UITapGestureRecognizer *tapToZoom = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handelDoubleTap:)];
     tapToZoom.numberOfTapsRequired = 2;
@@ -188,7 +188,7 @@ BOOL drawingMode = YES;
         UIView *newMedia = [[UIView alloc] initWithFrame:self.mediaSelectionView.frame];
         newMedia.backgroundColor = [UIColor yellowColor];
         newMedia.alpha = .5f;
-        [self.drawingScrollView addSubview:newMedia];
+        [self.zoomableView addSubview:newMedia];
         self.mediaSelectionView.hidden = YES;
         
     }

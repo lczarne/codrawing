@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6154.17" systemVersion="13D65" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
     <dependencies>
-        <deployment defaultVersion="1552" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6153.11"/>
     </dependencies>
     <scenes>
@@ -66,6 +65,7 @@
                         <outlet property="drawingScrollView" destination="Ksf-R1-CQo" id="Zhd-gx-4qw"/>
                         <outlet property="modeButton" destination="45U-x5-dae" id="5tv-yH-1Pc"/>
                         <outlet property="tempDrawingImageView" destination="F9q-cR-cmh" id="0sF-2s-6TC"/>
+                        <outlet property="zoomableView" destination="eKj-8K-xLm" id="bP8-d7-UR6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3" sceneMemberID="firstResponder"/>
