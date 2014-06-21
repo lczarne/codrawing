@@ -11,7 +11,7 @@
 #import "RemoteDrawingSyncManager.h"
 #import "RemoteDrawer.h"
 
-@interface ViewController () <UIScrollViewDelegate>
+@interface ViewController () <UIScrollViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) NSMutableDictionary *remoteDrawers;
 @property (nonatomic, strong) RemoteDrawingSyncManager *remoteDrawingManager;
@@ -185,13 +185,51 @@ BOOL drawingMode = YES;
         self.mediaSelectionView.frame = selectionRect;
     }
     else if (gesture.state == UIGestureRecognizerStateEnded){
-        UIView *newMedia = [[UIView alloc] initWithFrame:self.mediaSelectionView.frame];
-        newMedia.backgroundColor = [UIColor yellowColor];
-        newMedia.alpha = .5f;
-        [self.zoomableView addSubview:newMedia];
-        self.mediaSelectionView.hidden = YES;
-        
+        [self showMediaActionSheet];
     }
+}
+
+- (void)showNewMediaView {
+    UIView *newMedia = [[UIView alloc] initWithFrame:self.mediaSelectionView.frame];
+    newMedia.backgroundColor = [UIColor yellowColor];
+    newMedia.alpha = .5f;
+    [self.zoomableView addSubview:newMedia];
+}
+
+- (void)showMediaActionSheet {
+    UIActionSheet *mediaActionSheet = [[UIActionSheet alloc] initWithTitle:@"Media choice"
+                                                                  delegate:self
+                                                         cancelButtonTitle:@"Cancel"
+                                                    destructiveButtonTitle:nil
+                                                         otherButtonTitles:@"Image",@"Video URL",@"Other URL", nil];
+                                                        
+    [mediaActionSheet showInView:self.view];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0: {
+         NSLog(@"image");
+         [self showNewMediaView];
+        }
+        break;
+        case 1: {
+         NSLog(@"video");
+         [self showNewMediaView];
+        }
+        break;
+        case 2: {
+         NSLog(@"URL");
+         [self showNewMediaView];
+        }
+        break;
+        case 3: {
+         NSLog(@"Cancel");
+        }
+        break;
+    }
+    
+    self.mediaSelectionView.hidden = YES;
 }
 
 - (void)handelDoubleTap:(UITapGestureRecognizer *)gesture
