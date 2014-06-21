@@ -11,7 +11,7 @@
 #import "RemoteDrawingSyncManager.h"
 #import "RemoteDrawer.h"
 
-@interface ViewController () <UIScrollViewDelegate, UIActionSheetDelegate>
+@interface ViewController () <UIScrollViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) NSMutableDictionary *remoteDrawers;
 @property (nonatomic, strong) RemoteDrawingSyncManager *remoteDrawingManager;
@@ -189,13 +189,6 @@ BOOL drawingMode = YES;
     }
 }
 
-- (void)showNewMediaView {
-    UIView *newMedia = [[UIView alloc] initWithFrame:self.mediaSelectionView.frame];
-    newMedia.backgroundColor = [UIColor yellowColor];
-    newMedia.alpha = .5f;
-    [self.zoomableView addSubview:newMedia];
-}
-
 - (void)showMediaActionSheet {
     UIActionSheet *mediaActionSheet = [[UIActionSheet alloc] initWithTitle:@"Media choice"
                                                                   delegate:self
@@ -210,6 +203,7 @@ BOOL drawingMode = YES;
     switch (buttonIndex) {
         case 0: {
          NSLog(@"image");
+         [self chooseImage];
          [self showNewMediaView];
         }
         break;
@@ -230,6 +224,30 @@ BOOL drawingMode = YES;
     }
     
     self.mediaSelectionView.hidden = YES;
+}
+
+
+- (void)showNewMediaView {
+    UIView *newMedia = [[UIView alloc] initWithFrame:self.mediaSelectionView.frame];
+    newMedia.backgroundColor = [UIColor yellowColor];
+    newMedia.alpha = .5f;
+    [self.zoomableView addSubview:newMedia];
+}
+
+- (void)chooseImage {
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
+
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    }
+    else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    }
+    
+    [self presentViewController:imagePicker animated:YES completion:^{
+        
+    }];
 }
 
 - (void)handelDoubleTap:(UITapGestureRecognizer *)gesture
@@ -400,6 +418,15 @@ BOOL drawingMode = YES;
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
     return scrollView.subviews[0];
+}
+
+- (BOOL)shouldAutorotate {
+    
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskLandscape;
 }
 
 @end
