@@ -25,6 +25,8 @@ db.once('open', function callback(){
 	console.log('db connected!!!');
 });
 
+//Event setup
+
 var eventSchema = mongoose.Schema({
   eventID: Number,
 	socketID: Number,
@@ -42,20 +44,6 @@ eventSchema.methods.printMe = function(){
 
 var Event = mongoose.model('Event',eventSchema);
 
-var newEvent = new Event({
-  eventID: 5,
-	socketID: 23,
-	state: 9
-})
-
-
-// Event.remove({}, function(err){
-//   if (err) return console.error(err);
-//   console.log('removed');
-// });
-
-//newEvent.save(savingEventCallback);
-
 function savingEventCallback(error, newEvent) {
   if (error) {
     return console.error(error);
@@ -66,25 +54,68 @@ function savingEventCallback(error, newEvent) {
   newEvent.printMe();
 }
 
+var newEvent = new Event({
+  eventID: 5,
+	socketID: 23,
+	state: 9
+})
 
-// Event.find(function (err,events){
-//   if (err) return console.error(err);
-//   console.log(events);
-// });
+//ImageSetup
+var imageSchema = mongoose.Schema({
+  imageID: Number,
+  socketID: Number,
+  imageInfo: {
+    x: Number,
+    y: Number,
+    width: Number,
+    height: Number
+  },
+  imageURL: String
+});
+imageSchema.path('imageID').index({unique: true});
 
+imageSchema.methods.printMe = function(){
+  console.log("Image: "+this.imageID);
+}
+
+var ImageMedia = mongoose.model('ImageMedia',imageSchema);
+
+function savingImageMediaCallback(error, newImage) {
+  if (error) {
+    return console.error(error);
+  }
+  else {
+    console.log("saved id: "+newImage.imageID);
+  }
+  newImage.printMe();
+}
 function sendDrawingStateToSocket(socket) {
   Event.find(function (err,events) {
     socket.emit('drawingState',events);
   });
+  ImageMedia.find(function(err,images){
+    socket.emit('imageState',images);
+    console.log('IMAGES STATE SENT');
+  });
 }
 
-function clearState() {
+function clearEventState() {
   Event.remove({},function (err){
     console.log("Events collection cleared.")
   });
 }
 
-clearState();
+function clearImageState() {
+  ImageMedia.remove({},function (err){
+    console.log("Images collection cleared.")
+  });
+}
+
+
+clearEventState();
+clearImageState();
+
+
 //setup websockets
 
 var count = 0;
@@ -98,7 +129,6 @@ io.sockets.on('connection', function (socket) {
 	count++;
 
   socket.on('paint',function(msg){
-    
     var paintEvent = new Object();
     var socketID = getSocketID(this);
     paintEvent.socketID = socketID;
@@ -114,8 +144,8 @@ io.sockets.on('connection', function (socket) {
     imageEvent.socketID = socketID;
     imageEvent.imageInfo = msg.imageInfo;
     imageEvent.imageURL = msg.imageURL;
+    saveImageFromSocket(imageEvent);
     emit('serverImage',imageEvent,socketID);
-    console.log(imageEvent);
   });
 
 });
@@ -129,15 +159,7 @@ function emit(eventName,eventData,senderID) {
 }
 
 var eventCounter = 0;
-
-function saveSocketEvent(socketEvent) {
-  var eventToSave = new Event();
-  eventToSave.eventID = eventCounter++;
-  eventToSave.socketID = socketEvent.socketID;
-  eventToSave.state = socketEvent.state;
-  eventToSave.paint = socketEvent.paint;
-  eventToSave.save(savingEventCallback)
-}
+var imageCounter = 0;
 
 function getSocketID(socket)
 {
@@ -149,9 +171,26 @@ function getSocketID(socket)
   return -1;
 }
 
+function saveSocketEvent(socketEvent) {
+  var eventToSave = new Event();
+  eventToSave.eventID = eventCounter++;
+  eventToSave.socketID = socketEvent.socketID;
+  eventToSave.state = socketEvent.state;
+  eventToSave.paint = socketEvent.paint;
+  eventToSave.save(savingEventCallback)
+}
+
+function saveImageFromSocket(imageEvent) {
+  var imageMediaToSave = new ImageMedia();
+  imageMediaToSave.imageID = imageCounter++;
+  imageMediaToSave.socketID = imageEvent.socketID;
+  imageMediaToSave.imageInfo = imageEvent.imageInfo;
+  imageMediaToSave.imageURL = imageEvent.imageURL;
+  imageMediaToSave.save(savingImageMediaCallback);
+}
+
 //Images upload
 app.post('/api/images',function(req,res) {
-  console.log(req);
   var serverPath = req.files.myImage.path;
   var pathComponents = serverPath.split('/');
   pathComponents.shift();

@@ -89,7 +89,9 @@
                 else if ([eventName isEqualToString:@"drawingState"]){
                     [self.delegate remoteDrawingStateReceived:properData];
                 }
-                
+                else if ([eventName isEqualToString:@"imageState"]){
+                    [self.delegate remoteImageStateReceived:properData];
+                }
             }
 
             

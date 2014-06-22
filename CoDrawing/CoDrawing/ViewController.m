@@ -12,6 +12,7 @@
 #import "RemoteDrawer.h"
 #import <AFNetworking/AFNetworking.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
+#import "UIImage+Resize.h"
 
 
 @interface ViewController () <UIScrollViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
@@ -49,7 +50,6 @@ BOOL drawingMode = YES;
 
 - (IBAction)clearDrawing:(id)sender {
     [self resetButtonColors];
-    self.clearButton.titleLabel.textColor = [UIColor redColor];
     UIImage *clearImage = [[UIImage alloc] init];
     self.drawingImageView.image = clearImage;
     self.tempDrawingImageView.image = [clearImage copy];
@@ -60,14 +60,12 @@ BOOL drawingMode = YES;
 - (IBAction)navigationMode:(id)sender {
     [self resetButtonColors];
     [self resetGestureRecognizers];
-    self.navigationButton.titleLabel.textColor = [UIColor redColor];
 }
 
 - (IBAction)drawingMode:(id)sender {
     [self resetButtonColors];
     [self resetGestureRecognizers];
     [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
-    self.drawingButton.titleLabel.textColor = [UIColor redColor];
     CGPoint offset = self.drawingScrollView.contentOffset;
     [self.drawingScrollView setContentOffset:offset animated:NO];
 }
@@ -76,7 +74,6 @@ BOOL drawingMode = YES;
     [self resetGestureRecognizers];
     [self.drawingScrollView addGestureRecognizer:self.mediaPanGesture];
     [self resetButtonColors];
-    self.mediaButton.titleLabel.textColor = [UIColor redColor];
 }
 
 - (void)resetGestureRecognizers {
@@ -124,8 +121,15 @@ BOOL drawingMode = YES;
     opacity = 1.0;
     currentEventID = 0;
     
-    [self clearDrawing:nil];
+    [self setupInitialState];
+    
     [super viewDidLoad];
+}
+
+- (void)setupInitialState {
+    [self clearDrawing:nil];
+    [self drawingMode:nil];
+    [self.drawingButton setSelected:YES];
 }
 
 - (UIPanGestureRecognizer *)setupDrawingGesture {
@@ -410,6 +414,12 @@ BOOL drawingMode = YES;
     }
 }
 
+- (void)remoteImageStateReceived:(NSArray *)imageArray {
+    for (NSDictionary *imageMedia in imageArray) {
+        [self remoteImageReceived:imageMedia];
+    }
+}
+
 - (void)addNewRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)startingPoint
 {
     RemoteDrawer *drawer = self.remoteDrawers[remotedrawerID];
@@ -480,6 +490,8 @@ BOOL drawingMode = YES;
 - (void)imagePickerController:(UIImagePickerController *) Picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImageView *mediaResultImageView = [[UIImageView alloc] initWithFrame:self.mediaSelectionView.frame];
     UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    chosenImage = [chosenImage scaleToSize:mediaResultImageView.frame.size];
+    
     mediaResultImageView.image = chosenImage;
     mediaResultImageView.backgroundColor = [UIColor yellowColor];
     self.mediaSelectionResultView = mediaResultImageView;
