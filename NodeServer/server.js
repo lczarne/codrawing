@@ -5,6 +5,7 @@ var io = require('socket.io').listen(server);
 var mongoose = require('mongoose');
 var fs = require('fs');
 var path = require('path');
+var rimraf = require('rimraf');
 
 var imageBaseURL = 'http://192.168.0.10:8882/'
 
@@ -13,7 +14,7 @@ server.listen(8882);
 app.use(express.static('web'));
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(express.multipart({uploadDir: 'web/public/img'}));
+app.use(express.multipart({uploadDir:'web/public/img'}));
 app.use(express.multipart());
 
 //setup mongo
@@ -108,6 +109,26 @@ function clearEventState() {
 function clearImageState() {
   ImageMedia.remove({},function (err){
     console.log("Images collection cleared.")
+  });
+  rimraf('web/public/img',function(err){
+    if (err) {
+      console.log(err);
+    }
+    else {
+      console.log('IMAGES removed')  
+    }
+    createTempImageFolder();
+  });
+}
+
+function createTempImageFolder() {
+  fs.mkdir('web/public/img', function(err){
+    if (err) {
+      console.log(err);
+    }
+    else {
+      console.log('image folder created');
+    }
   });
 }
 

@@ -69,7 +69,42 @@
       socket.emit("paint",eventToSend);
   }
 
+  var imageLayer = new Layer();
+  var drawingLayer = new Layer();
 
+  drawingLayer.activate();
+
+  var imageCount = 0;
+  var lastImage;
+  function addImage(imageMedia){
+    var image = new Image;
+    var localImageNumber = imageCount++;
+    var imageName = 'image'+localImageNumber;
+    image.onload = function(newImage) {
+      imageLayer.activate();
+      var container = document.getElementById("myCanvas");
+      container.appendChild(newImage.target);
+      var raster = new Raster(imageName);
+      imageCoordinates = imageMedia.imageInfo;
+      placeImage(raster,imageCoordinates.x,imageCoordinates.y,imageCoordinates.width,imageCoordinates.height);
+      lastImage = raster;
+
+      drawingLayer.activate();
+    }
+    image.id = imageName;
+    image.src = imageMedia.imageURL;
+  }
+
+  function placeImage(image,x,y,width,height){
+    var originX = x+(width/2);
+    var originY = y+(height/2);
+    image.position = new Point(originX,originY);
+    image.size = new Size(width,height);
+  }
+
+  socket.on('serverImage',function(msg){
+    addImage(msg);
+  });
 
   socket.on('serverPaint',function(msg){
 
@@ -86,7 +121,6 @@
       }
         break;
       case 1: {
-        
           console.log("my server coordinates: "+msg.paint.x+" "+msg.paint.y);
           var newPoint = new Point(msg.paint.x,msg.paint.y);
 
@@ -98,11 +132,6 @@
         
       }
       break;
-      case 2: {
-        
-      }
-      break;
-      default:
     }
 
   });
