@@ -11,9 +11,17 @@
 @protocol RemoteDrawingSyncManagerDelegate
 
 - (void)remotePaintReceived:(NSDictionary *)paintEvent;
+- (void)remoteImageReceived:(NSDictionary *)imageEvent;
 - (void)remoteDrawingStateReceived:(NSArray *)stateArray;
 
 @end
+
+//Amazon EC2 instance address
+//static NSString* const kBaseURL = @"54.200.33.146";
+static NSString* const kBaseURL = @"192.168.0.10";
+static int const kServerPort = 8882;
+static NSString* const kAPIURL = @"http://192.168.0.10:8882";
+static NSString* const kAPIImageUploadPath = @"/api/images";
 
 @interface RemoteDrawingSyncManager : NSObject
 
@@ -22,5 +30,6 @@
 - (id)init;
 - (void)sendSocketControlEvent:(int)controlState;
 - (void)sendPaintEventWith:(CGPoint)socketPaintPoint state:(NSNumber *)state;
+- (void)sendImageEvent:(CGRect)imageRect imageURL:(NSString *)imageURL;
 
 @end

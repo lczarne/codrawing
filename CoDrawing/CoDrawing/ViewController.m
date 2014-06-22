@@ -10,6 +10,9 @@
 #import "EditingEvent.h"
 #import "RemoteDrawingSyncManager.h"
 #import "RemoteDrawer.h"
+#import <AFNetworking/AFNetworking.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
+
 
 @interface ViewController () <UIScrollViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -26,6 +29,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *drawingButton;
 @property (weak, nonatomic) IBOutlet UIButton *mediaButton;
 @property (nonatomic, strong) UIView *mediaSelectionView;
+@property (nonatomic, strong) UIView *mediaSelectionResultView;
 @property CGPoint mediaSelectionStartPoint;
 
 @end
@@ -228,10 +232,7 @@ BOOL drawingMode = YES;
 
 
 - (void)showNewMediaView {
-    UIView *newMedia = [[UIView alloc] initWithFrame:self.mediaSelectionView.frame];
-    newMedia.backgroundColor = [UIColor yellowColor];
-    newMedia.alpha = .5f;
-    [self.zoomableView addSubview:newMedia];
+    [self.allMediaView addSubview:self.mediaSelectionResultView];
 }
 
 - (void)chooseImage {
@@ -373,6 +374,36 @@ BOOL drawingMode = YES;
     }
 }
 
+- (void)remoteImageReceived:(NSDictionary *)imageEvent {
+    NSDictionary *imageInfo = imageEvent[@"imageInfo"];
+    NSString *imageURL = imageEvent[@"imageURL"];
+    CGPoint imageOrigin = CGPointMake([imageInfo[@"x"] floatValue], [imageInfo[@"y"] floatValue]);
+    CGSize imageSize = CGSizeMake([imageInfo[@"width"] floatValue], [imageInfo[@"height"] floatValue]);
+    CGRect imageRect = CGRectMake(imageOrigin.x, imageOrigin.y, imageSize.width, imageSize.height);
+    
+    [self addImageWithURL:imageURL imageRect:imageRect];
+}
+
+- (void)addImageWithURL:(NSString *)imageURLString imageRect:(CGRect)imageRect {
+    UIImageView *newImageView = [[UIImageView alloc] initWithFrame:imageRect];
+    [self.allMediaView addSubview:newImageView];
+
+    __weak UIImageView *weakImageView = newImageView;
+    
+    NSURL *imageURL = [NSURL URLWithString:imageURLString];
+    NSURLRequest *imageRequest = [NSURLRequest requestWithURL:imageURL];
+    
+    [newImageView setImageWithURLRequest:imageRequest placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        weakImageView.alpha = 0.0;
+        weakImageView.image = image;
+        [UIView animateWithDuration:0.75
+                         animations:^{
+                            weakImageView.alpha = 1.0;
+                        }];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+    }];
+}
+
 - (void)remoteDrawingStateReceived:(NSArray *)stateArray {
     for (NSDictionary *paintEvent in stateArray) {
         [self remotePaintReceived:paintEvent];
@@ -421,12 +452,41 @@ BOOL drawingMode = YES;
 }
 
 - (BOOL)shouldAutorotate {
-    
     return YES;
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscape;
+}
+
+- (void)uploadImage:(UIImage *)imageToUpload withImageRect:(CGRect)imageRect{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSData *imageData = UIImagePNGRepresentation(imageToUpload);
+    NSDictionary *parameters = @{@"foo": @"bar"};
+    NSString *URLString = [kAPIURL stringByAppendingString:kAPIImageUploadPath];
+    
+    [manager POST:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithFileData:imageData name:@"myImage" fileName:@"userImage.png" mimeType:@"image/png"];
+        
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"AF Success: %@", responseObject);
+        NSString *imageURLString = responseObject[@"path"];
+        [self.remoteDrawingManager sendImageEvent:imageRect imageURL:imageURLString];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"AF Error: %@", error);
+    }];
+}
+
+- (void)imagePickerController:(UIImagePickerController *) Picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImageView *mediaResultImageView = [[UIImageView alloc] initWithFrame:self.mediaSelectionView.frame];
+    UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    mediaResultImageView.image = chosenImage;
+    mediaResultImageView.backgroundColor = [UIColor yellowColor];
+    self.mediaSelectionResultView = mediaResultImageView;
+    [self showNewMediaView];
+    [self dismissViewControllerAnimated:YES completion:^{
+    }];
+    [self uploadImage:chosenImage withImageRect:mediaResultImageView.frame];
 }
 
 @end

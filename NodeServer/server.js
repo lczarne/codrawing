@@ -6,6 +6,8 @@ var mongoose = require('mongoose');
 var fs = require('fs');
 var path = require('path');
 
+var imageBaseURL = 'http://192.168.0.10:8882/'
+
 server.listen(8882);
 
 app.use(express.static('web'));
@@ -103,15 +105,28 @@ io.sockets.on('connection', function (socket) {
     paintEvent.paint = msg.paint;
     paintEvent.state = msg.state;
     saveSocketEvent(paintEvent);
+    emit('serverPaint',paintEvent,socketID);
+  });
 
-  	for (var i = sockets.length - 1; i >= 0; i--) {
-      if (i != socketID) {
-        sockets[i].emit('serverPaint',paintEvent);
-        console.log('PAINT: %j',paintEvent);
-      };
-  	};
-  })
+  socket.on('image',function(msg){
+    var imageEvent = new Object();
+    var socketID = getSocketID(this);
+    imageEvent.socketID = socketID;
+    imageEvent.imageInfo = msg.imageInfo;
+    imageEvent.imageURL = msg.imageURL;
+    emit('serverImage',imageEvent,socketID);
+    console.log(imageEvent);
+  });
+
 });
+
+function emit(eventName,eventData,senderID) {
+  for (var i = sockets.length - 1; i >= 0; i--) {
+      if (i != senderID) {
+        sockets[i].emit(eventName,eventData);
+      };
+    };
+}
 
 var eventCounter = 0;
 
@@ -141,7 +156,7 @@ app.post('/api/images',function(req,res) {
   var pathComponents = serverPath.split('/');
   pathComponents.shift();
   serverPath = pathComponents.join('/');
-
+  serverPath = imageBaseURL + serverPath;
   res.send({
       path: serverPath
   });

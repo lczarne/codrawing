@@ -22,6 +22,10 @@
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eKj-8K-xLm">
                                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                                         <subviews>
+                                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OiY-6w-Vaw">
+                                                <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </view>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9xH-rf-MiR">
                                                 <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                                             </imageView>
@@ -33,37 +37,76 @@
                                     </view>
                                 </subviews>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TQe-LL-c58">
-                                <rect key="frame" x="10" y="10" width="37" height="30"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Clear">
-                                    <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="clearDrawing:" destination="2" eventType="touchUpInside" id="2I9-hY-T3k"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="45U-x5-dae">
-                                <rect key="frame" x="60" y="10" width="57" height="30"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="drawing">
-                                    <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="changeMode:" destination="2" eventType="touchUpInside" id="FjX-iq-po1"/>
-                                </connections>
-                            </button>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Yb-gM-19V">
+                                <rect key="frame" x="317" y="0.0" width="389" height="44"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gDy-st-a59">
+                                        <rect key="frame" x="48" y="9" width="50" height="31"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Clear">
+                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="clearDrawing:" destination="2" eventType="touchUpInside" id="PMi-CT-OqV"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m6X-Tr-AYU">
+                                        <rect key="frame" x="108" y="9" width="83" height="31"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="navigation">
+                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="navigationMode:" destination="2" eventType="touchUpInside" id="lq2-jk-ZeG"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hGf-5D-VTy">
+                                        <rect key="frame" x="258" y="9" width="83" height="31"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="media">
+                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="mediaMode:" destination="2" eventType="touchUpInside" id="asV-oI-tZy"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nC6-G9-OYY">
+                                        <rect key="frame" x="191" y="9" width="83" height="31"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="drawing">
+                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="drawingMode:" destination="2" eventType="touchUpInside" id="5Mo-dg-HBV"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.14999999999999999" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="g2y-Jq-sHC"/>
+                                    <constraint firstAttribute="width" constant="389" id="xqf-fh-BKH"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="4Yb-gM-19V" firstAttribute="top" secondItem="5" secondAttribute="top" id="lCR-65-Abp"/>
+                        </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="allMediaView" destination="OiY-6w-Vaw" id="QvC-Eu-FKh"/>
+                        <outlet property="clearButton" destination="gDy-st-a59" id="79j-d5-UdA"/>
+                        <outlet property="drawingButton" destination="nC6-G9-OYY" id="smS-y1-u09"/>
                         <outlet property="drawingImageView" destination="9xH-rf-MiR" id="fzW-FA-oHR"/>
                         <outlet property="drawingScrollView" destination="Ksf-R1-CQo" id="Zhd-gx-4qw"/>
-                        <outlet property="modeButton" destination="45U-x5-dae" id="5tv-yH-1Pc"/>
+                        <outlet property="mediaButton" destination="hGf-5D-VTy" id="fJx-l6-6qw"/>
+                        <outlet property="navigationButton" destination="m6X-Tr-AYU" id="xy9-pV-zM2"/>
                         <outlet property="tempDrawingImageView" destination="F9q-cR-cmh" id="0sF-2s-6TC"/>
                         <outlet property="zoomableView" destination="eKj-8K-xLm" id="bP8-d7-UR6"/>
                     </connections>

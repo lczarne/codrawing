@@ -27,12 +27,8 @@
 
 - (void)setupSocket
 {
-    //Amazon EC2 instance address
-    //NSString *socketHostString = @"54.200.33.146";
-    NSString *socketHostString = @"192.168.0.10";
-    int port = 8882;
     self.socketIO = [[SocketIO alloc] initWithDelegate:self];
-    [self.socketIO connectToHost:socketHostString onPort:port];
+    [self.socketIO connectToHost:kBaseURL onPort:kServerPort];
     [self.socketIO sendMessage:@"Hello from iOS"];
     NSLog(@"message test done");
 }
@@ -51,6 +47,17 @@
     NSDictionary *paintPointDict = [NSDictionary dictionaryWithObjects:@[xNumber,yNumber] forKeys:@[@"x",@"y"]];
     NSDictionary *paintInfoToSend = [NSDictionary dictionaryWithObjects:@[paintPointDict, state] forKeys:@[@"paint",@"state"]];
     [self.socketIO sendEvent:@"paint" withData:paintInfoToSend];
+}
+
+- (void)sendImageEvent:(CGRect)imageRect imageURL:(NSString *)imageURL {
+    NSDictionary *imageRectDict = @{
+                                    @"x" : @(imageRect.origin.x),
+                                    @"y" : @(imageRect.origin.y),
+                                    @"width" : @(imageRect.size.width),
+                                    @"height" : @(imageRect.size.height),
+                                    };
+    NSDictionary *imageEventDict = [NSDictionary dictionaryWithObjects:@[imageRectDict,imageURL] forKeys:@[@"imageInfo",@"imageURL"]];
+    [self.socketIO sendEvent:@"image" withData:imageEventDict];
 }
 
 #pragma mark - SocketIODelegate
@@ -75,6 +82,9 @@
                 
                 if ([eventName isEqualToString:@"serverPaint"]) {
                     [self.delegate remotePaintReceived:properData];
+                }
+                else if ([eventName isEqualToString:@"serverImage"]){
+                    [self.delegate remoteImageReceived:properData];
                 }
                 else if ([eventName isEqualToString:@"drawingState"]){
                     [self.delegate remoteDrawingStateReceived:properData];
