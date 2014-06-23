@@ -299,23 +299,24 @@ BOOL drawingMode = YES;
 
 - (void)startDrawingOnImageView:(UIImageView *)drawingImageView
 {
-    UIGraphicsBeginImageContextWithOptions(self.drawingImageView.frame.size, self.drawingImageView.opaque, 0.0);
-    [drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height)];
+    //UIGraphicsBeginImageContextWithOptions(self.drawingImageView.frame.size, self.drawingImageView.opaque, 0.0);
+    UIGraphicsBeginImageContext(self.drawingImageView.frame.size);
 }
 
 - (void)continueLineWithPoint:(CGPoint)currentPoint lastPoint:(CGPoint)lastPoint drawingImageView:(UIImageView *)drawingImageView
 {
     @autoreleasepool {
-        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
-        CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), currentPoint.x, currentPoint.y);
-        CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
-        CGContextSetLineWidth(UIGraphicsGetCurrentContext(), self.drawingScrollView.zoomScale*2 );
-        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), red, green, blue, 1.0);
-        CGContextSetBlendMode(UIGraphicsGetCurrentContext(),kCGBlendModeNormal);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextMoveToPoint(context, lastPoint.x, lastPoint.y);
+        CGContextAddLineToPoint(context, currentPoint.x, currentPoint.y);
+        CGContextSetLineCap(context, kCGLineCapRound);
+        CGContextSetLineWidth(context, self.drawingScrollView.zoomScale*2 );
+        CGContextSetRGBStrokeColor(context, red, green, blue, 1.0);
+        CGContextSetBlendMode(context, kCGBlendModeNormal);
 
-        CGContextStrokePath(UIGraphicsGetCurrentContext());
+        CGContextStrokePath(context);
+
         drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
-        [drawingImageView setAlpha:opacity];
     }
     //UIGraphicsEndImageContext();
 }

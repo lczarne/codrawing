@@ -20,7 +20,7 @@
 //Amazon EC2 instance address
 static NSString* const kBaseURL = @"54.76.227.228";
 static int const kServerPort = 80;
-static NSString* const kAPIURL = @"http://54.76.227.228:8080";
+static NSString* const kAPIURL = @"http://54.76.227.228";
 
 //local
 //static NSString* const kBaseURL = @"192.168.0.10";
