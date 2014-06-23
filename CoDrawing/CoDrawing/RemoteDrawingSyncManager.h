@@ -18,10 +18,15 @@
 @end
 
 //Amazon EC2 instance address
-//static NSString* const kBaseURL = @"54.200.33.146";
-static NSString* const kBaseURL = @"192.168.0.10";
-static int const kServerPort = 8882;
-static NSString* const kAPIURL = @"http://192.168.0.10:8882";
+static NSString* const kBaseURL = @"54.76.227.228";
+static int const kServerPort = 80;
+static NSString* const kAPIURL = @"http://54.76.227.228:8080";
+
+//local
+//static NSString* const kBaseURL = @"192.168.0.10";
+//static int const kServerPort = 8882;
+//static NSString* const kAPIURL = @"http://192.168.0.10:8882";
+
 static NSString* const kAPIImageUploadPath = @"/api/images";
 
 @interface RemoteDrawingSyncManager : NSObject

@@ -7,9 +7,11 @@ var fs = require('fs');
 var path = require('path');
 var rimraf = require('rimraf');
 
-var imageBaseURL = 'http://192.168.0.10:8882/'
+//var imageBaseURL = 'http://192.168.0.10:8882/'
+var imageBaseURL = 'http://54.76.227.228/:8080/'
 
-server.listen(8882);
+//server.listen(8882);
+server.listen(8080);
 
 app.use(express.static('web'));
 app.use(express.json());
