@@ -13,9 +13,11 @@
 #import <AFNetworking/AFNetworking.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import "UIImage+Resize.h"
+#import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
+#import <VKVideoPlayer.h>
 
-
-@interface ViewController () <UIScrollViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface ViewController () <UIScrollViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, VKVideoPlayerDelegate>
 
 @property (nonatomic, strong) NSMutableDictionary *remoteDrawers;
 @property (nonatomic, strong) RemoteDrawingSyncManager *remoteDrawingManager;
@@ -32,6 +34,10 @@
 @property (nonatomic, strong) UIView *mediaSelectionView;
 @property (nonatomic, strong) UIView *mediaSelectionResultView;
 @property CGPoint mediaSelectionStartPoint;
+@property (nonatomic, strong) MPMoviePlayerController *player;
+@property (nonatomic, strong) NSMutableArray *moviePlayers;
+@property CGRect videoPLayerOriginalFrame;
+@property NSInteger videoPLayerIndex;
 
 @end
 
@@ -130,6 +136,7 @@ BOOL drawingMode = YES;
     [self clearDrawing:nil];
     [self drawingMode:nil];
     [self.drawingButton setSelected:YES];
+    self.moviePlayers = [NSMutableArray array];
 }
 
 - (UIPanGestureRecognizer *)setupDrawingGesture {
@@ -245,9 +252,11 @@ BOOL drawingMode = YES;
 
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     }
     else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        imagePicker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
     }
     
     [self presentViewController:imagePicker animated:YES completion:^{
@@ -470,6 +479,41 @@ BOOL drawingMode = YES;
     return UIInterfaceOrientationMaskLandscape;
 }
 
+- (void)didPickMovie:(NSString *)moviePath {
+    NSURL *movieURL = [NSURL fileURLWithPath:moviePath];
+
+    VKVideoPlayer *player = [[VKVideoPlayer alloc] init];
+    player.view.frame = self.mediaSelectionView.frame;
+    player.delegate = self;
+    
+    VKVideoPlayerTrack *track = [[VKVideoPlayerTrack alloc] initWithStreamURL:movieURL];
+    
+    [self.moviePlayers addObject:player];
+    self.player.view.frame = self.mediaSelectionView.frame;
+    [self.allMediaView addSubview:player.view];
+    
+    [player.view removeControlView:player.view.rewindButton];
+    [player.view removeControlView:player.view.doneButton];
+    [player.view removeControlView:player.view.nextButton];
+    [player.view removeControlView:player.view.videoQualityButton];
+    [player.view addSubviewForControl:player.view.fullscreenButton];
+    
+    [player loadVideoWithTrack:track];
+    [player playContent];
+}
+
+
+- (void)didPickImage:(UIImage *)imagePicked {
+    UIImageView *mediaResultImageView = [[UIImageView alloc] initWithFrame:self.mediaSelectionView.frame];
+    UIImage *chosenImageScaled = [imagePicked scaleToSize:mediaResultImageView.frame.size];
+    
+    mediaResultImageView.image = chosenImageScaled;
+    mediaResultImageView.backgroundColor = [UIColor yellowColor];
+    self.mediaSelectionResultView = mediaResultImageView;
+    [self showNewMediaView];
+    [self uploadImage:chosenImageScaled withImageRect:mediaResultImageView.frame];
+}
+
 - (void)uploadImage:(UIImage *)imageToUpload withImageRect:(CGRect)imageRect{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSData *imageData = UIImagePNGRepresentation(imageToUpload);
@@ -489,17 +533,63 @@ BOOL drawingMode = YES;
 }
 
 - (void)imagePickerController:(UIImagePickerController *) Picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImageView *mediaResultImageView = [[UIImageView alloc] initWithFrame:self.mediaSelectionView.frame];
-    UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-    chosenImage = [chosenImage scaleToSize:mediaResultImageView.frame.size];
+
+    NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
+    UIImage *originalImage, *editedImage, *imageToUse;
+    if (CFStringCompare ((CFStringRef) mediaType, kUTTypeImage, 0)
+        == kCFCompareEqualTo) {
+        editedImage = (UIImage *) [info objectForKey:
+                                   UIImagePickerControllerEditedImage];
+        originalImage = (UIImage *) [info objectForKey:
+                                     UIImagePickerControllerOriginalImage];
+        
+        if (editedImage) {
+            imageToUse = editedImage;
+        } else {
+            imageToUse = originalImage;
+        }
+        [self dismissViewControllerAnimated:YES completion:^{
+        }];
+        [self didPickImage:imageToUse];
+    }
     
-    mediaResultImageView.image = chosenImage;
-    mediaResultImageView.backgroundColor = [UIColor yellowColor];
-    self.mediaSelectionResultView = mediaResultImageView;
-    [self showNewMediaView];
-    [self dismissViewControllerAnimated:YES completion:^{
-    }];
-    [self uploadImage:chosenImage withImageRect:mediaResultImageView.frame];
+    if (CFStringCompare ((CFStringRef) mediaType, kUTTypeMovie, 0)
+        == kCFCompareEqualTo) {
+        
+        NSString *moviePath = [[info objectForKey:
+                                UIImagePickerControllerMediaURL] path];
+        
+        [self dismissViewControllerAnimated:YES completion:^{
+        }];
+        [self didPickMovie:moviePath];
+    }
+
+    
+}
+
+- (void)videoPlayer:(VKVideoPlayer *)videoPlayer didControlByEvent:(VKVideoPlayerControlEvent)event {
+    if (event == VKVideoPlayerControlEventTapFullScreen) {
+        if (videoPlayer.isFullScreen) {
+            self.videoPLayerOriginalFrame = videoPlayer.view.frame;
+            videoPlayer.view.frame = self.view.bounds;
+            [self.view addSubview:videoPlayer.view];
+            for (UIView *subview in self.allMediaView.subviews) {
+                subview.hidden = YES;
+            }
+            self.videoPLayerIndex = [self.allMediaView.subviews indexOfObject:videoPlayer.view];
+            self.drawingImageView.hidden = YES;
+            videoPlayer.view.hidden = NO;
+        }
+        else {
+            videoPlayer.view.frame = self.videoPLayerOriginalFrame;
+            for (UIView *subview in self.allMediaView.subviews) {
+                subview.hidden = NO;
+            }
+            self.drawingImageView.hidden = NO;
+            [self.allMediaView insertSubview:videoPlayer.view atIndex:self.videoPLayerIndex];
+            
+        }
+    }
 }
 
 @end

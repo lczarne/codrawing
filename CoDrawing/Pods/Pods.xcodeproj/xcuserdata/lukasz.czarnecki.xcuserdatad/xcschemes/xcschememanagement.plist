@@ -9,6 +9,41 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-CocoaLumberjack.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-DTCoreText.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-DTFoundation.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-FXImageView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Reachability.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-VKFoundation.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-VKVideoPlayer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -17,12 +52,47 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>2E59D156A1EC49D59DBF03BC</key>
+		<key>1AD6189FB0D5402CB4532BC5</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DA1C1CB22B464625AFD711F8</key>
+		<key>2621A2D9DE414A43A9C0A692</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>2738B9E87C524B03B2487E14</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>590ECE88C8204035BB1022F6</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7AE19AF644D34B19AE444462</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>96552EA5D3F34A3393E6D877</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CAF803FE530C4A0C9E59DE8B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DDE898271DD6421BAEE3BE86</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DEA0028481BD4A20BF0BC66E</key>
 		<dict>
 			<key>primary</key>
 			<true/>

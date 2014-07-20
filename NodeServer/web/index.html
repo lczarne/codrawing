@@ -4,8 +4,8 @@
 <script type="text/paperscript" canvas="myCanvas">
 
 
-  //var socket = io.connect('http://192.168.0.10');
-  var socket = io.connect('http://54.76.227.228');
+  var socket = io.connect('http://192.168.0.10');
+  //var socket = io.connect('http://54.76.227.228');
 
   socket.on('news', function (data) {
     console.log(data);
@@ -18,8 +18,19 @@
     document.addEventListener('mousemove',mouseMoveHandler);
     document.addEventListener('mouseup',mouseUpHandler);
     document.addEventListener('mousedown',mouseDownHandler);
+    document.addEventListener("keypress", keypressHandler);
   });
 
+var mode = "draw";
+function keypressHandler(event) {
+  if (mode == "draw") {
+    mode = "erase";
+  }
+  else {
+    mode = "draw";
+  }
+  console.log("mode changed to: "+mode);
+}
 
   var drag = new Object();
   drag.value = 0;
@@ -36,12 +47,22 @@
 
 
   function mouseDownHandler(event){
+  drawingLayer.activate();
+
     drag.value = 1;
     sendPaint(event,0);
 
     currentPoint = new Point(event.offsetX,event.offsetY);
     path = new Path();
     path.strokeColor = 'black';
+    path.strokeWidth = 5;
+
+    if (mode == "erase") {
+      //path.opacity = 0;
+      path.strokeWidth = 15;
+      path.blendMode = 'destination-out';
+
+    }
   }
 
   function mouseMoveHandler(event){
@@ -80,10 +101,11 @@
   var lastImage;
   function addImage(imageMedia){
     var image = new Image;
+    imageLayer.insertChild(0, image);
     var localImageNumber = imageCount++;
     var imageName = 'image'+localImageNumber;
     image.onload = function(newImage) {
-      imageLayer.activate();
+      //imageLayer.activate();
       var container = document.getElementById("myCanvas");
       container.appendChild(newImage.target);
       var raster = new Raster(imageName);
@@ -91,9 +113,10 @@
       placeImage(raster,imageCoordinates.x,imageCoordinates.y,imageCoordinates.width,imageCoordinates.height);
       lastImage = raster;
 
-      drawingLayer.activate();
+      //drawingLayer.activate();
     }
     image.id = imageName;
+    
     image.src = imageMedia.imageURL;
   }
 
@@ -131,7 +154,6 @@
           currentDrawer.path.lineTo(newPoint);
           currentDrawer.currentPoint = newPoint;
           paper.view.draw();
-        
       }
       break;
     }

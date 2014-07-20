@@ -1,1 +1,2 @@
 pod 'AFNetworking', '~> 2.3'
+pod 'VKVideoPlayer', '~> 0.1'

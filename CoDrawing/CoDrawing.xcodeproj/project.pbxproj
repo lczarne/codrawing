@@ -30,6 +30,8 @@
 		25F5D04618108C89002B8D47 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F5D04518108C89002B8D47 /* CFNetwork.framework */; };
 		25F5D04818108C8F002B8D47 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F5D04718108C8F002B8D47 /* Security.framework */; };
 		38583EEA1957190700EC88EB /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 38583EE91957190700EC88EB /* UIImage+Resize.m */; };
+		38B95815197B28B800CBA720 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38B95814197B28B800CBA720 /* MediaPlayer.framework */; };
+		38B95817197B3C4000CBA720 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38B95816197B3C4000CBA720 /* AVFoundation.framework */; };
 		38FC08AF190DBA5700C033F9 /* SocketIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FC08A5190DBA5700C033F9 /* SocketIO.m */; };
 		38FC08B0190DBA5700C033F9 /* SocketIOJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FC08A7190DBA5700C033F9 /* SocketIOJSONSerialization.m */; };
 		38FC08B1190DBA5700C033F9 /* SocketIOPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FC08A9190DBA5700C033F9 /* SocketIOPacket.m */; };
@@ -78,6 +80,8 @@
 		269569EEB8FF4BAC9466282E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		38583EE81957190700EC88EB /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
 		38583EE91957190700EC88EB /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
+		38B95814197B28B800CBA720 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		38B95816197B3C4000CBA720 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		38FC08A4190DBA5700C033F9 /* SocketIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIO.h; path = Extern/SocketIO.h; sourceTree = SOURCE_ROOT; };
 		38FC08A5190DBA5700C033F9 /* SocketIO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketIO.m; path = Extern/SocketIO.m; sourceTree = SOURCE_ROOT; };
 		38FC08A6190DBA5700C033F9 /* SocketIOJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIOJSONSerialization.h; path = Extern/SocketIOJSONSerialization.h; sourceTree = SOURCE_ROOT; };
@@ -96,6 +100,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38B95817197B3C4000CBA720 /* AVFoundation.framework in Frameworks */,
+				38B95815197B28B800CBA720 /* MediaPlayer.framework in Frameworks */,
 				25BC7C4D17F37FF900A295FC /* Foundation.framework in Frameworks */,
 				25F5D04818108C8F002B8D47 /* Security.framework in Frameworks */,
 				25F5D04618108C89002B8D47 /* CFNetwork.framework in Frameworks */,
@@ -134,6 +140,8 @@
 		25BC7C4917F37FF900A295FC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				38B95816197B3C4000CBA720 /* AVFoundation.framework */,
+				38B95814197B28B800CBA720 /* MediaPlayer.framework */,
 				25BC7C4A17F37FF900A295FC /* UIKit.framework */,
 				25BC7C4C17F37FF900A295FC /* Foundation.framework */,
 				25BC7C4E17F37FF900A295FC /* CoreGraphics.framework */,

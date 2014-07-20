@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>9EF97C87-5296-4B23-8A87-27F937AE91DA</string>
+	<key>IDESourceControlProjectName</key>
+	<string>CoDrawing</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>1E798585-35F4-4675-9C7A-B0490C917013</key>
+		<string>https://bitbucket.org/lczarne/codrawing.git</string>
+		<key>70210232-7770-4693-B740-A47A8D22E08D</key>
+		<string>https://github.com/square/SocketRocket.git</string>
+		<key>E2BF6B6D-7417-4003-9136-3BC2A5AA8DE1</key>
+		<string>https://github.com/pkyeck/socket.IO-objc.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>CoDrawing/CoDrawing.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>1E798585-35F4-4675-9C7A-B0490C917013</key>
+		<string>../..</string>
+		<key>70210232-7770-4693-B740-A47A8D22E08D</key>
+		<string>../Extern/submodules/socket-rocket</string>
+		<key>E2BF6B6D-7417-4003-9136-3BC2A5AA8DE1</key>
+		<string>../Extern</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://bitbucket.org/lczarne/codrawing.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>1E798585-35F4-4675-9C7A-B0490C917013</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1E798585-35F4-4675-9C7A-B0490C917013</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CoDrawing</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E2BF6B6D-7417-4003-9136-3BC2A5AA8DE1</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Extern</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>70210232-7770-4693-B740-A47A8D22E08D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>socket-rocket</string>
+		</dict>
+	</array>
+</dict>
+</plist>
