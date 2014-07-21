@@ -28,6 +28,7 @@ static int const kServerPort = 8080;
 static NSString* const kAPIURL = @"http://192.168.0.10:8080";
 
 static NSString* const kAPIImageUploadPath = @"/api/images";
+static NSString* const kAPIVideoUploadPath = @"/api/videos";
 
 @interface RemoteDrawingSyncManager : NSObject
 
@@ -37,5 +38,6 @@ static NSString* const kAPIImageUploadPath = @"/api/images";
 - (void)sendSocketControlEvent:(int)controlState;
 - (void)sendPaintEventWith:(CGPoint)socketPaintPoint state:(NSNumber *)state;
 - (void)sendImageEvent:(CGRect)imageRect imageURL:(NSString *)imageURL;
+- (void)sendVideoEvent:(CGRect)videoRect videoURL:(NSString *)videoURL;
 
 @end

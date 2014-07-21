@@ -479,9 +479,20 @@ BOOL drawingMode = YES;
     return UIInterfaceOrientationMaskLandscape;
 }
 
+- (void)didPickImage:(UIImage *)imagePicked {
+    UIImageView *mediaResultImageView = [[UIImageView alloc] initWithFrame:self.mediaSelectionView.frame];
+    UIImage *chosenImageScaled = [imagePicked scaleToSize:mediaResultImageView.frame.size];
+    
+    mediaResultImageView.image = chosenImageScaled;
+    mediaResultImageView.backgroundColor = [UIColor yellowColor];
+    self.mediaSelectionResultView = mediaResultImageView;
+    [self showNewMediaView];
+    [self uploadImage:chosenImageScaled withImageRect:mediaResultImageView.frame];
+}
+
 - (void)didPickMovie:(NSString *)moviePath {
     NSURL *movieURL = [NSURL fileURLWithPath:moviePath];
-
+    
     VKVideoPlayer *player = [[VKVideoPlayer alloc] init];
     player.view.frame = self.mediaSelectionView.frame;
     player.delegate = self;
@@ -500,18 +511,9 @@ BOOL drawingMode = YES;
     
     [player loadVideoWithTrack:track];
     [player playContent];
-}
-
-
-- (void)didPickImage:(UIImage *)imagePicked {
-    UIImageView *mediaResultImageView = [[UIImageView alloc] initWithFrame:self.mediaSelectionView.frame];
-    UIImage *chosenImageScaled = [imagePicked scaleToSize:mediaResultImageView.frame.size];
     
-    mediaResultImageView.image = chosenImageScaled;
-    mediaResultImageView.backgroundColor = [UIColor yellowColor];
-    self.mediaSelectionResultView = mediaResultImageView;
-    [self showNewMediaView];
-    [self uploadImage:chosenImageScaled withImageRect:mediaResultImageView.frame];
+    NSData *videoData = [NSData dataWithContentsOfURL:movieURL];
+    [self uploadVideo:videoData withVideoRect:self.mediaSelectionView.frame];
 }
 
 - (void)uploadImage:(UIImage *)imageToUpload withImageRect:(CGRect)imageRect{
@@ -527,6 +529,23 @@ BOOL drawingMode = YES;
         NSLog(@"AF Success: %@", responseObject);
         NSString *imageURLString = responseObject[@"path"];
         [self.remoteDrawingManager sendImageEvent:imageRect imageURL:imageURLString];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"AF Error: %@", error);
+    }];
+}
+
+- (void)uploadVideo:(NSData *)videoData withVideoRect:(CGRect)videoRect {
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSDictionary *parameters = @{@"foo": @"bar"};
+    NSString *URLString = [kAPIURL stringByAppendingString:kAPIVideoUploadPath];
+    
+    [manager POST:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithFileData:videoData name:@"myVideo" fileName:@"userVideo.mov" mimeType:@"video/mov"];
+        
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"AF Success: %@", responseObject);
+        NSString *videoURLString = responseObject[@"path"];
+        [self.remoteDrawingManager sendVideoEvent:videoRect videoURL:videoURLString];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"AF Error: %@", error);
     }];

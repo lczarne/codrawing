@@ -60,6 +60,17 @@
     [self.socketIO sendEvent:@"image" withData:imageEventDict];
 }
 
+- (void)sendVideoEvent:(CGRect)videoRect videoURL:(NSString *)videoURL {
+    NSDictionary *videoRectDict = @{
+                                    @"x" : @(videoRect.origin.x),
+                                    @"y" : @(videoRect.origin.y),
+                                    @"width" : @(videoRect.size.width),
+                                    @"height" : @(videoRect.size.height),
+                                    };
+    NSDictionary *videoEventDict = [NSDictionary dictionaryWithObjects:@[videoRectDict,videoURL] forKeys:@[@"videoInfo",@"videoURL"]];
+    [self.socketIO sendEvent:@"video" withData:videoEventDict];
+}
+
 #pragma mark - SocketIODelegate
 
 - (void)socketIODidConnect:(SocketIO *)socket

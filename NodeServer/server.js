@@ -16,7 +16,7 @@ server.listen(8080);
 app.use(express.static('web'));
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(express.multipart({uploadDir:'web/public/img'}));
+app.use(express.multipart({uploadDir:'web/public/media'}));
 app.use(express.multipart());
 
 //setup mongo
@@ -83,15 +83,46 @@ imageSchema.methods.printMe = function(){
 
 var ImageMedia = mongoose.model('ImageMedia',imageSchema);
 
+//VideoSetup
+var videoSchema = mongoose.Schema({
+  videoId: Number,
+  socketID: Number,
+  videoInfo: {
+    x: Number,
+    y: Number,
+    width: Number,
+    height: Number
+  },
+  videoURL: String
+});
+videoSchema.path('videoId').index({unique: true});
+
+videoSchema.methods.printMe = function(){
+  console.log("Video: "+this.videoId);
+}
+
+var VideoMedia = mongoose.model('VideoMedia',imageSchema);
+
+function savingVideoMediaCallback(error, newVideo) {
+  if (error) {
+    return console.error(error);
+  }
+  else {
+    console.log("saved video id: "+newVideo.imageID);
+  }
+  newVideo.printMe();
+}
+
 function savingImageMediaCallback(error, newImage) {
   if (error) {
     return console.error(error);
   }
   else {
-    console.log("saved id: "+newImage.imageID);
+    console.log("saved image id: "+newImage.imageID);
   }
   newImage.printMe();
 }
+
 function sendDrawingStateToSocket(socket) {
   Event.find(function (err,events) {
     socket.emit('drawingState',events);
@@ -108,36 +139,39 @@ function clearEventState() {
   });
 }
 
-function clearImageState() {
+function clearMediaState() {
   ImageMedia.remove({},function (err){
     console.log("Images collection cleared.")
   });
-  rimraf('web/public/img',function(err){
+  VideoMedia.remove({},function (err){
+    console.log("Video collection cleared.")
+  });
+
+  rimraf('web/public/media',function(err){
     if (err) {
       console.log(err);
     }
     else {
-      console.log('IMAGES removed')  
+      console.log('MEDIA removed')  
     }
-    createTempImageFolder();
+    createTempMediaFolder();
   });
+
 }
 
-function createTempImageFolder() {
-  fs.mkdir('web/public/img', function(err){
+function createTempMediaFolder() {
+  fs.mkdir('web/public/media', function(err){
     if (err) {
       console.log(err);
     }
     else {
-      console.log('image folder created');
+      console.log('media folder created');
     }
   });
 }
-
 
 clearEventState();
-clearImageState();
-
+clearMediaState();
 
 //setup websockets
 
@@ -171,6 +205,16 @@ io.sockets.on('connection', function (socket) {
     emit('serverImage',imageEvent,socketID);
   });
 
+  socket.on('video',function(msg){
+    var videoEvent = new Object();
+    var socketID = getSocketID(this);
+    videoEvent.socketID = socketID;
+    videoEvent.videoInfo = msg.videoInfo;
+    videoEvent.videoURL = msg.videoURL;
+    saveVideoFromSocket(videoEvent);
+    emit('serverVideo',videoEvent,socketID);
+  });
+
 });
 
 function emit(eventName,eventData,senderID) {
@@ -183,6 +227,7 @@ function emit(eventName,eventData,senderID) {
 
 var eventCounter = 0;
 var imageCounter = 0;
+var videoCounter = 0;
 
 function getSocketID(socket)
 {
@@ -212,6 +257,15 @@ function saveImageFromSocket(imageEvent) {
   imageMediaToSave.save(savingImageMediaCallback);
 }
 
+function saveVideoFromSocket(videoEvent) {
+  var videoMediaToSave = new VideoMedia();
+  videoMediaToSave.videoId = videoCounter++;
+  videoMediaToSave.socketID = videoEvent.socketID;
+  videoMediaToSave.videoInfo = videoEvent.videoInfo;
+  videoMediaToSave.videoURL = videoEvent.videoURL;
+  videoMediaToSave.save(savingVideoMediaCallback);
+}
+
 //Images upload
 app.post('/api/images',function(req,res) {
   var serverPath = req.files.myImage.path;
@@ -224,6 +278,16 @@ app.post('/api/images',function(req,res) {
   });
 });
 
+app.post('/api/videos',function(req,res) {
+  var serverPath = req.files.myVideo.path;
+  var pathComponents = serverPath.split('/');
+  pathComponents.shift();
+  serverPath = pathComponents.join('/');
+  serverPath = imageBaseURL + serverPath;
+  res.send({
+      path: serverPath
+  });
+});
 
 
 

@@ -100,23 +100,21 @@ function keypressHandler(event) {
   var imageCount = 0;
   var lastImage;
   function addImage(imageMedia){
+    console.log('got f image')
     var image = new Image;
-    imageLayer.insertChild(0, image);
     var localImageNumber = imageCount++;
     var imageName = 'image'+localImageNumber;
     image.onload = function(newImage) {
-      //imageLayer.activate();
+      imageLayer.activate();
       var container = document.getElementById("myCanvas");
       container.appendChild(newImage.target);
       var raster = new Raster(imageName);
       imageCoordinates = imageMedia.imageInfo;
       placeImage(raster,imageCoordinates.x,imageCoordinates.y,imageCoordinates.width,imageCoordinates.height);
       lastImage = raster;
-
-      //drawingLayer.activate();
+      drawingLayer.activate();
     }
     image.id = imageName;
-    
     image.src = imageMedia.imageURL;
   }
 
@@ -127,8 +125,29 @@ function keypressHandler(event) {
     image.size = new Size(width,height);
   }
 
+  function addVideo(videoMedia) {
+    var embed = document.createElement('embed');
+    embed.src = videoMedia.videoURL;
+    videoCoordinates = videoMedia.videoInfo;
+    embed.style.position = "absolute";
+    embed.width = videoCoordinates.width;
+    embed.height = videoCoordinates.height;
+    embed.style.left = videoCoordinates.x;
+    embed.style.top = videoCoordinates.y;
+    embed.setAttribute('controller','true');
+    embed.setAttribute('autoplay','true');
+    embed.setAttribute('scale','tofit');
+    embed.name = "adsfasd";
+    document.body.appendChild(embed);
+    console.log('added video');
+  }
+
   socket.on('serverImage',function(msg){
     addImage(msg);
+  });
+
+  socket.on('serverVideo',function(msg){
+    addVideo(msg);
   });
 
   socket.on('serverPaint',function(msg){
@@ -163,6 +182,7 @@ function keypressHandler(event) {
 
 </script>
 <body>
-  <canvas id="myCanvas" resize></canvas>
+  <canvas id="myCanvas" style="position:absolute;z-index:-1" resize></canvas>
+
 </body>
 </html>
