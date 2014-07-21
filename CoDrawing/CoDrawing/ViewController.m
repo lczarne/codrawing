@@ -394,8 +394,16 @@ BOOL drawingMode = YES;
     CGPoint imageOrigin = CGPointMake([imageInfo[@"x"] floatValue], [imageInfo[@"y"] floatValue]);
     CGSize imageSize = CGSizeMake([imageInfo[@"width"] floatValue], [imageInfo[@"height"] floatValue]);
     CGRect imageRect = CGRectMake(imageOrigin.x, imageOrigin.y, imageSize.width, imageSize.height);
-    
     [self addImageWithURL:imageURL imageRect:imageRect];
+}
+
+- (void)remoteVideoReceived:(NSDictionary *)videoEvent {
+    NSDictionary *videoInfo = videoEvent[@"videoInfo"];
+    NSString *videoURL = videoEvent[@"videoURL"];
+    CGPoint videoOrigin = CGPointMake([videoInfo[@"x"] floatValue], [videoInfo[@"y"] floatValue]);
+    CGSize videoSize = CGSizeMake([videoInfo[@"width"] floatValue], [videoInfo[@"height"] floatValue]);
+    CGRect videoRect = CGRectMake(videoOrigin.x, videoOrigin.y, videoSize.width, videoSize.height);
+    [self addVideoWithURL:videoURL videoRect:videoRect];
 }
 
 - (void)addImageWithURL:(NSString *)imageURLString imageRect:(CGRect)imageRect {
@@ -416,6 +424,29 @@ BOOL drawingMode = YES;
                         }];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
     }];
+}
+
+- (void)addVideoWithURL:(NSString *)videoURLString videoRect:(CGRect)videoRect {
+    NSURL *movieURL = [NSURL URLWithString:videoURLString];
+    
+    VKVideoPlayer *player = [[VKVideoPlayer alloc] init];
+    player.view.frame = videoRect;
+    player.delegate = self;
+    
+    VKVideoPlayerTrack *track = [[VKVideoPlayerTrack alloc] initWithStreamURL:movieURL];
+    
+    [self.moviePlayers addObject:player];
+    [self.allMediaView addSubview:player.view];
+    
+    [player.view removeControlView:player.view.rewindButton];
+    [player.view removeControlView:player.view.doneButton];
+    [player.view removeControlView:player.view.nextButton];
+    [player.view removeControlView:player.view.videoQualityButton];
+    [player.view addSubviewForControl:player.view.fullscreenButton];
+    
+    [player loadVideoWithTrack:track];
+    [player playContent];
+
 }
 
 - (void)remoteDrawingStateReceived:(NSArray *)stateArray {
@@ -457,7 +488,6 @@ BOOL drawingMode = YES;
         [self finishLineWithLastPoint:drawer.lastPoint DrawingImageView:drawer.remoteDrawerImageView];
         [self deleteDrawer:drawer forKey:remotedrawerID];
     }
-
 }
 
 - (void)deleteDrawer:(RemoteDrawer *)remoteDrawer forKey:(NSNumber *)remoteDrawerKey
@@ -500,7 +530,6 @@ BOOL drawingMode = YES;
     VKVideoPlayerTrack *track = [[VKVideoPlayerTrack alloc] initWithStreamURL:movieURL];
     
     [self.moviePlayers addObject:player];
-    self.player.view.frame = self.mediaSelectionView.frame;
     [self.allMediaView addSubview:player.view];
     
     [player.view removeControlView:player.view.rewindButton];

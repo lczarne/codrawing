@@ -97,6 +97,9 @@
                 else if ([eventName isEqualToString:@"serverImage"]){
                     [self.delegate remoteImageReceived:properData];
                 }
+                else if ([eventName isEqualToString:@"serverVideo"]){
+                    [self.delegate remoteVideoReceived:properData];
+                }
                 else if ([eventName isEqualToString:@"drawingState"]){
                     [self.delegate remoteDrawingStateReceived:properData];
                 }

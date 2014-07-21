@@ -12,6 +12,7 @@
 
 - (void)remotePaintReceived:(NSDictionary *)paintEvent;
 - (void)remoteImageReceived:(NSDictionary *)imageEvent;
+- (void)remoteVideoReceived:(NSDictionary *)videoEvent;
 - (void)remoteDrawingStateReceived:(NSArray *)stateArray;
 - (void)remoteImageStateReceived:(NSArray *)imageArray;
 
