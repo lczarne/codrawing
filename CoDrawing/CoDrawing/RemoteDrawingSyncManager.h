@@ -15,6 +15,7 @@
 - (void)remoteVideoReceived:(NSDictionary *)videoEvent;
 - (void)remoteDrawingStateReceived:(NSArray *)stateArray;
 - (void)remoteImageStateReceived:(NSArray *)imageArray;
+- (void)remoteVideoStateReceived:(NSArray *)videoArray;
 
 @end
 

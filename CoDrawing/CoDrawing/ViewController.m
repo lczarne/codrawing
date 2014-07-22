@@ -461,6 +461,13 @@ BOOL drawingMode = YES;
     }
 }
 
+- (void)remoteVideoStateReceived:(NSArray *)videoArray {
+    for (NSDictionary *videoMedia in videoArray) {
+        [self remoteVideoReceived:videoMedia];
+    }
+}
+
+
 - (void)addNewRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)startingPoint
 {
     RemoteDrawer *drawer = self.remoteDrawers[remotedrawerID];

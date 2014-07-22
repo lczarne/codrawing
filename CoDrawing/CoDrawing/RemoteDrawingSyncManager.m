@@ -106,8 +106,10 @@
                 else if ([eventName isEqualToString:@"imageState"]){
                     [self.delegate remoteImageStateReceived:properData];
                 }
+                else if ([eventName isEqualToString:@"videoState"]){
+                    [self.delegate remoteVideoStateReceived:properData];
+                }
             }
-
             
         }
     }

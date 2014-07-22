@@ -26,6 +26,7 @@ var db = mongoose.connection;
 db.on('error',console.error.bind(console,'connection error:'));
 db.once('open', function callback(){
 	console.log('db connected!!!');
+
 });
 
 //Event setup
@@ -101,14 +102,14 @@ videoSchema.methods.printMe = function(){
   console.log("Video: "+this.videoId);
 }
 
-var VideoMedia = mongoose.model('VideoMedia',imageSchema);
+var VideoMedia = mongoose.model('VideoMedia',videoSchema);
 
 function savingVideoMediaCallback(error, newVideo) {
   if (error) {
     return console.error(error);
   }
   else {
-    console.log("saved video id: "+newVideo.imageID);
+    console.log("saved video id: "+newVideo.videoId);
   }
   newVideo.printMe();
 }
@@ -130,6 +131,10 @@ function sendDrawingStateToSocket(socket) {
   ImageMedia.find(function(err,images){
     socket.emit('imageState',images);
     console.log('IMAGES STATE SENT');
+  });
+  VideoMedia.find(function(err,videos){
+    socket.emit('videoState',videos);
+    console.log('VIDEOS STATE SENT')
   });
 }
 

@@ -142,6 +142,33 @@ function keypressHandler(event) {
     console.log('added video');
   }
 
+  function addPaint(paintData) {
+    console.log("paintData: %j",paintData);
+    var state = paintData.state;
+    switch(state)
+    {
+      case 0: {
+          var newPoint = new Point(paintData.paint.x,paintData.paint.y);
+          var newPath = new Path();
+          newPath.strokeColor = 'black';
+          var newDrawer = new RemoteDrawer(newPoint,newPath);
+          remoteDrawers[paintData.ID] = newDrawer;
+      }
+        break;
+      case 1: {
+          console.log("my server coordinates: "+paintData.paint.x+" "+paintData.paint.y);
+          var newPoint = new Point(paintData.paint.x,paintData.paint.y);
+
+          var currentDrawer = remoteDrawers[paintData.ID];
+          currentDrawer.path.moveTo(currentDrawer.currentPoint);
+          currentDrawer.path.lineTo(newPoint);
+          currentDrawer.currentPoint = newPoint;
+          paper.view.draw();
+      }
+      break;
+    }
+  }
+
   socket.on('serverImage',function(msg){
     addImage(msg);
   });
@@ -151,34 +178,20 @@ function keypressHandler(event) {
   });
 
   socket.on('serverPaint',function(msg){
-
-    console.log("msg: %j",msg);
-    var state = msg.state;
-    switch(state)
-    {
-      case 0: {
-          var newPoint = new Point(msg.paint.x,msg.paint.y);
-          var newPath = new Path();
-          newPath.strokeColor = 'black';
-          var newDrawer = new RemoteDrawer(newPoint,newPath);
-          remoteDrawers[msg.ID] = newDrawer;
-      }
-        break;
-      case 1: {
-          console.log("my server coordinates: "+msg.paint.x+" "+msg.paint.y);
-          var newPoint = new Point(msg.paint.x,msg.paint.y);
-
-          var currentDrawer = remoteDrawers[msg.ID];
-          currentDrawer.path.moveTo(currentDrawer.currentPoint);
-          currentDrawer.path.lineTo(newPoint);
-          currentDrawer.currentPoint = newPoint;
-          paper.view.draw();
-      }
-      break;
-    }
-
+    addPaint(msg);
   });
 
+  socket.on('drawingState',function(msg){
+    for (var i = 0; i < msg.length; i++) {
+      addPaint(msg[i]);
+    };
+  });
+
+  socket.on('imageState',function(msg){
+    for (var i = 0; i < msg.length; i++) {
+      addImage(msg[i]);
+    };
+  });
 
 </script>
 <body>
