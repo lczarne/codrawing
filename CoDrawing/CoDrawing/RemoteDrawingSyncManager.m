@@ -39,13 +39,14 @@
     [self.socketIO sendEvent:@"control" withData:stateDict];
 }
 
-- (void)sendPaintEventWith:(CGPoint)socketPaintPoint state:(NSNumber *)state
-{
+- (void)sendPaintEventWith:(CGPoint)socketPaintPoint
+                     state:(NSNumber *)state
+                   erasing:(BOOL)erasing {
     NSNumber* xNumber = [NSNumber numberWithFloat:socketPaintPoint.x];
     NSNumber* yNumber = [NSNumber numberWithFloat:socketPaintPoint.y];
     
     NSDictionary *paintPointDict = [NSDictionary dictionaryWithObjects:@[xNumber,yNumber] forKeys:@[@"x",@"y"]];
-    NSDictionary *paintInfoToSend = [NSDictionary dictionaryWithObjects:@[paintPointDict, state] forKeys:@[@"paint",@"state"]];
+    NSDictionary *paintInfoToSend = [NSDictionary dictionaryWithObjects:@[paintPointDict, state, @(erasing)] forKeys:@[@"paint",@"state",@"eraser"]];
     [self.socketIO sendEvent:@"paint" withData:paintInfoToSend];
 }
 

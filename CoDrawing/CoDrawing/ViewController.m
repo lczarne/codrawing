@@ -31,6 +31,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *navigationButton;
 @property (weak, nonatomic) IBOutlet UIButton *drawingButton;
 @property (weak, nonatomic) IBOutlet UIButton *mediaButton;
+@property (weak, nonatomic) IBOutlet UIButton *eraseButton;
 @property (nonatomic, strong) UIView *mediaSelectionView;
 @property (nonatomic, strong) UIView *mediaSelectionResultView;
 @property CGPoint mediaSelectionStartPoint;
@@ -52,7 +53,7 @@ int currentEventID;
 
 BOOL mouseSwiped;
 BOOL drawingMode = YES;
-
+BOOL eraserMode = NO;
 
 - (IBAction)clearDrawing:(id)sender {
     [self resetButtonColors];
@@ -69,17 +70,27 @@ BOOL drawingMode = YES;
 }
 
 - (IBAction)drawingMode:(id)sender {
-    [self resetButtonColors];
-    [self resetGestureRecognizers];
-    [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
-    CGPoint offset = self.drawingScrollView.contentOffset;
-    [self.drawingScrollView setContentOffset:offset animated:NO];
+    eraserMode = NO;
+    [self turnDrawingModeOn];
 }
 
 - (IBAction)mediaMode:(id)sender {
     [self resetGestureRecognizers];
     [self.drawingScrollView addGestureRecognizer:self.mediaPanGesture];
     [self resetButtonColors];
+}
+
+- (IBAction)erasingMode:(id)sender {
+    eraserMode = YES;
+    [self turnDrawingModeOn];
+}
+
+- (void)turnDrawingModeOn {
+    [self resetButtonColors];
+    [self resetGestureRecognizers];
+    [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
+    CGPoint offset = self.drawingScrollView.contentOffset;
+    [self.drawingScrollView setContentOffset:offset animated:NO];
 }
 
 - (void)resetGestureRecognizers {
@@ -92,6 +103,7 @@ BOOL drawingMode = YES;
     self.navigationButton.titleLabel.textColor = [UIColor blueColor];
     self.drawingButton.titleLabel.textColor = [UIColor blueColor];
     self.mediaButton.titleLabel.textColor = [UIColor blueColor];
+    self.eraseButton.titleLabel.textColor = [UIColor blueColor];
 }
 
 - (void)viewDidLoad
@@ -287,32 +299,33 @@ BOOL drawingMode = YES;
 - (void)drawingBegan:(CGPoint)touch
 {
     mouseSwiped = NO;
-    [self.remoteDrawingManager sendPaintEventWith:touch state:@0];
+    [self.remoteDrawingManager sendPaintEventWith:touch state:@0 erasing:eraserMode];
     self.lastPoint = touch;
-    [self startDrawingOnImageView:self.tempDrawingImageView];
+    [self startDrawingOnImageView:self.tempDrawingImageView erasing:eraserMode];
 }
 
 - (void)drawingMoved:(CGPoint)touch
 {    
     mouseSwiped = YES;
-    [self.remoteDrawingManager sendPaintEventWith:touch state:@1];
-    [self continueLineWithPoint:touch lastPoint:self.lastPoint drawingImageView:self.tempDrawingImageView];
+    [self.remoteDrawingManager sendPaintEventWith:touch state:@1 erasing:eraserMode];
+    [self continueLineWithPoint:touch lastPoint:self.lastPoint drawingImageView:self.tempDrawingImageView erasing:eraserMode];
     self.lastPoint = touch;
 }
 
 - (void)drawingEnded:(CGPoint)touch
 {
-    [self.remoteDrawingManager sendPaintEventWith:touch state:@2];
+    [self.remoteDrawingManager sendPaintEventWith:touch state:@2 erasing:eraserMode];
     [self finishLineWithLastPoint:touch DrawingImageView:self.tempDrawingImageView];
 }
 
-- (void)startDrawingOnImageView:(UIImageView *)drawingImageView
+- (void)startDrawingOnImageView:(UIImageView *)drawingImageView erasing:(BOOL)erasing
 {
-    //UIGraphicsBeginImageContextWithOptions(self.drawingImageView.frame.size, self.drawingImageView.opaque, 0.0);
-    UIGraphicsBeginImageContext(self.drawingImageView.frame.size);
+    //if (!erasing) {
+        UIGraphicsBeginImageContext(self.drawingImageView.frame.size);
+    //}
 }
 
-- (void)continueLineWithPoint:(CGPoint)currentPoint lastPoint:(CGPoint)lastPoint drawingImageView:(UIImageView *)drawingImageView
+- (void)continueLineWithPoint:(CGPoint)currentPoint lastPoint:(CGPoint)lastPoint drawingImageView:(UIImageView *)drawingImageView erasing:(BOOL)erasing
 {
     @autoreleasepool {
         CGContextRef context = UIGraphicsGetCurrentContext();
@@ -321,13 +334,22 @@ BOOL drawingMode = YES;
         CGContextSetLineCap(context, kCGLineCapRound);
         CGContextSetLineWidth(context, self.drawingScrollView.zoomScale*2 );
         CGContextSetRGBStrokeColor(context, red, green, blue, 1.0);
+        
+        
+        if (erasing) {
+            CGContextSetLineWidth(context, 20);
+            CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
+//            CGContextSetBlendMode(context, kCGBlendModeClear);
+//            CGContextStrokePath(context);
+//            self.drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
+        }
+        else {
+            
+        }
         CGContextSetBlendMode(context, kCGBlendModeNormal);
-
         CGContextStrokePath(context);
-
         drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     }
-    //UIGraphicsEndImageContext();
 }
 
 - (void)finishLineWithLastPoint:(CGPoint)lastPoint DrawingImageView:(UIImageView *)drawingImageView
@@ -351,7 +373,7 @@ BOOL drawingMode = YES;
     [drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height) blendMode:kCGBlendModeNormal alpha:opacity];
     self.drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     drawingImageView.image = nil;
-    UIGraphicsEndImageContext();
+    //UIGraphicsEndImageContext();
 }
 
 - (void)didReceiveMemoryWarning
@@ -369,16 +391,16 @@ BOOL drawingMode = YES;
     int state = [paintEvent[@"state"] intValue];
     NSDictionary *pointDict = paintEvent[@"paint"];
     CGPoint paintPoint = CGPointMake([pointDict[@"x"] floatValue], [pointDict[@"y"] floatValue]);
-    
+    BOOL remoteErasing = [paintEvent[@"eraser"] boolValue];
     //RemoteDrawer *remoteDrawer = self.remoteDrawersImageViews
     NSNumber *remoteDrawerKey = [NSNumber numberWithInt:identifier];
     
     switch (state) {
         case 0:
-            [self addNewRemoteDrawer:remoteDrawerKey point:paintPoint];
+            [self addNewRemoteDrawer:remoteDrawerKey point:paintPoint erasing:remoteErasing];
             break;
         case 1:
-            [self drawWithRemoteDrawer:remoteDrawerKey point:paintPoint];
+            [self drawWithRemoteDrawer:remoteDrawerKey point:paintPoint erasing:remoteErasing];
             break;
         case 2:
             [self finishRemoteDrawer:remoteDrawerKey point:paintPoint];
@@ -468,22 +490,22 @@ BOOL drawingMode = YES;
 }
 
 
-- (void)addNewRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)startingPoint
+- (void)addNewRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)startingPoint erasing:(BOOL)erasing
 {
     RemoteDrawer *drawer = self.remoteDrawers[remotedrawerID];
     if (!drawer) {
         drawer = [[RemoteDrawer alloc] initWithSuperView:self.drawingScrollView.subviews[0]];
-        [self startDrawingOnImageView:drawer.remoteDrawerImageView];
+        [self startDrawingOnImageView:drawer.remoteDrawerImageView erasing:erasing];
         [self.remoteDrawers setObject:drawer forKey:remotedrawerID];
     }
     drawer.lastPoint = startingPoint;
 }
 
-- (void)drawWithRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)nextPoint
+- (void)drawWithRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)nextPoint erasing:(BOOL)erasing
 {
     RemoteDrawer *drawer = self.remoteDrawers[remotedrawerID];
     if (drawer) {
-        [self continueLineWithPoint:nextPoint lastPoint:drawer.lastPoint drawingImageView:drawer.remoteDrawerImageView];
+        [self continueLineWithPoint:nextPoint lastPoint:drawer.lastPoint drawingImageView:drawer.remoteDrawerImageView erasing:erasing];
         drawer.lastPoint = nextPoint;
     }
 }

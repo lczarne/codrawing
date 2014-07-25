@@ -38,7 +38,9 @@ static NSString* const kAPIVideoUploadPath = @"/api/videos";
 
 - (id)init;
 - (void)sendSocketControlEvent:(int)controlState;
-- (void)sendPaintEventWith:(CGPoint)socketPaintPoint state:(NSNumber *)state;
+- (void)sendPaintEventWith:(CGPoint)socketPaintPoint
+                     state:(NSNumber *)state
+                    erasing:(BOOL)erasing;
 - (void)sendImageEvent:(CGRect)imageRect imageURL:(NSString *)imageURL;
 - (void)sendVideoEvent:(CGRect)videoRect videoURL:(NSString *)videoURL;
 

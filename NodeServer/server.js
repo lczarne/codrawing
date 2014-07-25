@@ -35,11 +35,13 @@ var eventSchema = mongoose.Schema({
   eventID: Number,
 	socketID: Number,
 	state: Number,
+  eraser: Boolean,
   paint: {
     x: Number,
     y: Number
   }
 });
+
 eventSchema.path('eventID').index({unique: true});
 
 eventSchema.methods.printMe = function(){
@@ -57,12 +59,6 @@ function savingEventCallback(error, newEvent) {
   }
   newEvent.printMe();
 }
-
-var newEvent = new Event({
-  eventID: 5,
-	socketID: 23,
-	state: 9
-})
 
 //ImageSetup
 var imageSchema = mongoose.Schema({
@@ -191,11 +187,19 @@ io.sockets.on('connection', function (socket) {
 	count++;
 
   socket.on('paint',function(msg){
+    if (msg.eraser) {
+      console.log("eraser id f* TRUE!!!");
+    }
+    else {
+      console.log("eraser id f* FALSE!!!");
+    }
+
     var paintEvent = new Object();
     var socketID = getSocketID(this);
     paintEvent.socketID = socketID;
     paintEvent.paint = msg.paint;
     paintEvent.state = msg.state;
+    paintEvent.eraser = msg.eraser;
     saveSocketEvent(paintEvent);
     emit('serverPaint',paintEvent,socketID);
   });
@@ -249,6 +253,7 @@ function saveSocketEvent(socketEvent) {
   eventToSave.eventID = eventCounter++;
   eventToSave.socketID = socketEvent.socketID;
   eventToSave.state = socketEvent.state;
+  eventToSave.eraser = socketEvent.eraser;
   eventToSave.paint = socketEvent.paint;
   eventToSave.save(savingEventCallback)
 }
@@ -293,8 +298,4 @@ app.post('/api/videos',function(req,res) {
       path: serverPath
   });
 });
-
-
-
-
 

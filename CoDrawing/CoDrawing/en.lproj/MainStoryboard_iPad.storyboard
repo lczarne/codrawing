@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6154.17" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
     <dependencies>
-        <deployment defaultVersion="1552" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6153.11"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -38,8 +37,8 @@
                                     </view>
                                 </subviews>
                             </scrollView>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Yb-gM-19V">
-                                <rect key="frame" x="317" y="0.0" width="389" height="44"/>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Yb-gM-19V">
+                                <rect key="frame" x="317" y="0.0" width="451" height="44"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gDy-st-a59">
                                         <rect key="frame" x="48" y="9" width="50" height="31"/>
@@ -55,7 +54,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m6X-Tr-AYU">
                                         <rect key="frame" x="108" y="9" width="83" height="31"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="navigation">
+                                        <state key="normal" title="Navigate">
                                             <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -66,7 +65,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hGf-5D-VTy">
                                         <rect key="frame" x="258" y="9" width="83" height="31"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="media">
+                                        <state key="normal" title="Media">
                                             <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -74,10 +73,21 @@
                                             <action selector="mediaMode:" destination="2" eventType="touchUpInside" id="asV-oI-tZy"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cVR-Kx-wVg">
+                                        <rect key="frame" x="325" y="9" width="83" height="31"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Erase">
+                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="erasingMode:" destination="2" eventType="touchUpInside" id="JJV-wE-Nh0"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nC6-G9-OYY">
                                         <rect key="frame" x="191" y="9" width="83" height="31"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="drawing">
+                                        <state key="normal" title="Draw">
                                             <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -106,6 +116,7 @@
                         <outlet property="drawingButton" destination="nC6-G9-OYY" id="smS-y1-u09"/>
                         <outlet property="drawingImageView" destination="9xH-rf-MiR" id="fzW-FA-oHR"/>
                         <outlet property="drawingScrollView" destination="Ksf-R1-CQo" id="Zhd-gx-4qw"/>
+                        <outlet property="eraseButton" destination="cVR-Kx-wVg" id="WvM-ld-ubV"/>
                         <outlet property="mediaButton" destination="hGf-5D-VTy" id="fJx-l6-6qw"/>
                         <outlet property="navigationButton" destination="m6X-Tr-AYU" id="xy9-pV-zM2"/>
                         <outlet property="tempDrawingImageView" destination="F9q-cR-cmh" id="0sF-2s-6TC"/>
