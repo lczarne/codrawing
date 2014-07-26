@@ -27,6 +27,7 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *drawingPanGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *navgationPanGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *mediaPanGesture;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
 @property (weak, nonatomic) IBOutlet UIButton *clearButton;
 @property (weak, nonatomic) IBOutlet UIButton *navigationButton;
 @property (weak, nonatomic) IBOutlet UIButton *drawingButton;
@@ -34,11 +35,15 @@
 @property (weak, nonatomic) IBOutlet UIButton *eraseButton;
 @property (nonatomic, strong) UIView *mediaSelectionView;
 @property (nonatomic, strong) UIView *mediaSelectionResultView;
+@property (nonatomic, strong) UIView *deleteMediaSelectionView;
 @property CGPoint mediaSelectionStartPoint;
 @property (nonatomic, strong) MPMoviePlayerController *player;
 @property (nonatomic, strong) NSMutableArray *moviePlayers;
 @property CGRect videoPLayerOriginalFrame;
 @property NSInteger videoPLayerIndex;
+@property (nonatomic, strong) UIActionSheet *addMediaActionSheet;
+@property (nonatomic, strong) UIActionSheet *deleteMediaActionSheet;
+@property (nonatomic, strong) UIView *mediaViewToDelete;
 
 @end
 
@@ -121,12 +126,19 @@ BOOL eraserMode = NO;
     self.drawingScrollView.delegate = self;
     
     self.drawingPanGesture = [self setupDrawingGesture];
+    self.longPressGesture = [self setupMediaDeleteGesture];
     [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
+    [self.drawingScrollView addGestureRecognizer:self.longPressGesture];
     
     self.mediaPanGesture = [self setupMediaGesture];
     
     self.mediaSelectionView = [self setupMediaSelectionView];
+    self.deleteMediaSelectionView = [self setupDeleteMediaSelectionView];
+    self.addMediaActionSheet = [self setupAddMediaActionSheet];
+    self.deleteMediaActionSheet = [self setupDeleteMediaActionSheet];
+    
     [self.zoomableView addSubview:self.mediaSelectionView];
+    [self.zoomableView addSubview:self.deleteMediaSelectionView];
     
     UITapGestureRecognizer *tapToZoom = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handelDoubleTap:)];
     tapToZoom.numberOfTapsRequired = 2;
@@ -165,12 +177,43 @@ BOOL eraserMode = NO;
     return mediaGesture;
 }
 
+- (UILongPressGestureRecognizer *)setupMediaDeleteGesture {
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(askToDelete:)];
+    return longPressGesture;
+}
+
 - (UIView *)setupMediaSelectionView {
     UIView *mediaSelectionView = [[UIView alloc] init];
     mediaSelectionView.backgroundColor = [UIColor blueColor];
     mediaSelectionView.alpha = .25f;
     mediaSelectionView.hidden = YES;
     return mediaSelectionView;
+}
+
+- (UIView *)setupDeleteMediaSelectionView {
+    UIView *deleteMediaSelectionView = [[UIView alloc] init];
+    deleteMediaSelectionView.backgroundColor = [UIColor redColor];
+    deleteMediaSelectionView.alpha = .25f;
+    deleteMediaSelectionView.hidden = YES;
+    return deleteMediaSelectionView;
+}
+
+- (UIActionSheet *)setupAddMediaActionSheet {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Add Media?"
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"Yes",@"No", nil];
+    return actionSheet;
+}
+
+- (UIActionSheet *)setupDeleteMediaActionSheet {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Delete Media?"
+                                                                  delegate:self
+                                                         cancelButtonTitle:@"Cancel"
+                                                    destructiveButtonTitle:nil
+                                                         otherButtonTitles:@"Yes",@"No", nil];
+    return actionSheet;
 }
 
 - (void)drawingScroll:(UIPanGestureRecognizer *)gesture
@@ -212,47 +255,79 @@ BOOL eraserMode = NO;
         self.mediaSelectionView.frame = selectionRect;
     }
     else if (gesture.state == UIGestureRecognizerStateEnded){
-        [self showMediaActionSheet];
+        [self.addMediaActionSheet showInView:self.view];
     }
 }
 
-- (void)showMediaActionSheet {
-    UIActionSheet *mediaActionSheet = [[UIActionSheet alloc] initWithTitle:@"Media choice"
-                                                                  delegate:self
-                                                         cancelButtonTitle:@"Cancel"
-                                                    destructiveButtonTitle:nil
-                                                         otherButtonTitles:@"Image",@"Video URL",@"Other URL", nil];
-                                                        
-    [mediaActionSheet showInView:self.view];
+- (void)askToDelete:(UILongPressGestureRecognizer *)longPressRecognizer {
+    if (longPressRecognizer.state == UIGestureRecognizerStateBegan){
+        CGPoint touch = [longPressRecognizer locationInView:self.drawingScrollView];
+        NSLog(@"Long press: %@",NSStringFromCGPoint(touch));
+        
+        UIView *touchedView = [self mediaViewTouched:touch];
+        if (touchedView) {
+            NSLog(@"touched Frame: %@",NSStringFromCGRect(touchedView.frame));
+            self.deleteMediaSelectionView.frame = touchedView.frame;
+            self.deleteMediaSelectionView.hidden = NO;
+            self.mediaViewToDelete = touchedView;
+            [self.deleteMediaActionSheet showInView:self.view];
+        }
+        else {
+            NSLog(@"nothing touched");
+        }
+        
+    }
+}
+
+- (UIView *)mediaViewTouched:(CGPoint)touchedPoint {
+
+    UIView *touchedView = nil;
+    for (UIView *mediaView in self.allMediaView.subviews) {
+        if (CGRectContainsPoint(mediaView.frame, touchedPoint)) {
+            touchedView = mediaView;
+        }
+    }
+    return touchedView;
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (actionSheet == self.addMediaActionSheet) {
+        [self addMediaActionSheetClickedButtonAtIndex:buttonIndex];
+    }
+    else if (actionSheet == self.deleteMediaActionSheet) {
+        [self deleteMediaActionSheetClickedButtonAtIndex:buttonIndex];
+    }
+}
+
+- (void)addMediaActionSheetClickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 0: {
-         NSLog(@"image");
-         [self chooseImage];
-         [self showNewMediaView];
+            NSLog(@"image");
+            [self chooseImage];
         }
-        break;
-        case 1: {
-         NSLog(@"video");
-         [self showNewMediaView];
-        }
-        break;
+        case 1:
         case 2: {
-         NSLog(@"URL");
-         [self showNewMediaView];
+            NSLog(@"Cancel");
         }
-        break;
-        case 3: {
-         NSLog(@"Cancel");
-        }
-        break;
+            break;
     }
-    
     self.mediaSelectionView.hidden = YES;
 }
 
+- (void)deleteMediaActionSheetClickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0: {
+            [self.mediaViewToDelete removeFromSuperview];
+            //TODO sent event;
+        }
+        case 1:
+        case 2: {
+            NSLog(@"Cancel");
+        }
+            break;
+    }
+    self.deleteMediaSelectionView.hidden = YES;
+}
 
 - (void)showNewMediaView {
     [self.allMediaView addSubview:self.mediaSelectionResultView];
