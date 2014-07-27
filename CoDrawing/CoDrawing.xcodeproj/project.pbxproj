@@ -38,6 +38,7 @@
 		38FC08B1190DBA5700C033F9 /* SocketIOPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FC08A9190DBA5700C033F9 /* SocketIOPacket.m */; };
 		38FC08B2190DBA5700C033F9 /* SocketIOTransportWebsocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FC08AC190DBA5700C033F9 /* SocketIOTransportWebsocket.m */; };
 		38FC08B3190DBA5700C033F9 /* SocketIOTransportXHR.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FC08AE190DBA5700C033F9 /* SocketIOTransportXHR.m */; };
+		38FEA40219859C6A00DB6275 /* RoomChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FEA40119859C6A00DB6275 /* RoomChoiceViewController.m */; };
 		8982425122D946949030C138 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269569EEB8FF4BAC9466282E /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -96,6 +97,8 @@
 		38FC08AC190DBA5700C033F9 /* SocketIOTransportWebsocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketIOTransportWebsocket.m; path = Extern/SocketIOTransportWebsocket.m; sourceTree = SOURCE_ROOT; };
 		38FC08AD190DBA5700C033F9 /* SocketIOTransportXHR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIOTransportXHR.h; path = Extern/SocketIOTransportXHR.h; sourceTree = SOURCE_ROOT; };
 		38FC08AE190DBA5700C033F9 /* SocketIOTransportXHR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketIOTransportXHR.m; path = Extern/SocketIOTransportXHR.m; sourceTree = SOURCE_ROOT; };
+		38FEA40019859C6A00DB6275 /* RoomChoiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomChoiceViewController.h; sourceTree = "<group>"; };
+		38FEA40119859C6A00DB6275 /* RoomChoiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomChoiceViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +166,8 @@
 				25BC7C6517F37FF900A295FC /* MainStoryboard_iPad.storyboard */,
 				25BC7C6817F37FF900A295FC /* ViewController.h */,
 				25BC7C6917F37FF900A295FC /* ViewController.m */,
+				38FEA40019859C6A00DB6275 /* RoomChoiceViewController.h */,
+				38FEA40119859C6A00DB6275 /* RoomChoiceViewController.m */,
 				3810F4CA1984630800F73D76 /* UIView+ViewId.h */,
 				3810F4CB1984630800F73D76 /* UIView+ViewId.m */,
 				38583EE81957190700EC88EB /* UIImage+Resize.h */,
@@ -355,6 +360,7 @@
 				38FC08B0190DBA5700C033F9 /* SocketIOJSONSerialization.m in Sources */,
 				38FC08B1190DBA5700C033F9 /* SocketIOPacket.m in Sources */,
 				38FC08B3190DBA5700C033F9 /* SocketIOTransportXHR.m in Sources */,
+				38FEA40219859C6A00DB6275 /* RoomChoiceViewController.m in Sources */,
 				25F5D03F18108C1F002B8D47 /* NSData+SRB64Additions.m in Sources */,
 				38FC08B2190DBA5700C033F9 /* SocketIOTransportWebsocket.m in Sources */,
 				25F5D04018108C1F002B8D47 /* SRWebSocket.m in Sources */,

@@ -29,7 +29,6 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *navgationPanGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *mediaPanGesture;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
-@property (weak, nonatomic) IBOutlet UIButton *clearButton;
 @property (weak, nonatomic) IBOutlet UIButton *navigationButton;
 @property (weak, nonatomic) IBOutlet UIButton *drawingButton;
 @property (weak, nonatomic) IBOutlet UIButton *mediaButton;
@@ -62,7 +61,7 @@ BOOL mouseSwiped;
 BOOL drawingMode = YES;
 BOOL eraserMode = NO;
 
-- (IBAction)clearDrawing:(id)sender {
+- (void)setupDrawing{
     [self resetButtonColors];
     UIImage *clearImage = [[UIImage alloc] init];
     self.drawingImageView.image = clearImage;
@@ -106,7 +105,6 @@ BOOL eraserMode = NO;
 }
 
 - (void)resetButtonColors {
-    self.clearButton.titleLabel.textColor = [UIColor blueColor];
     self.navigationButton.titleLabel.textColor = [UIColor blueColor];
     self.drawingButton.titleLabel.textColor = [UIColor blueColor];
     self.mediaButton.titleLabel.textColor = [UIColor blueColor];
@@ -159,7 +157,7 @@ BOOL eraserMode = NO;
 }
 
 - (void)setupInitialState {
-    [self clearDrawing:nil];
+    [self setupDrawing];
     [self drawingMode:nil];
     [self.drawingButton setSelected:YES];
     self.moviePlayers = [NSMutableArray array];
