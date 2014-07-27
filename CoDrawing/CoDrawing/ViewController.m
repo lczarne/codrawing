@@ -16,6 +16,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 #import <VKVideoPlayer.h>
+#import "UIView+ViewId.h"
 
 @interface ViewController () <UIScrollViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, VKVideoPlayerDelegate>
 
@@ -45,6 +46,7 @@
 @property (nonatomic, strong) UIActionSheet *deleteMediaActionSheet;
 @property (nonatomic, strong) UIView *mediaViewToDelete;
 
+
 @end
 
 @implementation ViewController 
@@ -54,7 +56,7 @@ CGFloat green;
 CGFloat blue;
 CGFloat brush;
 CGFloat opacity;
-int currentEventID;
+int currentEventId;
 
 BOOL mouseSwiped;
 BOOL drawingMode = YES;
@@ -149,7 +151,7 @@ BOOL eraserMode = NO;
     blue = 0.0/255.0;
     brush = 2.0;
     opacity = 1.0;
-    currentEventID = 0;
+    currentEventId = 0;
     
     [self setupInitialState];
     
@@ -317,8 +319,11 @@ BOOL eraserMode = NO;
 - (void)deleteMediaActionSheetClickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 0: {
-            [self.mediaViewToDelete removeFromSuperview];
-            //TODO sent event;
+            NSString *mediaToDeleteId = self.mediaViewToDelete.viewId;
+            if (mediaToDeleteId) {
+                [self.remoteDrawingManager sendDeleteMediaEvent:mediaToDeleteId];
+                [self.mediaViewToDelete removeFromSuperview];
+            }
         }
         case 1:
         case 2: {
@@ -462,7 +467,7 @@ BOOL eraserMode = NO;
 
 - (void)remotePaintReceived:(NSDictionary *)paintEvent
 {
-    int identifier = [paintEvent[@"socketID"] intValue];
+    int identifier = [paintEvent[@"socketId"] intValue];
     int state = [paintEvent[@"state"] intValue];
     NSDictionary *pointDict = paintEvent[@"paint"];
     CGPoint paintPoint = CGPointMake([pointDict[@"x"] floatValue], [pointDict[@"y"] floatValue]);
@@ -487,23 +492,34 @@ BOOL eraserMode = NO;
 
 - (void)remoteImageReceived:(NSDictionary *)imageEvent {
     NSDictionary *imageInfo = imageEvent[@"imageInfo"];
+    NSString *imageId = imageEvent[@"imageId"];
     NSString *imageURL = imageEvent[@"imageURL"];
     CGPoint imageOrigin = CGPointMake([imageInfo[@"x"] floatValue], [imageInfo[@"y"] floatValue]);
     CGSize imageSize = CGSizeMake([imageInfo[@"width"] floatValue], [imageInfo[@"height"] floatValue]);
     CGRect imageRect = CGRectMake(imageOrigin.x, imageOrigin.y, imageSize.width, imageSize.height);
-    [self addImageWithURL:imageURL imageRect:imageRect];
+    [self addImageWithURL:imageURL imageRect:imageRect imageId:imageId];
 }
 
 - (void)remoteVideoReceived:(NSDictionary *)videoEvent {
     NSDictionary *videoInfo = videoEvent[@"videoInfo"];
     NSString *videoURL = videoEvent[@"videoURL"];
+    NSString *videoId = videoEvent[@"videoId"];
     CGPoint videoOrigin = CGPointMake([videoInfo[@"x"] floatValue], [videoInfo[@"y"] floatValue]);
     CGSize videoSize = CGSizeMake([videoInfo[@"width"] floatValue], [videoInfo[@"height"] floatValue]);
     CGRect videoRect = CGRectMake(videoOrigin.x, videoOrigin.y, videoSize.width, videoSize.height);
-    [self addVideoWithURL:videoURL videoRect:videoRect];
+    [self addVideoWithURL:videoURL videoRect:videoRect videoId:videoId];
 }
 
-- (void)addImageWithURL:(NSString *)imageURLString imageRect:(CGRect)imageRect {
+- (void)remoteMediaDeleteReceived:(NSDictionary *)mediaDeleteEvent {
+    NSString *mediaId = mediaDeleteEvent[@"mediaId"];
+    for (UIView *mediaView in self.allMediaView.subviews) {
+        if ([mediaView.viewId isEqualToString:mediaId]) {
+            [mediaView removeFromSuperview];
+        }
+    }
+}
+
+- (void)addImageWithURL:(NSString *)imageURLString imageRect:(CGRect)imageRect imageId:(NSString *)imageId{
     UIImageView *newImageView = [[UIImageView alloc] initWithFrame:imageRect];
     [self.allMediaView addSubview:newImageView];
 
@@ -513,6 +529,7 @@ BOOL eraserMode = NO;
     NSURLRequest *imageRequest = [NSURLRequest requestWithURL:imageURL];
     
     [newImageView setImageWithURLRequest:imageRequest placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        weakImageView.viewId = imageId;
         weakImageView.alpha = 0.0;
         weakImageView.image = image;
         [UIView animateWithDuration:0.75
@@ -523,7 +540,7 @@ BOOL eraserMode = NO;
     }];
 }
 
-- (void)addVideoWithURL:(NSString *)videoURLString videoRect:(CGRect)videoRect {
+- (void)addVideoWithURL:(NSString *)videoURLString videoRect:(CGRect)videoRect videoId:(NSString *)videoId{
     NSURL *movieURL = [NSURL URLWithString:videoURLString];
     
     VKVideoPlayer *player = [[VKVideoPlayer alloc] init];
@@ -534,6 +551,7 @@ BOOL eraserMode = NO;
     
     [self.moviePlayers addObject:player];
     [self.allMediaView addSubview:player.view];
+    player.view.viewId = videoId;
     
     [player.view removeControlView:player.view.rewindButton];
     [player.view removeControlView:player.view.doneButton];
@@ -621,7 +639,7 @@ BOOL eraserMode = NO;
     mediaResultImageView.backgroundColor = [UIColor yellowColor];
     self.mediaSelectionResultView = mediaResultImageView;
     [self showNewMediaView];
-    [self uploadImage:chosenImageScaled withImageRect:mediaResultImageView.frame];
+    [self uploadImage:chosenImageScaled withImageRect:mediaResultImageView.frame forView:mediaResultImageView];
 }
 
 - (void)didPickMovie:(NSString *)moviePath {
@@ -646,10 +664,10 @@ BOOL eraserMode = NO;
     [player playContent];
     
     NSData *videoData = [NSData dataWithContentsOfURL:movieURL];
-    [self uploadVideo:videoData withVideoRect:self.mediaSelectionView.frame];
+    [self uploadVideo:videoData withVideoRect:self.mediaSelectionView.frame forView:player.view];
 }
 
-- (void)uploadImage:(UIImage *)imageToUpload withImageRect:(CGRect)imageRect{
+- (void)uploadImage:(UIImage *)imageToUpload withImageRect:(CGRect)imageRect forView:(UIView *)displayedView{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSData *imageData = UIImagePNGRepresentation(imageToUpload);
     NSDictionary *parameters = @{@"foo": @"bar"};
@@ -660,14 +678,15 @@ BOOL eraserMode = NO;
         
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"AF Success: %@", responseObject);
-        NSString *imageURLString = responseObject[@"path"];
-        [self.remoteDrawingManager sendImageEvent:imageRect imageURL:imageURLString];
+        NSString *imageId = responseObject[@"imageId"];
+        displayedView.viewId = imageId;
+        [self.remoteDrawingManager sendImageEvent:imageRect imageId:imageId];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"AF Error: %@", error);
     }];
 }
 
-- (void)uploadVideo:(NSData *)videoData withVideoRect:(CGRect)videoRect {
+- (void)uploadVideo:(NSData *)videoData withVideoRect:(CGRect)videoRect forView:(UIView *)displayedView{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSDictionary *parameters = @{@"foo": @"bar"};
     NSString *URLString = [kAPIURL stringByAppendingString:kAPIVideoUploadPath];
@@ -677,8 +696,9 @@ BOOL eraserMode = NO;
         
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"AF Success: %@", responseObject);
-        NSString *videoURLString = responseObject[@"path"];
-        [self.remoteDrawingManager sendVideoEvent:videoRect videoURL:videoURLString];
+        NSString *videoId = responseObject[@"videoId"];
+        displayedView.viewId = videoId;
+        [self.remoteDrawingManager sendVideoEvent:videoRect videoId:videoId];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"AF Error: %@", error);
     }];

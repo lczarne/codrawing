@@ -13,6 +13,7 @@
 - (void)remotePaintReceived:(NSDictionary *)paintEvent;
 - (void)remoteImageReceived:(NSDictionary *)imageEvent;
 - (void)remoteVideoReceived:(NSDictionary *)videoEvent;
+- (void)remoteMediaDeleteReceived:(NSDictionary *)mediaDeleteEvent;
 - (void)remoteDrawingStateReceived:(NSArray *)stateArray;
 - (void)remoteImageStateReceived:(NSArray *)imageArray;
 - (void)remoteVideoStateReceived:(NSArray *)videoArray;
@@ -41,7 +42,9 @@ static NSString* const kAPIVideoUploadPath = @"/api/videos";
 - (void)sendPaintEventWith:(CGPoint)socketPaintPoint
                      state:(NSNumber *)state
                     erasing:(BOOL)erasing;
-- (void)sendImageEvent:(CGRect)imageRect imageURL:(NSString *)imageURL;
-- (void)sendVideoEvent:(CGRect)videoRect videoURL:(NSString *)videoURL;
+
+- (void)sendImageEvent:(CGRect)imageRect imageId:(NSString *)imageId;
+- (void)sendVideoEvent:(CGRect)videoRect videoId:(NSString *)videoId;
+- (void)sendDeleteMediaEvent:(NSString *)mediaId;
 
 @end

@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var fs = require('fs');
 var path = require('path');
 var rimraf = require('rimraf');
+var md5 = require('md5');
 
 var imageBaseURL = 'http://192.168.0.10:8080/'
 //var imageBaseURL = 'http://54.76.227.228/'
@@ -25,6 +26,8 @@ mongoose.connect('mongodb://localhost/myMongo');
 var db = mongoose.connection;
 db.on('error',console.error.bind(console,'connection error:'));
 db.once('open', function callback(){
+  //mongoose.connection.db.dropDatabase();
+
 	console.log('db connected!!!');
 
 });
@@ -32,8 +35,8 @@ db.once('open', function callback(){
 //Event setup
 
 var eventSchema = mongoose.Schema({
-  eventID: Number,
-	socketID: Number,
+  eventId: Number,
+	socketId: Number,
 	state: Number,
   eraser: Boolean,
   paint: {
@@ -42,10 +45,10 @@ var eventSchema = mongoose.Schema({
   }
 });
 
-eventSchema.path('eventID').index({unique: true});
+eventSchema.path('eventId').index({unique: true});
 
 eventSchema.methods.printMe = function(){
-  console.log("Hi, my eventID = "+this.eventID);
+  console.log("Hi, my eventId = "+this.eventId);
 };
 
 var Event = mongoose.model('Event',eventSchema);
@@ -55,15 +58,15 @@ function savingEventCallback(error, newEvent) {
     return console.error(error);
   }
   else {
-    console.log("saved id: "+newEvent.eventID);
+    console.log("saved id: "+newEvent.eventId);
   }
   newEvent.printMe();
 }
 
 //ImageSetup
 var imageSchema = mongoose.Schema({
-  imageID: Number,
-  socketID: Number,
+  imageId: String,
+  socketId: Number,
   imageInfo: {
     x: Number,
     y: Number,
@@ -72,18 +75,18 @@ var imageSchema = mongoose.Schema({
   },
   imageURL: String
 });
-imageSchema.path('imageID').index({unique: true});
+imageSchema.path('imageId').index({unique: true});
 
 imageSchema.methods.printMe = function(){
-  console.log("Image: "+this.imageID);
+  console.log("Image: "+this.imageId);
 }
 
 var ImageMedia = mongoose.model('ImageMedia',imageSchema);
 
 //VideoSetup
 var videoSchema = mongoose.Schema({
-  videoId: Number,
-  socketID: Number,
+  videoId: String,
+  socketId: Number,
   videoInfo: {
     x: Number,
     y: Number,
@@ -115,7 +118,7 @@ function savingImageMediaCallback(error, newImage) {
     return console.error(error);
   }
   else {
-    console.log("saved image id: "+newImage.imageID);
+    console.log("saved image id: "+newImage.imageId);
   }
   newImage.printMe();
 }
@@ -157,7 +160,6 @@ function clearMediaState() {
     }
     createTempMediaFolder();
   });
-
 }
 
 function createTempMediaFolder() {
@@ -195,50 +197,73 @@ io.sockets.on('connection', function (socket) {
     }
 
     var paintEvent = new Object();
-    var socketID = getSocketID(this);
-    paintEvent.socketID = socketID;
+    var socketId = getSocketId(this);
+    paintEvent.socketId = socketId;
     paintEvent.paint = msg.paint;
     paintEvent.state = msg.state;
     paintEvent.eraser = msg.eraser;
     saveSocketEvent(paintEvent);
-    emit('serverPaint',paintEvent,socketID);
+    emit('serverPaint',paintEvent,socketId);
   });
 
   socket.on('image',function(msg){
     var imageEvent = new Object();
-    var socketID = getSocketID(this);
-    imageEvent.socketID = socketID;
+    var socketId = getSocketId(this);
+    imageEvent.imageId = msg.imageId;
+    imageEvent.socketId = socketId;
     imageEvent.imageInfo = msg.imageInfo;
-    imageEvent.imageURL = msg.imageURL;
+    imageEvent.imageURL = mediaURLS[msg.imageId];
     saveImageFromSocket(imageEvent);
-    emit('serverImage',imageEvent,socketID);
+    emit('serverImage',imageEvent,socketId);
   });
 
   socket.on('video',function(msg){
     var videoEvent = new Object();
-    var socketID = getSocketID(this);
-    videoEvent.socketID = socketID;
+    var socketId = getSocketId(this);
+    videoEvent.videoId = msg.videoId;
+    videoEvent.socketId = socketId;
     videoEvent.videoInfo = msg.videoInfo;
-    videoEvent.videoURL = msg.videoURL;
+    videoEvent.videoURL = mediaURLS[msg.videoId];
     saveVideoFromSocket(videoEvent);
-    emit('serverVideo',videoEvent,socketID);
+    emit('serverVideo',videoEvent,socketId);
+  });
+
+  socket.on('mediaDelete',function(msg){
+    var mediaDeleteEvent = new Object();
+    var socketId = getSocketId(this);
+    console.log(msg.mediaId);
+    mediaDeleteEvent.mediaId = msg.mediaId;
+    console.log('media delteing ID ' + mediaDeleteEvent.mediaId)
+    emit('serverMediaDelete',mediaDeleteEvent,socketId);
+
+    ImageMedia.remove({imageId : msg.mediaId},function (err){
+      if (!err) {
+        console.log("Image "+msg.mediaId+" deleted");        
+      }
+    });
+
+    VideoMedia.remove({videoId : msg.mediaId},function (err){
+      if (!err) {
+        console.log("Video "+msg.mediaId+" deleted");        
+      }
+    });
+
+    //TODO - delete file
   });
 
 });
 
-function emit(eventName,eventData,senderID) {
+function emit(eventName,eventData,senderId) {
   for (var i = sockets.length - 1; i >= 0; i--) {
-      if (i != senderID) {
+      if (i != senderId) {
         sockets[i].emit(eventName,eventData);
       };
     };
 }
 
 var eventCounter = 0;
-var imageCounter = 0;
-var videoCounter = 0;
 
-function getSocketID(socket)
+function getSocketId(socket)
 {
   for (var i = sockets.length - 1; i >= 0; i--) {
     if (sockets[i] == socket) {
@@ -250,8 +275,8 @@ function getSocketID(socket)
 
 function saveSocketEvent(socketEvent) {
   var eventToSave = new Event();
-  eventToSave.eventID = eventCounter++;
-  eventToSave.socketID = socketEvent.socketID;
+  eventToSave.eventId = eventCounter++;
+  eventToSave.socketId = socketEvent.socketId;
   eventToSave.state = socketEvent.state;
   eventToSave.eraser = socketEvent.eraser;
   eventToSave.paint = socketEvent.paint;
@@ -260,8 +285,8 @@ function saveSocketEvent(socketEvent) {
 
 function saveImageFromSocket(imageEvent) {
   var imageMediaToSave = new ImageMedia();
-  imageMediaToSave.imageID = imageCounter++;
-  imageMediaToSave.socketID = imageEvent.socketID;
+  imageMediaToSave.imageId = imageEvent.imageId
+  imageMediaToSave.socketId = imageEvent.socketId;
   imageMediaToSave.imageInfo = imageEvent.imageInfo;
   imageMediaToSave.imageURL = imageEvent.imageURL;
   imageMediaToSave.save(savingImageMediaCallback);
@@ -269,12 +294,14 @@ function saveImageFromSocket(imageEvent) {
 
 function saveVideoFromSocket(videoEvent) {
   var videoMediaToSave = new VideoMedia();
-  videoMediaToSave.videoId = videoCounter++;
-  videoMediaToSave.socketID = videoEvent.socketID;
+  videoMediaToSave.videoId = videoEvent.videoId;
+  videoMediaToSave.socketId = videoEvent.socketId;
   videoMediaToSave.videoInfo = videoEvent.videoInfo;
   videoMediaToSave.videoURL = videoEvent.videoURL;
   videoMediaToSave.save(savingVideoMediaCallback);
 }
+
+var mediaURLS = {};
 
 //Images upload
 app.post('/api/images',function(req,res) {
@@ -283,8 +310,13 @@ app.post('/api/images',function(req,res) {
   pathComponents.shift();
   serverPath = pathComponents.join('/');
   serverPath = imageBaseURL + serverPath;
+  var timestamp = new Date().getTime();
+  var newImageId = md5(timestamp+Math.random());
+  mediaURLS[newImageId] = serverPath;
+
+  console.log('saved IN MEDIA URLS: '+mediaURLS[newImageId]);
   res.send({
-      path: serverPath
+      imageId : newImageId
   });
 });
 
@@ -294,8 +326,11 @@ app.post('/api/videos',function(req,res) {
   pathComponents.shift();
   serverPath = pathComponents.join('/');
   serverPath = imageBaseURL + serverPath;
+  var timestamp = new Date().getTime();
+  var newVideoId = md5(timestamp+Math.random());
+  mediaURLS[newVideoId] = serverPath;
   res.send({
-      path: serverPath
+      videoId : newVideoId
   });
 });
 

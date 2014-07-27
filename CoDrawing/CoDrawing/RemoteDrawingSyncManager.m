@@ -50,26 +50,31 @@
     [self.socketIO sendEvent:@"paint" withData:paintInfoToSend];
 }
 
-- (void)sendImageEvent:(CGRect)imageRect imageURL:(NSString *)imageURL {
+- (void)sendImageEvent:(CGRect)imageRect imageId:(NSString *)imageId {
     NSDictionary *imageRectDict = @{
                                     @"x" : @(imageRect.origin.x),
                                     @"y" : @(imageRect.origin.y),
                                     @"width" : @(imageRect.size.width),
                                     @"height" : @(imageRect.size.height),
                                     };
-    NSDictionary *imageEventDict = [NSDictionary dictionaryWithObjects:@[imageRectDict,imageURL] forKeys:@[@"imageInfo",@"imageURL"]];
+    NSDictionary *imageEventDict = [NSDictionary dictionaryWithObjects:@[imageRectDict,imageId] forKeys:@[@"imageInfo",@"imageId"]];
     [self.socketIO sendEvent:@"image" withData:imageEventDict];
 }
 
-- (void)sendVideoEvent:(CGRect)videoRect videoURL:(NSString *)videoURL {
+- (void)sendVideoEvent:(CGRect)videoRect videoId:(NSString *)videoId {
     NSDictionary *videoRectDict = @{
                                     @"x" : @(videoRect.origin.x),
                                     @"y" : @(videoRect.origin.y),
                                     @"width" : @(videoRect.size.width),
                                     @"height" : @(videoRect.size.height),
                                     };
-    NSDictionary *videoEventDict = [NSDictionary dictionaryWithObjects:@[videoRectDict,videoURL] forKeys:@[@"videoInfo",@"videoURL"]];
+    NSDictionary *videoEventDict = [NSDictionary dictionaryWithObjects:@[videoRectDict,videoId] forKeys:@[@"videoInfo",@"videoId"]];
     [self.socketIO sendEvent:@"video" withData:videoEventDict];
+}
+
+- (void)sendDeleteMediaEvent:(NSString *)mediaId {
+    NSDictionary *mediaDeleteEvent = [NSDictionary dictionaryWithObject:mediaId forKey:@"mediaId"];
+    [self.socketIO sendEvent:@"mediaDelete" withData:mediaDeleteEvent];
 }
 
 #pragma mark - SocketIODelegate
@@ -100,6 +105,9 @@
                 }
                 else if ([eventName isEqualToString:@"serverVideo"]){
                     [self.delegate remoteVideoReceived:properData];
+                }
+                else if ([eventName isEqualToString:@"serverMediaDelete"]){
+                    [self.delegate remoteMediaDeleteReceived:properData];
                 }
                 else if ([eventName isEqualToString:@"drawingState"]){
                     [self.delegate remoteDrawingStateReceived:properData];

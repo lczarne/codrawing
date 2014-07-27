@@ -29,6 +29,7 @@
 		25F5D04418108C84002B8D47 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F5D04318108C84002B8D47 /* libicucore.dylib */; };
 		25F5D04618108C89002B8D47 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F5D04518108C89002B8D47 /* CFNetwork.framework */; };
 		25F5D04818108C8F002B8D47 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F5D04718108C8F002B8D47 /* Security.framework */; };
+		3810F4CC1984630900F73D76 /* UIView+ViewId.m in Sources */ = {isa = PBXBuildFile; fileRef = 3810F4CB1984630800F73D76 /* UIView+ViewId.m */; };
 		38583EEA1957190700EC88EB /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 38583EE91957190700EC88EB /* UIImage+Resize.m */; };
 		38B95815197B28B800CBA720 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38B95814197B28B800CBA720 /* MediaPlayer.framework */; };
 		38B95817197B3C4000CBA720 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38B95816197B3C4000CBA720 /* AVFoundation.framework */; };
@@ -78,6 +79,8 @@
 		25F5D04518108C89002B8D47 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		25F5D04718108C8F002B8D47 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		269569EEB8FF4BAC9466282E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3810F4CA1984630800F73D76 /* UIView+ViewId.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ViewId.h"; sourceTree = "<group>"; };
+		3810F4CB1984630800F73D76 /* UIView+ViewId.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ViewId.m"; sourceTree = "<group>"; };
 		38583EE81957190700EC88EB /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
 		38583EE91957190700EC88EB /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
 		38B95814197B28B800CBA720 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -160,6 +163,8 @@
 				25BC7C6517F37FF900A295FC /* MainStoryboard_iPad.storyboard */,
 				25BC7C6817F37FF900A295FC /* ViewController.h */,
 				25BC7C6917F37FF900A295FC /* ViewController.m */,
+				3810F4CA1984630800F73D76 /* UIView+ViewId.h */,
+				3810F4CB1984630800F73D76 /* UIView+ViewId.m */,
 				38583EE81957190700EC88EB /* UIImage+Resize.h */,
 				38583EE91957190700EC88EB /* UIImage+Resize.m */,
 				25D05C721812FC6C00A5FA6B /* RemoteDrawingSyncManager.h */,
@@ -344,6 +349,7 @@
 				259337181825BDA80044B183 /* RemoteDrawer.m in Sources */,
 				25BC7C6A17F37FF900A295FC /* ViewController.m in Sources */,
 				38FC08AF190DBA5700C033F9 /* SocketIO.m in Sources */,
+				3810F4CC1984630900F73D76 /* UIView+ViewId.m in Sources */,
 				25BC7C7217F38C8900A295FC /* EditingEvent.m in Sources */,
 				25F5D03E18108C1F002B8D47 /* base64.c in Sources */,
 				38FC08B0190DBA5700C033F9 /* SocketIOJSONSerialization.m in Sources */,
