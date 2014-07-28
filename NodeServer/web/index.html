@@ -1,4 +1,81 @@
 <html>
+
+<style type="text/css">
+      body {
+        font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+        font-weight: 300;
+      }
+
+      #roomChoice {
+        width: 650px;
+        height: 340px;
+        background: #3E8EE0;
+        color: #3399;
+
+        position:absolute;
+        left:0; right:0;
+        top:0; bottom:0;
+        margin:auto;
+
+        max-width:100%;
+        max-height:100%;
+        overflow:auto;
+
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -khtml-border-radius: 10px;
+        border-radius: 10px;
+      }
+
+      #enterRoom {
+        margin-top:50px;
+        margin-bottom: 0px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        width: 10em;
+        font-size: 40px;
+        color: white;
+      }
+      #roomId {
+        height: 60px;
+        margin-top: 20px;
+        font-size: 40px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 10em;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -khtml-border-radius: 5px;
+        border-radius: 5px;
+        outline: none;
+      }
+      button {
+        width: 120px;
+        height: 60px;
+        margin-top: 31px;
+        background-color: #06498E;
+        color: white;
+        border: none;
+        font-size: 40px;
+        outline: none;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -khtml-border-radius: 10px;
+        border-radius: 10px;
+        font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+        font-weight: 300;
+      }
+
+      #roomError {
+        font-size: 35px;
+        color: black;
+        margin-top: 12px;
+        display: none;
+      }
+
+  </style>
+
 <script src="/js/socket.io.js"></script> 
 <script src="/js/paper/paper.js"></script>
 <script type="text/paperscript" canvas="myCanvas">
@@ -11,6 +88,34 @@
     console.log(data);
     socket.emit('my other event', { my: 'data' });
   });
+
+
+  var oldTextValue;
+  
+  function setup(){
+    var button = document.getElementById("goButton");
+    var roomError = document.getElementById("roomError");
+    var roomIdInput = document.getElementById("roomId");
+    roomIdInput.focus();
+    
+    button.onclick = function() {
+      oldTextValue = roomIdInput.value;
+      roomError.style.display = 'block';
+    };
+
+    button.onchange=function(){
+      roomError.style.display = 'none';
+      alert('asdfas');
+    };
+
+    document.onkeypress=function(){
+      if (roomIdInput.value != oldTextValue) {
+        roomError.style.display = 'none';
+      }
+    };
+  }
+
+  setup();
 
   socket.on('connect',function(){
     console.log('connected 3');
@@ -245,7 +350,16 @@ function keypressHandler(event) {
 
 </script>
 <body>
-  <canvas id="myCanvas" style="position:absolute;z-index:-1" resize></canvas>
+  <div id="roomChoice">
+    <div id="enterRoom">
+      Enter room ID: </br> 
+      <input id="roomId" type="text" name="roomId"><br>
+      <button id="goButton" type="button">Go!</button>
+      <div id="roomError">No room with this ID</div>
+  </div>
+</div> 
+
+  <canvas id="myCanvas" style="position:absolute;z-index:-1;display:none" resize></canvas>
 
 </body>
 </html>
