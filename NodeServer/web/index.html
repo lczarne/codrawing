@@ -81,8 +81,13 @@
 <script type="text/paperscript" canvas="myCanvas">
 
 
-  var socket = io.connect('http://192.168.0.10');
-  //var socket = io.connect('http://54.76.227.228');
+var baseURL = "http://192.168.0.10";
+//var baseURL = 'http://54.76.227.228';
+var port = 8080
+var roomEndpoint = "/api/room/";
+
+
+  var socket = io.connect(baseURL);
 
   socket.on('news', function (data) {
     console.log(data);
@@ -100,12 +105,18 @@
     
     button.onclick = function() {
       oldTextValue = roomIdInput.value;
+
+      var roomExists = checkRoomId(roomIdInput.value);
+      if (roomExists == 'true') {
+        roomError.innerHTML = "Room exists";
+      }
+      else {
+        roomError.innerHTML = "No room with this ID";
+      }
       roomError.style.display = 'block';
     };
-
     button.onchange=function(){
       roomError.style.display = 'none';
-      alert('asdfas');
     };
 
     document.onkeypress=function(){
@@ -114,6 +125,14 @@
       }
     };
   }
+
+  function checkRoomId(roomId) {
+    var roomCheckURL = baseURL+":"+port+roomEndpoint+roomId;
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET",roomCheckURL,false);
+    xhr.send();
+    return xhr.responseText;
+  };
 
   setup();
 

@@ -334,3 +334,17 @@ app.post('/api/videos',function(req,res) {
   });
 });
 
+var Set = function() {};
+Set.prototype.add = function(bla) {this[bla] = true;}
+Set.prototype.remove = function(bla) {delete this[bla];}
+
+var rooms = new Set();
+rooms.add('testID');
+
+app.get('/api/room/:id',function(req,res){
+  console.log('got ID: '+req.params.id);
+  var roomId = req.params.id;
+  if (roomId in rooms) res.send(true);
+  else res.send(false);
+});
+
