@@ -123,15 +123,15 @@ function savingImageMediaCallback(error, newImage) {
   newImage.printMe();
 }
 
-function sendDrawingStateToSocket(socket) {
-  Event.find(function (err,events) {
+function sendDrawingStateToSocket(socket,joinedRoomId) {
+  Event.find({roomId : joinedRoomId}, function (err,events) {
     socket.emit('drawingState',events);
   });
-  ImageMedia.find(function(err,images){
+  ImageMedia.find({roomId : joinedRoomId}, function(err,images){
     socket.emit('imageState',images);
     console.log('IMAGES STATE SENT');
   });
-  VideoMedia.find(function(err,videos){
+  VideoMedia.find({roomId : joinedRoomId}, function(err,videos){
     socket.emit('videoState',videos);
     console.log('VIDEOS STATE SENT')
   });
@@ -222,12 +222,13 @@ function leaveRoom(socket) {
 }
 
 function setupSocket(socket,roomId) {
-  sendDrawingStateToSocket(socket);
+  sendDrawingStateToSocket(socket,roomId);
 
   socket.on('paint',function(msg){
     console.log('painting in : '+roomId);
 
     var paintEvent = new Object();
+    paintEvent.roomId = roomId;
     paintEvent.paint = msg.paint;
     paintEvent.state = msg.state;
     paintEvent.eraser = msg.eraser;
@@ -237,6 +238,7 @@ function setupSocket(socket,roomId) {
 
   socket.on('image',function(msg){
     var imageEvent = new Object();
+    imageEvent.roomId = roomId;
     imageEvent.imageId = msg.imageId;
     imageEvent.imageInfo = msg.imageInfo;
     imageEvent.imageURL = mediaURLS[msg.imageId];
@@ -246,6 +248,7 @@ function setupSocket(socket,roomId) {
 
   socket.on('video',function(msg){
     var videoEvent = new Object();
+    videoEvent.roomId = roomId;
     videoEvent.videoId = msg.videoId;
     videoEvent.videoInfo = msg.videoInfo;
     videoEvent.videoURL = mediaURLS[msg.videoId];
@@ -256,6 +259,7 @@ function setupSocket(socket,roomId) {
   socket.on('mediaDelete',function(msg){
     var mediaDeleteEvent = new Object();
     console.log(msg.mediaId);
+    mediaDeleteEvent.roomId = roomId;
     mediaDeleteEvent.mediaId = msg.mediaId;
     console.log('media delteing ID ' + mediaDeleteEvent.mediaId)
     emit('serverMediaDelete',mediaDeleteEvent,roomId,this);
@@ -314,6 +318,7 @@ var eventCounter = 0;
 function saveSocketEvent(socketEvent) {
   var eventToSave = new Event();
   eventToSave.eventId = eventCounter++;
+  eventToSave.roomId = socketEvent.roomId;
   eventToSave.state = socketEvent.state;
   eventToSave.eraser = socketEvent.eraser;
   eventToSave.paint = socketEvent.paint;
@@ -323,6 +328,7 @@ function saveSocketEvent(socketEvent) {
 function saveImageFromSocket(imageEvent) {
   var imageMediaToSave = new ImageMedia();
   imageMediaToSave.imageId = imageEvent.imageId
+  imageMediaToSave.roomId = imageEvent.roomId;
   imageMediaToSave.imageInfo = imageEvent.imageInfo;
   imageMediaToSave.imageURL = imageEvent.imageURL;
   imageMediaToSave.save(savingImageMediaCallback);
@@ -331,6 +337,7 @@ function saveImageFromSocket(imageEvent) {
 function saveVideoFromSocket(videoEvent) {
   var videoMediaToSave = new VideoMedia();
   videoMediaToSave.videoId = videoEvent.videoId;
+  videoMediaToSave.roomId = videoEvent.roomId;
   videoMediaToSave.videoInfo = videoEvent.videoInfo;
   videoMediaToSave.videoURL = videoEvent.videoURL;
   videoMediaToSave.save(savingVideoMediaCallback);
