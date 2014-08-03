@@ -188,35 +188,51 @@ var socketRoom = function() {};
 function newRoom(roomId) {
   var sockets = new Array();
   roomSockets[roomId] = sockets;
+  console.log('Added room with ID: '+roomId);
 }
 
 function joinRoom(socket,roomId) {
   var sockets = roomSockets[roomId];
-  sockets.push(socket);
-  socketRoom[socket] = roomId;
-  count++;
+  if (typeof sockets != "undefined") {
+    sockets.push(socket);
+    socketRoom[socket] = roomId;
+    count++;
+    console.log('Added new socket to room: '+roomId);
+  }
+  else {
+    console.log('Socket not added to room '+roomId);
+  }
 }
 
-newRoom('testID');
+function leaveRoom(socket) {
+  var aRoomId = socketRoom[socket];
+  if (typeof aRoomId != 'undefined') {
+    var peers = roomSockets[aRoomId];
+    if (typeof peers != 'undefined') {
+       var index = peers.indexOf(socket);
+       if (index > -1) {
+        peers.splice(index,1);
+        console.log('removed peer from room: '+aRoomId);
+       }
+       else console.log('not found among peers in room: '+aRoomId);
+    }
+    else console.log('no peers found for room: '+aRoomId);
+  }
+  else console.log('no room found with id: '+aRoomId);
+}
 
-function setupSocket(socket) {
+function setupSocket(socket,roomId) {
   sendDrawingStateToSocket(socket);
 
-
   socket.on('paint',function(msg){
-    if (msg.eraser) {
-      console.log("eraser id f* TRUE!!!");
-    }
-    else {
-      console.log("eraser id f* FALSE!!!");
-    }
+    console.log('painting in : '+roomId);
 
     var paintEvent = new Object();
     paintEvent.paint = msg.paint;
     paintEvent.state = msg.state;
     paintEvent.eraser = msg.eraser;
     saveSocketEvent(paintEvent);
-    emit('serverPaint',paintEvent,this);
+    emit('serverPaint',paintEvent,roomId,this);
   });
 
   socket.on('image',function(msg){
@@ -225,7 +241,7 @@ function setupSocket(socket) {
     imageEvent.imageInfo = msg.imageInfo;
     imageEvent.imageURL = mediaURLS[msg.imageId];
     saveImageFromSocket(imageEvent);
-    emit('serverImage',imageEvent,this);
+    emit('serverImage',imageEvent,roomId,this);
   });
 
   socket.on('video',function(msg){
@@ -234,7 +250,7 @@ function setupSocket(socket) {
     videoEvent.videoInfo = msg.videoInfo;
     videoEvent.videoURL = mediaURLS[msg.videoId];
     saveVideoFromSocket(videoEvent);
-    emit('serverVideo',videoEvent,this);
+    emit('serverVideo',videoEvent,roomId,this);
   });
 
   socket.on('mediaDelete',function(msg){
@@ -242,7 +258,7 @@ function setupSocket(socket) {
     console.log(msg.mediaId);
     mediaDeleteEvent.mediaId = msg.mediaId;
     console.log('media delteing ID ' + mediaDeleteEvent.mediaId)
-    emit('serverMediaDelete',mediaDeleteEvent,this);
+    emit('serverMediaDelete',mediaDeleteEvent,roomId,this);
 
     ImageMedia.remove({imageId : msg.mediaId},function (err){
       if (!err) {
@@ -263,17 +279,28 @@ function setupSocket(socket) {
 io.sockets.on('connection', function (socket) {
   console.log('conndected to ROOM');
 
-  joinRoom(socket,'testID');
+  socket.on('joinRoom',function(msg){
+    var roomId = msg.roomId;
+    joinRoom(this,roomId);
+    setupSocket(socket,roomId);
 
-  setupSocket(socket);
+    var rsp = new Object();
+    rsp.roomId = roomId;
+
+    this.emit('joinedRoom',rsp);
+  });
+
+  socket.on('disconnect', function () {
+    leaveRoom(socket);
+    console.log('disconnected event');
+  });
+
 
 });
 
-function emit(eventName,eventData,socket) {
-
-  var aRoomId = socketRoom[socket];
-  var peers = roomSockets[aRoomId];
-
+function emit(eventName,eventData,roomId,socket) {
+  var peers = roomSockets[roomId];
+  console.log('Emit to room '+roomId);
   for (var i = peers.length - 1; i >= 0; i--) {
       var peer = peers[i];
       if (peer != socket) {
@@ -353,8 +380,6 @@ Set.prototype.add = function(bla) {
 Set.prototype.remove = function(bla) {delete this[bla];}
 
 var rooms = new Set();
-rooms.add('testID');
-rooms.add('nazwa dluzsza');
 
 app.get('/api/room/:id',function(req,res){
   console.log('got ID: '+req.params.id);
@@ -373,9 +398,8 @@ app.get('/api/room/:id',function(req,res){
 });
 
 app.post('/api/room/',function(req,res){
-  console.log('createRoom2: '+req.body.roomId);
   var roomId = req.body.roomId;
-  console.log('new roomId: '+roomId);
+  console.log('roomId to create: '+roomId);
   console.log(rooms);
   var roomCreated = true;
 
@@ -384,10 +408,12 @@ app.post('/api/room/',function(req,res){
     console.log('exists');
   }
   else {
-    if (rooms.add(roomId) == false) {
+    if (rooms.add(roomId) == true) {
+      newRoom(roomId);
+    }
+    else {
       roomCreated = false;
     }
-    
   }
 
   res.send({

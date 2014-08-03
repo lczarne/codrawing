@@ -13,15 +13,19 @@
 @interface RemoteDrawingSyncManager () <SocketIODelegate>
 
 @property (nonatomic, strong) SocketIO *socketIO;
+@property (nonatomic, strong) NSString *roomId;
 
 @end
 
 @implementation RemoteDrawingSyncManager
 
-- (id)init
+- (id)initWithRoomId:(NSString *)roomId;
 {
     self = [super init];
-    [self setupSocket];
+    if (self) {
+        _roomId = roomId;
+        [self setupSocket];
+    }
     return self;
 }
 
@@ -33,10 +37,15 @@
     NSLog(@"message test done");
 }
 
-- (void)sendSocketControlEvent:(int)controlState
-{
-    NSDictionary *stateDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:controlState] forKey:@"value"];
-    [self.socketIO sendEvent:@"control" withData:stateDict];
+- (void)sendJoinRoomEvent {
+    if (self.roomId) {
+        NSDictionary *roomDict = @{@"roomId":self.roomId};
+        [self.socketIO sendEvent:@"joinRoom" withData:roomDict];
+    }
+}
+
+- (void)leaveRoom {
+    [self.socketIO disconnect];
 }
 
 - (void)sendPaintEventWith:(CGPoint)socketPaintPoint
@@ -82,6 +91,7 @@
 - (void)socketIODidConnect:(SocketIO *)socket
 {
     NSLog(@"connected: %@",socket);
+    [self sendJoinRoomEvent];
 }
 
 - (void)socketIO:(SocketIO *)socket didReceiveEvent:(SocketIOPacket *)packet
@@ -117,6 +127,9 @@
                 }
                 else if ([eventName isEqualToString:@"videoState"]){
                     [self.delegate remoteVideoStateReceived:properData];
+                }
+                else if ([eventName isEqualToString:@"joinedRoom"]){
+                    [self.delegate remoteJoinedRoomApproval:properData];
                 }
             }
             

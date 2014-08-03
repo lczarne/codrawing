@@ -72,6 +72,7 @@ BOOL eraserMode = NO;
 }
 
 - (IBAction)closeDrawing:(id)sender {
+    [self.remoteDrawingManager leaveRoom];
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -119,7 +120,7 @@ BOOL eraserMode = NO;
 - (void)viewDidLoad
 {
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    self.remoteDrawingManager = [[RemoteDrawingSyncManager alloc] init];
+    self.remoteDrawingManager = [[RemoteDrawingSyncManager alloc] initWithRoomId:self.roomId];
     self.remoteDrawingManager.delegate = self;
     self.remoteDrawers = [[NSMutableDictionary alloc] initWithCapacity:10];
     self.drawingScrollView.contentSize = self.drawingImageView.frame.size;
@@ -521,6 +522,12 @@ BOOL eraserMode = NO;
         }
     }
 }
+
+- (void)remoteJoinedRoomApproval:(NSDictionary *)roomDict {
+    NSString *joinedRoomId = roomDict[@"roomId"];
+    NSLog(@"Has joined room: %@",joinedRoomId);
+}
+
 
 - (void)addImageWithURL:(NSString *)imageURLString imageRect:(CGRect)imageRect imageId:(NSString *)imageId{
     UIImageView *newImageView = [[UIImageView alloc] initWithFrame:imageRect];

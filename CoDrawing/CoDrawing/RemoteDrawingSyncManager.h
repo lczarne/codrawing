@@ -17,6 +17,7 @@
 - (void)remoteDrawingStateReceived:(NSArray *)stateArray;
 - (void)remoteImageStateReceived:(NSArray *)imageArray;
 - (void)remoteVideoStateReceived:(NSArray *)videoArray;
+- (void)remoteJoinedRoomApproval:(NSDictionary *)roomDict;
 
 @end
 
@@ -38,12 +39,11 @@ static NSString* const kAPIRoomPath = @"/api/room/";
 
 @property (nonatomic, strong) id<RemoteDrawingSyncManagerDelegate> delegate;
 
-- (id)init;
-- (void)sendSocketControlEvent:(int)controlState;
+- (id)initWithRoomId:(NSString *)roomId;
+- (void)leaveRoom;
 - (void)sendPaintEventWith:(CGPoint)socketPaintPoint
                      state:(NSNumber *)state
                     erasing:(BOOL)erasing;
-
 - (void)sendImageEvent:(CGRect)imageRect imageId:(NSString *)imageId;
 - (void)sendVideoEvent:(CGRect)videoRect videoId:(NSString *)videoId;
 - (void)sendDeleteMediaEvent:(NSString *)mediaId;
