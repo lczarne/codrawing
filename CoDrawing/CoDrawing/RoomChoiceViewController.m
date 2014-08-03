@@ -7,6 +7,8 @@
 //
 
 #import "RoomChoiceViewController.h"
+#import <AFNetworking.h>
+#import "RemoteDrawingSyncManager.h"
 
 @interface RoomChoiceViewController()  <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UIView *initialChoiceView;
@@ -80,9 +82,11 @@ static CGFloat kChoiceViewsTopOffset = 200.f;
 }
 
 - (IBAction)createRoom:(id)sender {
-    self.createRoomSpinner.hidden = NO;
-    [self.createRoomSpinner startAnimating];
-    [self goToRoom];
+    [self requestCreatingRoom];
+
+//    self.createRoomSpinner.hidden = NO;
+//    [self.createRoomSpinner startAnimating];
+//    [self goToRoom];
 }
 
 - (IBAction)joinRoom:(id)sender {
@@ -93,6 +97,23 @@ static CGFloat kChoiceViewsTopOffset = 200.f;
 
 - (void)goToRoom {
    [self performSegueWithIdentifier:kRoomSegueIdentifier sender:self];
+}
+
+- (void)requestCreatingRoom {
+    NSString *roomId = self.createRoomIdTextField.text;
+    
+    if (roomId) {
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        NSString *URLString = [kAPIURL stringByAppendingString:kAPIRoomPath];        
+        NSDictionary *params = @{@"roomId" : roomId};
+                                 
+        [manager POST:URLString parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            NSLog(@"success: %@",responseObject);
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"fail: %@",error);
+        }];
+    }
+    
 }
 
 - (NSUInteger)supportedInterfaceOrientations {

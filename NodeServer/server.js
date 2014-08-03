@@ -181,6 +181,10 @@ clearMediaState();
 var count = 0;
 var sockets = new Array();
 
+var roomSockets = function() {};
+
+var testRoomId = "testID";
+
 io.sockets.on('connection', function (socket) {
 
   sendDrawingStateToSocket(socket);
@@ -335,16 +339,46 @@ app.post('/api/videos',function(req,res) {
 });
 
 var Set = function() {};
-Set.prototype.add = function(bla) {this[bla] = true;}
+Set.prototype.add = function(bla) {
+  if (typeof bla != "undefined") {
+    this[bla] = true;
+    return true;
+  }
+  return false;
+}
 Set.prototype.remove = function(bla) {delete this[bla];}
 
 var rooms = new Set();
 rooms.add('testID');
+rooms.add('nazwa dluzsza');
 
 app.get('/api/room/:id',function(req,res){
   console.log('got ID: '+req.params.id);
   var roomId = req.params.id;
   if (roomId in rooms) res.send(true);
   else res.send(false);
+});
+
+app.post('/api/room',function(req,res){
+  console.log('createRoom2: '+req.body.roomId);
+  var roomId = req.body.roomId;
+  console.log('new roomId: '+roomId);
+  console.log(rooms);
+  var roomCreated = true;
+
+  if (roomId in rooms) {
+    roomCreated = false;
+    console.log('exists');
+  }
+  else {
+    if (rooms.add(roomId) == false) {
+      roomCreated = false;
+    }
+    
+  }
+
+  res.send({
+    created : roomCreated
+  });
 });
 

@@ -32,6 +32,7 @@ static NSString* const kAPIURL = @"http://192.168.0.10:8080";
 
 static NSString* const kAPIImageUploadPath = @"/api/images";
 static NSString* const kAPIVideoUploadPath = @"/api/videos";
+static NSString* const kAPIRoomPath = @"/api/room";
 
 @interface RemoteDrawingSyncManager : NSObject
 
