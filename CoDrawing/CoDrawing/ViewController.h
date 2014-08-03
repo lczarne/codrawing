@@ -16,4 +16,6 @@
 @property (weak, nonatomic) IBOutlet UIView *zoomableView;
 @property (weak, nonatomic) IBOutlet UIView *allMediaView;
 
+@property (nonatomic, strong) NSString *roomId;
+
 @end

@@ -44,6 +44,7 @@
 @property (nonatomic, strong) UIActionSheet *addMediaActionSheet;
 @property (nonatomic, strong) UIActionSheet *deleteMediaActionSheet;
 @property (nonatomic, strong) UIView *mediaViewToDelete;
+@property (weak, nonatomic) IBOutlet UIButton *closeButton;
 
 
 @end
@@ -68,6 +69,10 @@ BOOL eraserMode = NO;
     self.tempDrawingImageView.image = [clearImage copy];
     self.tempDrawingImageView.backgroundColor = [UIColor clearColor];
     self.drawingImageView.backgroundColor = [UIColor clearColor];
+}
+
+- (IBAction)closeDrawing:(id)sender {
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)navigationMode:(id)sender {

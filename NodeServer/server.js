@@ -36,7 +36,7 @@ db.once('open', function callback(){
 
 var eventSchema = mongoose.Schema({
   eventId: Number,
-	socketId: Number,
+  roomId: String,
 	state: Number,
   eraser: Boolean,
   paint: {
@@ -66,7 +66,7 @@ function savingEventCallback(error, newEvent) {
 //ImageSetup
 var imageSchema = mongoose.Schema({
   imageId: String,
-  socketId: Number,
+  roomId: String,
   imageInfo: {
     x: Number,
     y: Number,
@@ -86,7 +86,7 @@ var ImageMedia = mongoose.model('ImageMedia',imageSchema);
 //VideoSetup
 var videoSchema = mongoose.Schema({
   videoId: String,
-  socketId: Number,
+  roomId: String,
   videoInfo: {
     x: Number,
     y: Number,
@@ -181,16 +181,27 @@ clearMediaState();
 var count = 0;
 var sockets = new Array();
 
+
 var roomSockets = function() {};
+var socketRoom = function() {};
 
-var testRoomId = "testID";
+function newRoom(roomId) {
+  var sockets = new Array();
+  roomSockets[roomId] = sockets;
+}
 
-io.sockets.on('connection', function (socket) {
+function joinRoom(socket,roomId) {
+  var sockets = roomSockets[roomId];
+  sockets.push(socket);
+  socketRoom[socket] = roomId;
+  count++;
+}
 
+newRoom('testID');
+
+function setupSocket(socket) {
   sendDrawingStateToSocket(socket);
 
-	sockets[count] = socket;
-	count++;
 
   socket.on('paint',function(msg){
     if (msg.eraser) {
@@ -201,44 +212,37 @@ io.sockets.on('connection', function (socket) {
     }
 
     var paintEvent = new Object();
-    var socketId = getSocketId(this);
-    paintEvent.socketId = socketId;
     paintEvent.paint = msg.paint;
     paintEvent.state = msg.state;
     paintEvent.eraser = msg.eraser;
     saveSocketEvent(paintEvent);
-    emit('serverPaint',paintEvent,socketId);
+    emit('serverPaint',paintEvent,this);
   });
 
   socket.on('image',function(msg){
     var imageEvent = new Object();
-    var socketId = getSocketId(this);
     imageEvent.imageId = msg.imageId;
-    imageEvent.socketId = socketId;
     imageEvent.imageInfo = msg.imageInfo;
     imageEvent.imageURL = mediaURLS[msg.imageId];
     saveImageFromSocket(imageEvent);
-    emit('serverImage',imageEvent,socketId);
+    emit('serverImage',imageEvent,this);
   });
 
   socket.on('video',function(msg){
     var videoEvent = new Object();
-    var socketId = getSocketId(this);
     videoEvent.videoId = msg.videoId;
-    videoEvent.socketId = socketId;
     videoEvent.videoInfo = msg.videoInfo;
     videoEvent.videoURL = mediaURLS[msg.videoId];
     saveVideoFromSocket(videoEvent);
-    emit('serverVideo',videoEvent,socketId);
+    emit('serverVideo',videoEvent,this);
   });
 
   socket.on('mediaDelete',function(msg){
     var mediaDeleteEvent = new Object();
-    var socketId = getSocketId(this);
     console.log(msg.mediaId);
     mediaDeleteEvent.mediaId = msg.mediaId;
     console.log('media delteing ID ' + mediaDeleteEvent.mediaId)
-    emit('serverMediaDelete',mediaDeleteEvent,socketId);
+    emit('serverMediaDelete',mediaDeleteEvent,this);
 
     ImageMedia.remove({imageId : msg.mediaId},function (err){
       if (!err) {
@@ -254,33 +258,35 @@ io.sockets.on('connection', function (socket) {
 
     //TODO - delete file
   });
+}
+
+io.sockets.on('connection', function (socket) {
+  console.log('conndected to ROOM');
+
+  joinRoom(socket,'testID');
+
+  setupSocket(socket);
 
 });
 
-function emit(eventName,eventData,senderId) {
-  for (var i = sockets.length - 1; i >= 0; i--) {
-      if (i != senderId) {
-        sockets[i].emit(eventName,eventData);
+function emit(eventName,eventData,socket) {
+
+  var aRoomId = socketRoom[socket];
+  var peers = roomSockets[aRoomId];
+
+  for (var i = peers.length - 1; i >= 0; i--) {
+      var peer = peers[i];
+      if (peer != socket) {
+        peer.emit(eventName,eventData);
       };
-    };
+  };
 }
 
 var eventCounter = 0;
 
-function getSocketId(socket)
-{
-  for (var i = sockets.length - 1; i >= 0; i--) {
-    if (sockets[i] == socket) {
-      return i;
-    };    
-  }
-  return -1;
-}
-
 function saveSocketEvent(socketEvent) {
   var eventToSave = new Event();
   eventToSave.eventId = eventCounter++;
-  eventToSave.socketId = socketEvent.socketId;
   eventToSave.state = socketEvent.state;
   eventToSave.eraser = socketEvent.eraser;
   eventToSave.paint = socketEvent.paint;
@@ -290,7 +296,6 @@ function saveSocketEvent(socketEvent) {
 function saveImageFromSocket(imageEvent) {
   var imageMediaToSave = new ImageMedia();
   imageMediaToSave.imageId = imageEvent.imageId
-  imageMediaToSave.socketId = imageEvent.socketId;
   imageMediaToSave.imageInfo = imageEvent.imageInfo;
   imageMediaToSave.imageURL = imageEvent.imageURL;
   imageMediaToSave.save(savingImageMediaCallback);
@@ -299,7 +304,6 @@ function saveImageFromSocket(imageEvent) {
 function saveVideoFromSocket(videoEvent) {
   var videoMediaToSave = new VideoMedia();
   videoMediaToSave.videoId = videoEvent.videoId;
-  videoMediaToSave.socketId = videoEvent.socketId;
   videoMediaToSave.videoInfo = videoEvent.videoInfo;
   videoMediaToSave.videoURL = videoEvent.videoURL;
   videoMediaToSave.save(savingVideoMediaCallback);
@@ -355,11 +359,20 @@ rooms.add('nazwa dluzsza');
 app.get('/api/room/:id',function(req,res){
   console.log('got ID: '+req.params.id);
   var roomId = req.params.id;
-  if (roomId in rooms) res.send(true);
-  else res.send(false);
+  var roomExists = false;
+  if (roomId in rooms) {
+    roomExists = true;
+  }
+  else {
+    roomExists = false;
+  }
+
+  res.send({
+    exists : roomExists
+  });
 });
 
-app.post('/api/room',function(req,res){
+app.post('/api/room/',function(req,res){
   console.log('createRoom2: '+req.body.roomId);
   var roomId = req.body.roomId;
   console.log('new roomId: '+roomId);

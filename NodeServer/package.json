@@ -5,7 +5,7 @@
     "author": "Lukasz Czarnecki",
     "dependencies": {
     	"express": "*",
-    	"socket.io": "*",
+    	"socket.io": "0.9",
     	"websocket.io": "*",
 		"mongoose": "*",
         "rimraf": "*",
