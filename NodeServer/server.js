@@ -393,9 +393,11 @@ app.get('/api/room/:id',function(req,res){
   var roomId = req.params.id;
   var roomExists = false;
   if (roomId in rooms) {
+    console.log('room exists');
     roomExists = true;
   }
   else {
+    console.log('room exists');
     roomExists = false;
   }
 

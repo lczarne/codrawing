@@ -87,13 +87,7 @@ var roomEndpoint = "/api/room/";
 
 var myRoomId = '';
 
-  var socket = io.connect(baseURL);
-
-  socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
-  });
-
+  
 
   var oldTextValue;
   
@@ -107,9 +101,11 @@ var myRoomId = '';
       oldTextValue = roomIdInput.value;
 
       var roomExists = checkRoomId(roomIdInput.value);
-      if (roomExists == 'true') {
+      console.log('result of function: '+roomExists.exists);
+      if (roomExists.exists) {
         roomError.innerHTML = "Room exists";
         myRoomId = roomIdInput.value;
+        setupCanvas();
       }
       else {
         roomError.innerHTML = "No room with this ID";
@@ -127,17 +123,34 @@ var myRoomId = '';
     };
   }
 
+  function setupCanvas(){
+    var canvas = document.getElementById("myCanvas");
+    var roomChoiceView = document.getElementById("roomChoice");
+    roomChoiceView.style.display = 'none';
+    canvas.style.display = 'block';
+    connect();
+  }
+
   function checkRoomId(roomId) {
     var roomCheckURL = baseURL+":"+port+roomEndpoint+roomId;
     var xhr = new XMLHttpRequest();
     xhr.open("GET",roomCheckURL,false);
     xhr.send();
-    return xhr.responseText;
+    var jsonResponse = JSON.parse(xhr.responseText);
+    return jsonResponse;
   };
 
   setup();
 
+function connect() {
+  var socket = io.connect(baseURL);
+
   socket.on('connect',function(){
+
+    var joinRoom = new Object();
+    joinRoom.roomId = myRoomId;
+    socket.emit("joinRoom",joinRoom);
+
     console.log('connected 3');
     socket.send('hello from client');
     document.addEventListener('mousemove',mouseMoveHandler);
@@ -146,16 +159,52 @@ var myRoomId = '';
     document.addEventListener("keypress", keypressHandler);
   });
 
-var mode = "draw";
-function keypressHandler(event) {
-  if (mode == "draw") {
-    mode = "erase";
+  socket.on('serverImage',function(msg){
+    addImage(msg);
+  });
+
+  socket.on('serverVideo',function(msg){
+    addVideo(msg);
+  });
+
+  socket.on('serverPaint',function(msg){
+    addPaint(msg);
+  });
+
+  socket.on('serverMediaDelete',function(msg){
+    console.log('media delete it IS!!!!!'+msg.mediaId);
+    deleteMedia(msg);
+  });  
+
+  socket.on('drawingState',function(msg){
+    for (var i = 0; i < msg.length; i++) {
+      console.log('message: '+msg[i]);
+      addPaint(msg[i]);
+    };
+  });
+
+  socket.on('imageState',function(msg){
+    for (var i = 0; i < msg.length; i++) {
+      addImage(msg[i]);
+    };
+  });
+
+    socket.on('videoState',function(msg){
+    for (var i = 0; i < msg.length; i++) {
+      addVideo(msg[i]);
+    };
+  });
+
+  var mode = "draw";
+  function keypressHandler(event) {
+    if (mode == "draw") {
+      mode = "erase";
+    }
+    else {
+      mode = "draw";
+    }
+    console.log("mode changed to: "+mode);
   }
-  else {
-    mode = "draw";
-  }
-  console.log("mode changed to: "+mode);
-}
 
   var drag = new Object();
   drag.value = 0;
@@ -331,42 +380,13 @@ function keypressHandler(event) {
     remoteDrawers[drawerId] = newDrawer;
     return newDrawer;
   }
+}
 
-  socket.on('serverImage',function(msg){
-    addImage(msg);
-  });
+  
 
-  socket.on('serverVideo',function(msg){
-    addVideo(msg);
-  });
 
-  socket.on('serverPaint',function(msg){
-    addPaint(msg);
-  });
 
-  socket.on('serverMediaDelete',function(msg){
-    console.log('media delete it IS!!!!!'+msg.mediaId);
-    deleteMedia(msg);
-  });  
-
-  socket.on('drawingState',function(msg){
-    for (var i = 0; i < msg.length; i++) {
-      console.log('message: '+msg[i]);
-      addPaint(msg[i]);
-    };
-  });
-
-  socket.on('imageState',function(msg){
-    for (var i = 0; i < msg.length; i++) {
-      addImage(msg[i]);
-    };
-  });
-
-    socket.on('videoState',function(msg){
-    for (var i = 0; i < msg.length; i++) {
-      addVideo(msg[i]);
-    };
-  });
+  
 
 </script>
 <body>
