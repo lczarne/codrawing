@@ -166,88 +166,90 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" maximumZoomScale="4" id="Ksf-R1-CQo">
-                                <rect key="frame" x="-82" y="-49" width="1106" height="817"/>
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" id="eKj-8K-xLm">
-                                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1536" height="1152"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="9xH-rf-MiR">
-                                                <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1536" height="1152"/>
                                             </imageView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="F9q-cR-cmh">
-                                                <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1536" height="1152"/>
                                             </imageView>
                                             <view contentMode="scaleToFill" id="OiY-6w-Vaw">
-                                                <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1536" height="1152"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </view>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
                                 </subviews>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             </scrollView>
                             <view contentMode="scaleToFill" id="4Yb-gM-19V">
-                                <rect key="frame" x="317" y="0.0" width="380" height="44"/>
+                                <rect key="frame" x="282" y="0.0" width="460" height="53"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="m6X-Tr-AYU">
-                                        <rect key="frame" x="108" y="9" width="83" height="31"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="Navigate">
-                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                        <rect key="frame" x="280" y="8" width="80" height="36"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <state key="normal" title="Navigate" backgroundImage="blue.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <state key="selected" backgroundImage="green.png"/>
                                         <connections>
                                             <action selector="navigationMode:" destination="2" eventType="touchUpInside" id="lq2-jk-ZeG"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="hGf-5D-VTy">
-                                        <rect key="frame" x="258" y="9" width="83" height="31"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="Media">
-                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                        <rect key="frame" x="190" y="8" width="80" height="36"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <state key="normal" title="Media" backgroundImage="blue.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <state key="selected" backgroundImage="green.png"/>
                                         <connections>
                                             <action selector="mediaMode:" destination="2" eventType="touchUpInside" id="asV-oI-tZy"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="nC6-G9-OYY">
-                                        <rect key="frame" x="191" y="9" width="83" height="31"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="Draw">
-                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                        <rect key="frame" x="10" y="8" width="80" height="36"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <state key="normal" title="Draw" backgroundImage="blue.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <state key="selected" backgroundImage="green.png"/>
                                         <connections>
                                             <action selector="drawingMode:" destination="2" eventType="touchUpInside" id="5Mo-dg-HBV"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="cVR-Kx-wVg">
-                                        <rect key="frame" x="33" y="9" width="83" height="31"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="Erase">
-                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                        <rect key="frame" x="100" y="8" width="80" height="36"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <state key="normal" title="Erase" backgroundImage="blue.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <state key="selected" backgroundImage="green.png"/>
                                         <connections>
                                             <action selector="erasingMode:" destination="2" eventType="touchUpInside" id="JJV-wE-Nh0"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="9Oz-KO-nQK">
+                                        <rect key="frame" x="370" y="8" width="80" height="36"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <state key="normal" title="Close" backgroundImage="red.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="closeDrawing:" destination="2" eventType="touchUpInside" id="omg-Gs-5rr"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.14999999999999999" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <button opaque="NO" alpha="0.34999999999999964" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="9Oz-KO-nQK">
-                                <rect key="frame" x="9" y="9" width="40" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" backgroundImage="close.png">
-                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="closeDrawing:" destination="2" eventType="touchUpInside" id="omg-Gs-5rr"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -272,7 +274,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="close.png" width="330" height="328"/>
+        <image name="blue.png" width="146" height="63"/>
+        <image name="green.png" width="146" height="63"/>
+        <image name="red.png" width="146" height="63"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

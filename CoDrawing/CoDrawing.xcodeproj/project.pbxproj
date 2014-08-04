@@ -32,6 +32,9 @@
 		3810F4CC1984630900F73D76 /* UIView+ViewId.m in Sources */ = {isa = PBXBuildFile; fileRef = 3810F4CB1984630800F73D76 /* UIView+ViewId.m */; };
 		38583EEA1957190700EC88EB /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 38583EE91957190700EC88EB /* UIImage+Resize.m */; };
 		3875C049198E9E0E000EBD60 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 3875C048198E9E0E000EBD60 /* close.png */; };
+		3875C04E198F0C29000EBD60 /* blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 3875C04C198F0C29000EBD60 /* blue.png */; };
+		3875C04F198F0C29000EBD60 /* red.png in Resources */ = {isa = PBXBuildFile; fileRef = 3875C04D198F0C29000EBD60 /* red.png */; };
+		38AE5009198F102200FAA34B /* green.png in Resources */ = {isa = PBXBuildFile; fileRef = 38AE5008198F102200FAA34B /* green.png */; };
 		38B95815197B28B800CBA720 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38B95814197B28B800CBA720 /* MediaPlayer.framework */; };
 		38B95817197B3C4000CBA720 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38B95816197B3C4000CBA720 /* AVFoundation.framework */; };
 		38FC08AF190DBA5700C033F9 /* SocketIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FC08A5190DBA5700C033F9 /* SocketIO.m */; };
@@ -86,6 +89,9 @@
 		38583EE81957190700EC88EB /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
 		38583EE91957190700EC88EB /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
 		3875C048198E9E0E000EBD60 /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = close.png; sourceTree = "<group>"; };
+		3875C04C198F0C29000EBD60 /* blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue.png; sourceTree = "<group>"; };
+		3875C04D198F0C29000EBD60 /* red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = red.png; sourceTree = "<group>"; };
+		38AE5008198F102200FAA34B /* green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green.png; sourceTree = "<group>"; };
 		38B95814197B28B800CBA720 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		38B95816197B3C4000CBA720 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		38FC08A4190DBA5700C033F9 /* SocketIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketIO.h; path = Extern/SocketIO.h; sourceTree = SOURCE_ROOT; };
@@ -181,6 +187,9 @@
 				259337161825BDA80044B183 /* RemoteDrawer.h */,
 				259337171825BDA80044B183 /* RemoteDrawer.m */,
 				3875C048198E9E0E000EBD60 /* close.png */,
+				3875C04C198F0C29000EBD60 /* blue.png */,
+				38AE5008198F102200FAA34B /* green.png */,
+				3875C04D198F0C29000EBD60 /* red.png */,
 				25BC7C5117F37FF900A295FC /* Supporting Files */,
 			);
 			path = CoDrawing;
@@ -302,7 +311,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				25BC7C5517F37FF900A295FC /* InfoPlist.strings in Resources */,
+				38AE5009198F102200FAA34B /* green.png in Resources */,
 				25BC7C5D17F37FF900A295FC /* Default.png in Resources */,
+				3875C04E198F0C29000EBD60 /* blue.png in Resources */,
+				3875C04F198F0C29000EBD60 /* red.png in Resources */,
 				25BC7C5F17F37FF900A295FC /* Default@2x.png in Resources */,
 				25BC7C6117F37FF900A295FC /* Default-568h@2x.png in Resources */,
 				3875C049198E9E0E000EBD60 /* close.png in Resources */,

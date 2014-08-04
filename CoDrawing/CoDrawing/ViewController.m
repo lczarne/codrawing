@@ -78,27 +78,32 @@ BOOL eraserMode = NO;
 
 - (IBAction)navigationMode:(id)sender {
     [self resetButtonColors];
+    self.navigationButton.selected = YES;
     [self resetGestureRecognizers];
 }
 
 - (IBAction)drawingMode:(id)sender {
+    [self resetButtonColors];
+    self.drawingButton.selected = YES;
     eraserMode = NO;
     [self turnDrawingModeOn];
 }
 
 - (IBAction)mediaMode:(id)sender {
+    [self resetButtonColors];
+    self.mediaButton.selected = YES;
     [self resetGestureRecognizers];
     [self.drawingScrollView addGestureRecognizer:self.mediaPanGesture];
-    [self resetButtonColors];
 }
 
 - (IBAction)erasingMode:(id)sender {
+    [self resetButtonColors];
+    self.eraseButton.selected = YES;
     eraserMode = YES;
     [self turnDrawingModeOn];
 }
 
 - (void)turnDrawingModeOn {
-    [self resetButtonColors];
     [self resetGestureRecognizers];
     [self.drawingScrollView addGestureRecognizer:self.drawingPanGesture];
     CGPoint offset = self.drawingScrollView.contentOffset;
@@ -111,10 +116,10 @@ BOOL eraserMode = NO;
 }
 
 - (void)resetButtonColors {
-    self.navigationButton.titleLabel.textColor = [UIColor blueColor];
-    self.drawingButton.titleLabel.textColor = [UIColor blueColor];
-    self.mediaButton.titleLabel.textColor = [UIColor blueColor];
-    self.eraseButton.titleLabel.textColor = [UIColor blueColor];
+    self.navigationButton.selected = NO;
+    self.drawingButton.selected = NO;
+    self.mediaButton.selected = NO;
+    self.eraseButton.selected = NO;
 }
 
 - (void)viewDidLoad
@@ -126,7 +131,7 @@ BOOL eraserMode = NO;
     self.drawingScrollView.contentSize = self.drawingImageView.frame.size;
 
     self.drawingScrollView.maximumZoomScale = 1.0;
-    self.drawingScrollView.minimumZoomScale = 0.5;
+    self.drawingScrollView.minimumZoomScale = 0.67;
     self.drawingScrollView.zoomScale = 1.0;
     
     self.drawingScrollView.delegate = self;
