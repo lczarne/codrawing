@@ -8,8 +8,8 @@ var path = require('path');
 var rimraf = require('rimraf');
 var md5 = require('md5');
 
-var imageBaseURL = 'http://192.168.0.10:8080/'
-//var imageBaseURL = 'http://54.76.227.228/'
+//var imageBaseURL = 'http://192.168.0.10:8080/'
+var imageBaseURL = 'http://54.76.227.228/'
 
 //server.listen(8882);
 server.listen(8080);
