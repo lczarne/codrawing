@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var fs = require('fs');
 var path = require('path');
 var rimraf = require('rimraf');
-var md5 = require('md5');
+var md5 = require('MD5');
 
 //var imageBaseURL = 'http://192.168.0.10:8080/'
 var imageBaseURL = 'http://54.76.227.228/'
@@ -26,7 +26,7 @@ mongoose.connect('mongodb://localhost/myMongo');
 var db = mongoose.connection;
 db.on('error',console.error.bind(console,'connection error:'));
 db.once('open', function callback(){
-  //mongoose.connection.db.dropDatabase();
+  mongoose.connection.db.dropDatabase();
 
 	console.log('db connected!!!');
 

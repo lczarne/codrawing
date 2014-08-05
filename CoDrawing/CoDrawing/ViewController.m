@@ -751,7 +751,7 @@ BOOL eraserMode = NO;
         [self didPickMovie:moviePath];
     }
 
-    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
 - (void)videoPlayer:(VKVideoPlayer *)videoPlayer didControlByEvent:(VKVideoPlayerControlEvent)event {

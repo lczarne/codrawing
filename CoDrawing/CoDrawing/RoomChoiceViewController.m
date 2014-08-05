@@ -54,7 +54,7 @@ static CGFloat kChoiceViewsTopOffset = 200.f;
     self.joinRoomIdTextField.delegate = self;
     self.createRoomIdTextField.delegate = self;
     [self setupViews];
-    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
 - (void)setupViews {
