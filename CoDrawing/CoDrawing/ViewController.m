@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#import "EditingEvent.h"
 #import "RemoteDrawingSyncManager.h"
 #import "RemoteDrawer.h"
 #import <AFNetworking/AFNetworking.h>
@@ -17,6 +16,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <VKVideoPlayer.h>
 #import "UIView+ViewId.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 
 @interface ViewController () <UIScrollViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, VKVideoPlayerDelegate>
 
@@ -29,6 +29,7 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *navgationPanGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *mediaPanGesture;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
+@property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIButton *navigationButton;
 @property (weak, nonatomic) IBOutlet UIButton *drawingButton;
 @property (weak, nonatomic) IBOutlet UIButton *mediaButton;
@@ -46,17 +47,9 @@
 @property (nonatomic, strong) UIView *mediaViewToDelete;
 @property (weak, nonatomic) IBOutlet UIButton *closeButton;
 
-
 @end
 
 @implementation ViewController 
-
-CGFloat red;
-CGFloat green;
-CGFloat blue;
-CGFloat brush;
-CGFloat opacity;
-int currentEventId;
 
 BOOL mouseSwiped;
 BOOL drawingMode = YES;
@@ -74,6 +67,19 @@ BOOL eraserMode = NO;
 - (IBAction)closeDrawing:(id)sender {
     [self.remoteDrawingManager leaveRoom];
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)captureScreenshot:(id)sender {
+    self.menuView.hidden = YES;
+    [self capture];
+    self.menuView.hidden = NO;
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.mode = MBProgressHUDModeText;
+    hud.labelText = @"Captured edited area!";
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 1.2 * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    });
 }
 
 - (IBAction)navigationMode:(id)sender {
@@ -154,13 +160,6 @@ BOOL eraserMode = NO;
     UITapGestureRecognizer *tapToZoom = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handelDoubleTap:)];
     tapToZoom.numberOfTapsRequired = 2;
     [self.drawingScrollView addGestureRecognizer:tapToZoom];
-
-    red = 0.0/255.0;
-    green = 0.0/255.0;
-    blue = 0.0/255.0;
-    brush = 2.0;
-    opacity = 1.0;
-    currentEventId = 0;
     
     [self setupInitialState];
     
@@ -227,6 +226,15 @@ BOOL eraserMode = NO;
     return actionSheet;
 }
 
+-(UIImage *)capture {
+    UIGraphicsBeginImageContext(self.zoomableView.bounds.size);
+    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *imageView = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    UIImageWriteToSavedPhotosAlbum(imageView, nil, nil, nil);
+    return imageView;
+}
+
 - (void)drawingScroll:(UIPanGestureRecognizer *)gesture
 {
     CGPoint touch = [gesture locationInView:self.drawingScrollView];
@@ -258,7 +266,6 @@ BOOL eraserMode = NO;
         CGFloat maxX = MAX(self.mediaSelectionStartPoint.x, touch.x);
         CGFloat maxY = MAX(self.mediaSelectionStartPoint.y, touch.y);
 
-        
         CGRect leftTop = CGRectMake(minX, minY, 0, 0);
         CGRect rightBottom = CGRectMake(maxX, maxY, 0, 0);
         CGRect selectionRect = CGRectUnion(leftTop, rightBottom);
@@ -273,25 +280,17 @@ BOOL eraserMode = NO;
 - (void)askToDelete:(UILongPressGestureRecognizer *)longPressRecognizer {
     if (longPressRecognizer.state == UIGestureRecognizerStateBegan){
         CGPoint touch = [longPressRecognizer locationInView:self.drawingScrollView];
-        NSLog(@"Long press: %@",NSStringFromCGPoint(touch));
-        
         UIView *touchedView = [self mediaViewTouched:touch];
         if (touchedView) {
-            NSLog(@"touched Frame: %@",NSStringFromCGRect(touchedView.frame));
             self.deleteMediaSelectionView.frame = touchedView.frame;
             self.deleteMediaSelectionView.hidden = NO;
             self.mediaViewToDelete = touchedView;
             [self.deleteMediaActionSheet showInView:self.view];
         }
-        else {
-            NSLog(@"nothing touched");
-        }
-        
     }
 }
 
 - (UIView *)mediaViewTouched:(CGPoint)touchedPoint {
-
     UIView *touchedView = nil;
     for (UIView *mediaView in self.allMediaView.subviews) {
         if (CGRectContainsPoint(mediaView.frame, touchedPoint)) {
@@ -313,14 +312,12 @@ BOOL eraserMode = NO;
 - (void)addMediaActionSheetClickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 0: {
-            NSLog(@"image");
             [self chooseImage];
         }
         case 1:
         case 2: {
-            NSLog(@"Cancel");
         }
-            break;
+        break;
     }
     self.mediaSelectionView.hidden = YES;
 }
@@ -336,9 +333,8 @@ BOOL eraserMode = NO;
         }
         case 1:
         case 2: {
-            NSLog(@"Cancel");
         }
-            break;
+        break;
     }
     self.deleteMediaSelectionView.hidden = YES;
 }
@@ -350,7 +346,6 @@ BOOL eraserMode = NO;
 - (void)chooseImage {
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
     imagePicker.delegate = self;
-
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
@@ -359,9 +354,7 @@ BOOL eraserMode = NO;
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
         imagePicker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
     }
-    
     [self presentViewController:imagePicker animated:YES completion:^{
-        
     }];
 }
 
@@ -409,9 +402,7 @@ BOOL eraserMode = NO;
 
 - (void)startDrawingOnImageView:(UIImageView *)drawingImageView erasing:(BOOL)erasing
 {
-    //if (!erasing) {
-        UIGraphicsBeginImageContext(self.drawingImageView.frame.size);
-    //}
+    UIGraphicsBeginImageContext(self.drawingImageView.frame.size);
 }
 
 - (void)continueLineWithPoint:(CGPoint)currentPoint lastPoint:(CGPoint)lastPoint drawingImageView:(UIImageView *)drawingImageView erasing:(BOOL)erasing
@@ -422,18 +413,10 @@ BOOL eraserMode = NO;
         CGContextAddLineToPoint(context, currentPoint.x, currentPoint.y);
         CGContextSetLineCap(context, kCGLineCapRound);
         CGContextSetLineWidth(context, self.drawingScrollView.zoomScale*2 );
-        CGContextSetRGBStrokeColor(context, red, green, blue, 1.0);
-        
-        
+        CGContextSetRGBStrokeColor(context, 0.f, 0.f, 0.f, 1.0);
         if (erasing) {
             CGContextSetLineWidth(context, 20);
             CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
-//            CGContextSetBlendMode(context, kCGBlendModeClear);
-//            CGContextStrokePath(context);
-//            self.drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
-        }
-        else {
-            
         }
         CGContextSetBlendMode(context, kCGBlendModeNormal);
         CGContextStrokePath(context);
@@ -448,7 +431,7 @@ BOOL eraserMode = NO;
         [drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height)];
         CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
         CGContextSetLineWidth(UIGraphicsGetCurrentContext(), self.drawingScrollView.zoomScale*2);
-        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), red, green, blue, opacity);
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 0.f, 0.f, 0.f, 1.0);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), lastPoint.x, lastPoint.y);
         CGContextStrokePath(UIGraphicsGetCurrentContext());
@@ -459,20 +442,17 @@ BOOL eraserMode = NO;
     
     UIGraphicsBeginImageContextWithOptions(self.drawingImageView.frame.size, self.drawingImageView.opaque, 0.0);
     [self.drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height) blendMode:kCGBlendModeNormal alpha:1.0];
-    [drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height) blendMode:kCGBlendModeNormal alpha:opacity];
+    [drawingImageView.image drawInRect:CGRectMake(0, 0, self.drawingImageView.frame.size.width, self.drawingImageView.frame.size.height) blendMode:kCGBlendModeNormal alpha:1.0];
     self.drawingImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     drawingImageView.image = nil;
-    //UIGraphicsEndImageContext();
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - RemoteDrawingSyncManagerDelegate
-
 
 - (void)remotePaintReceived:(NSDictionary *)paintEvent
 {
@@ -560,13 +540,18 @@ BOOL eraserMode = NO;
     
     VKVideoPlayer *player = [[VKVideoPlayer alloc] init];
     player.view.frame = videoRect;
-    player.delegate = self;
+    player.view.viewId = videoId;
     
-    VKVideoPlayerTrack *track = [[VKVideoPlayerTrack alloc] initWithStreamURL:movieURL];
+    [self setupVideoPlayer:player withVideoURL:movieURL];
+
+}
+
+- (void)setupVideoPlayer:(VKVideoPlayer *)player withVideoURL:(NSURL *)videoURL {
+    player.delegate = self;
+    VKVideoPlayerTrack *track = [[VKVideoPlayerTrack alloc] initWithStreamURL:videoURL];
     
     [self.moviePlayers addObject:player];
     [self.allMediaView addSubview:player.view];
-    player.view.viewId = videoId;
     
     [player.view removeControlView:player.view.rewindButton];
     [player.view removeControlView:player.view.doneButton];
@@ -576,7 +561,6 @@ BOOL eraserMode = NO;
     
     [player loadVideoWithTrack:track];
     [player playContent];
-
 }
 
 - (void)remoteDrawingStateReceived:(NSArray *)stateArray {
@@ -596,7 +580,6 @@ BOOL eraserMode = NO;
         [self remoteVideoReceived:videoMedia];
     }
 }
-
 
 - (void)addNewRemoteDrawer:(NSNumber *)remotedrawerID point:(CGPoint)startingPoint erasing:(BOOL)erasing
 {
@@ -657,38 +640,12 @@ BOOL eraserMode = NO;
     [self uploadImage:chosenImageScaled withImageRect:mediaResultImageView.frame forView:mediaResultImageView];
 }
 
-- (void)didPickMovie:(NSString *)moviePath {
-    NSURL *movieURL = [NSURL fileURLWithPath:moviePath];
-    
-    VKVideoPlayer *player = [[VKVideoPlayer alloc] init];
-    player.view.frame = self.mediaSelectionView.frame;
-    player.delegate = self;
-    
-    VKVideoPlayerTrack *track = [[VKVideoPlayerTrack alloc] initWithStreamURL:movieURL];
-    
-    [self.moviePlayers addObject:player];
-    [self.allMediaView addSubview:player.view];
-    
-    [player.view removeControlView:player.view.rewindButton];
-    [player.view removeControlView:player.view.doneButton];
-    [player.view removeControlView:player.view.nextButton];
-    [player.view removeControlView:player.view.videoQualityButton];
-    [player.view addSubviewForControl:player.view.fullscreenButton];
-    
-    [player loadVideoWithTrack:track];
-    [player playContent];
-    
-    NSData *videoData = [NSData dataWithContentsOfURL:movieURL];
-    [self uploadVideo:videoData withVideoRect:self.mediaSelectionView.frame forView:player.view];
-}
-
 - (void)uploadImage:(UIImage *)imageToUpload withImageRect:(CGRect)imageRect forView:(UIView *)displayedView{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSData *imageData = UIImagePNGRepresentation(imageToUpload);
-    NSDictionary *parameters = @{@"foo": @"bar"};
     NSString *URLString = [kAPIURL stringByAppendingString:kAPIImageUploadPath];
     
-    [manager POST:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    [manager POST:URLString parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:@"myImage" fileName:@"userImage.png" mimeType:@"image/png"];
         
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -703,10 +660,9 @@ BOOL eraserMode = NO;
 
 - (void)uploadVideo:(NSData *)videoData withVideoRect:(CGRect)videoRect forView:(UIView *)displayedView{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSDictionary *parameters = @{@"foo": @"bar"};
     NSString *URLString = [kAPIURL stringByAppendingString:kAPIVideoUploadPath];
     
-    [manager POST:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    [manager POST:URLString parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:videoData name:@"myVideo" fileName:@"userVideo.mov" mimeType:@"video/mov"];
         
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -752,6 +708,19 @@ BOOL eraserMode = NO;
     }
 
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+}
+
+
+- (void)didPickMovie:(NSString *)moviePath {
+    NSURL *movieURL = [NSURL fileURLWithPath:moviePath];
+    
+    VKVideoPlayer *player = [[VKVideoPlayer alloc] init];
+    player.view.frame = self.mediaSelectionView.frame;
+    
+    [self setupVideoPlayer:player withVideoURL:movieURL];
+    
+    NSData *videoData = [NSData dataWithContentsOfURL:movieURL];
+    [self uploadVideo:videoData withVideoRect:self.mediaSelectionView.frame forView:player.view];
 }
 
 - (void)videoPlayer:(VKVideoPlayer *)videoPlayer didControlByEvent:(VKVideoPlayerControlEvent)event {

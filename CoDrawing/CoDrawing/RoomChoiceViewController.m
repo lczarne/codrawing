@@ -94,20 +94,13 @@ static CGFloat kChoiceViewsTopOffset = 200.f;
 }
 
 - (IBAction)createRoom:(id)sender {
-    
     [self requestCreatingRoom];
-
-//    self.createRoomSpinner.hidden = NO;
-//    [self.createRoomSpinner startAnimating];
-//    [self goToRoom];
 }
 
 - (IBAction)joinRoom:(id)sender {
     [self requestJoiningRoom];
-//    self.joinRoomSpinner.hidden = NO;
-//    [self.joinRoomSpinner startAnimating];
-//    [self goToRoom];
 }
+
 - (IBAction)cancelCreatingRoom:(id)sender {
     [self setupViews];
 }
@@ -169,7 +162,7 @@ static CGFloat kChoiceViewsTopOffset = 200.f;
             [self animateLabelShowUp:self.joinRoomErrorLabel withText:kJoinRoomButtonErrorLabel];
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [self animateLabelShowUp:self.createRoomErrorLabel withText:kNetworkError];
+        [self animateLabelShowUp:self.joinRoomErrorLabel withText:kNetworkError];
     }];
 }
 

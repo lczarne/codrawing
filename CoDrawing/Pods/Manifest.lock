@@ -31,13 +31,14 @@ PODS:
     - DTFoundation/DTAnimatedGIF (~> 1.7.1)
     - DTFoundation/DTHTMLParser (~> 1.7.1)
     - DTFoundation/UIKit (~> 1.7.1)
-  - DTFoundation/Core (1.7.1)
-  - DTFoundation/DTAnimatedGIF (1.7.1)
-  - DTFoundation/DTHTMLParser (1.7.1):
+  - DTFoundation/Core (1.7.2)
+  - DTFoundation/DTAnimatedGIF (1.7.2)
+  - DTFoundation/DTHTMLParser (1.7.2):
     - DTFoundation/Core
-  - DTFoundation/UIKit (1.7.1):
+  - DTFoundation/UIKit (1.7.2):
     - DTFoundation/Core
   - FXImageView (1.3.3)
+  - MBProgressHUD (0.9)
   - Reachability (3.1.1)
   - VKFoundation (0.1.1):
     - CocoaLumberjack (~> 1.7.0)
@@ -51,14 +52,16 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 2.3)
+  - MBProgressHUD (~> 0.9)
   - VKVideoPlayer (~> 0.1)
 
 SPEC CHECKSUMS:
   AFNetworking: 6d7b76aa5d04c8c37daad3eef4b7e3f2a7620da3
   CocoaLumberjack: 744856111d9431252611e696ea460ffe36fdc5ae
   DTCoreText: 84eb8ba2e70448fdd9d837540e371f9f587b65ba
-  DTFoundation: ef6fb95da64f202d1600bc23dde79c6fd74c0c2d
+  DTFoundation: 126729614911ae7dbab3dcc1c078f189943bee66
   FXImageView: 0f3496c1be409a450a424f2c06b448fd27cbb9cc
+  MBProgressHUD: 2038dbcf3dce73215abed6001657043d53aa79a8
   Reachability: 8e9635e3cb4f98e7f825e51147f677ecc694d0e7
   VKFoundation: 39b420ace3adc7aedcd98f84b71500ced0f6f5e1
   VKVideoPlayer: aa524930be7b2def8862f7b22bc96f6d2a38a433

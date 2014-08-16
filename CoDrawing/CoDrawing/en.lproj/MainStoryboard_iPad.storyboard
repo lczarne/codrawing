@@ -188,7 +188,7 @@
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             </scrollView>
                             <view contentMode="scaleToFill" id="4Yb-gM-19V">
-                                <rect key="frame" x="282" y="0.0" width="460" height="53"/>
+                                <rect key="frame" x="237" y="0.0" width="550" height="53"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="m6X-Tr-AYU">
@@ -200,6 +200,16 @@
                                         <state key="selected" backgroundImage="green.png"/>
                                         <connections>
                                             <action selector="navigationMode:" destination="2" eventType="touchUpInside" id="lq2-jk-ZeG"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="FPe-4Q-aOo">
+                                        <rect key="frame" x="370" y="8" width="80" height="36"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <state key="normal" title="Capture" backgroundImage="orange.png">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="captureScreenshot:" destination="2" eventType="touchUpInside" id="Hf9-Gm-6J5"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="hGf-5D-VTy">
@@ -236,7 +246,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="9Oz-KO-nQK">
-                                        <rect key="frame" x="370" y="8" width="80" height="36"/>
+                                        <rect key="frame" x="460" y="8" width="80" height="36"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                         <state key="normal" title="Close" backgroundImage="red.png">
@@ -264,6 +274,7 @@
                         <outlet property="drawingScrollView" destination="Ksf-R1-CQo" id="Zhd-gx-4qw"/>
                         <outlet property="eraseButton" destination="cVR-Kx-wVg" id="WvM-ld-ubV"/>
                         <outlet property="mediaButton" destination="hGf-5D-VTy" id="fJx-l6-6qw"/>
+                        <outlet property="menuView" destination="4Yb-gM-19V" id="Vj5-n9-K3a"/>
                         <outlet property="navigationButton" destination="m6X-Tr-AYU" id="xy9-pV-zM2"/>
                         <outlet property="tempDrawingImageView" destination="F9q-cR-cmh" id="0sF-2s-6TC"/>
                         <outlet property="zoomableView" destination="eKj-8K-xLm" id="bP8-d7-UR6"/>
@@ -276,6 +287,7 @@
     <resources>
         <image name="blue.png" width="146" height="63"/>
         <image name="green.png" width="146" height="63"/>
+        <image name="orange.png" width="146" height="63"/>
         <image name="red.png" width="146" height="63"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

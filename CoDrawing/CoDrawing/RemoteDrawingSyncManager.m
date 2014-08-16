@@ -33,8 +33,7 @@
 {
     self.socketIO = [[SocketIO alloc] initWithDelegate:self];
     [self.socketIO connectToHost:kBaseURL onPort:kServerPort];
-    [self.socketIO sendMessage:@"Hello from iOS"];
-    NSLog(@"message test done");
+    [self.socketIO sendMessage:@"Hello from iOS client"];
 }
 
 - (void)sendJoinRoomEvent {

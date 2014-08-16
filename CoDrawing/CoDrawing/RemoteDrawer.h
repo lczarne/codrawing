@@ -13,7 +13,6 @@
 @property (nonatomic, strong) UIImageView *remoteDrawerImageView;
 @property (nonatomic) CGPoint lastPoint;
 
-
 - (id)initWithSuperView:(UIView *)superView;
 - (void)prepareToDelete;
 

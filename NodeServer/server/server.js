@@ -5,103 +5,31 @@ var io = require('socket.io').listen(server);
 var mongoose = require('mongoose');
 var fs = require('fs');
 var path = require('path');
-var rimraf = require('rimraf');
 var md5 = require('MD5');
 
-//var imageBaseURL = 'http://192.168.0.10:8080/'
-var imageBaseURL = 'http://54.76.227.228/'
+var config = require('./config.js');
+var db = require('./db.js');
+var Set = require('./set.js');
 
-//server.listen(8882);
-server.listen(8080);
+var mediaBaseURL = config.baseURL + ':' + config.port + '/';
 
-app.use(express.static('web'));
+server.listen(config.port);
+
+app.use(express.static(config.staticWebPath));
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(express.multipart({uploadDir:'web/public/media'}));
+app.use(express.multipart({uploadDir:config.staticWebPath+config.mediaPath}));
 app.use(express.multipart());
-
-//setup mongo
-
-mongoose.connect('mongodb://localhost/myMongo');
-var db = mongoose.connection;
-db.on('error',console.error.bind(console,'connection error:'));
-db.once('open', function callback(){
-  mongoose.connection.db.dropDatabase();
-
-	console.log('db connected!!!');
-
-});
-
-//Event setup
-
-var eventSchema = mongoose.Schema({
-  eventId: Number,
-  roomId: String,
-	state: Number,
-  eraser: Boolean,
-  paint: {
-    x: Number,
-    y: Number
-  }
-});
-
-eventSchema.path('eventId').index({unique: true});
-
-eventSchema.methods.printMe = function(){
-  console.log("Hi, my eventId = "+this.eventId);
-};
-
-var Event = mongoose.model('Event',eventSchema);
 
 function savingEventCallback(error, newEvent) {
   if (error) {
     return console.error(error);
   }
   else {
-    console.log("saved id: "+newEvent.eventId);
+    console.log("saved id: "+newEvent.drawEventId);
   }
   newEvent.printMe();
 }
-
-//ImageSetup
-var imageSchema = mongoose.Schema({
-  imageId: String,
-  roomId: String,
-  imageInfo: {
-    x: Number,
-    y: Number,
-    width: Number,
-    height: Number
-  },
-  imageURL: String
-});
-imageSchema.path('imageId').index({unique: true});
-
-imageSchema.methods.printMe = function(){
-  console.log("Image: "+this.imageId);
-}
-
-var ImageMedia = mongoose.model('ImageMedia',imageSchema);
-
-//VideoSetup
-var videoSchema = mongoose.Schema({
-  videoId: String,
-  roomId: String,
-  videoInfo: {
-    x: Number,
-    y: Number,
-    width: Number,
-    height: Number
-  },
-  videoURL: String
-});
-videoSchema.path('videoId').index({unique: true});
-
-videoSchema.methods.printMe = function(){
-  console.log("Video: "+this.videoId);
-}
-
-var VideoMedia = mongoose.model('VideoMedia',videoSchema);
 
 function savingVideoMediaCallback(error, newVideo) {
   if (error) {
@@ -124,57 +52,21 @@ function savingImageMediaCallback(error, newImage) {
 }
 
 function sendDrawingStateToSocket(socket,joinedRoomId) {
-  Event.find({roomId : joinedRoomId}, function (err,events) {
+  db.drawEvent.find({roomId : joinedRoomId}, function (err,events) {
     socket.emit('drawingState',events);
   });
-  ImageMedia.find({roomId : joinedRoomId}, function(err,images){
+  db.imageMedia.find({roomId : joinedRoomId}, function(err,images){
     socket.emit('imageState',images);
     console.log('IMAGES STATE SENT');
   });
-  VideoMedia.find({roomId : joinedRoomId}, function(err,videos){
+  db.videoMedia.find({roomId : joinedRoomId}, function(err,videos){
     socket.emit('videoState',videos);
     console.log('VIDEOS STATE SENT')
   });
 }
 
-function clearEventState() {
-  Event.remove({},function (err){
-    console.log("Events collection cleared.")
-  });
-}
-
-function clearMediaState() {
-  ImageMedia.remove({},function (err){
-    console.log("Images collection cleared.")
-  });
-  VideoMedia.remove({},function (err){
-    console.log("Video collection cleared.")
-  });
-
-  rimraf('web/public/media',function(err){
-    if (err) {
-      console.log(err);
-    }
-    else {
-      console.log('MEDIA removed')  
-    }
-    createTempMediaFolder();
-  });
-}
-
-function createTempMediaFolder() {
-  fs.mkdir('web/public/media', function(err){
-    if (err) {
-      console.log(err);
-    }
-    else {
-      console.log('media folder created');
-    }
-  });
-}
-
-clearEventState();
-clearMediaState();
+db.clearDrawEventState();
+db.clearMediaState();
 
 //setup websockets
 
@@ -243,6 +135,7 @@ function setupSocket(socket,roomId) {
     imageEvent.imageInfo = msg.imageInfo;
     imageEvent.imageURL = mediaURLS[msg.imageId];
     saveImageFromSocket(imageEvent);
+    console.log('emittin IMAGEIMAGEIMAGE')
     emit('serverImage',imageEvent,roomId,this);
   });
 
@@ -276,7 +169,6 @@ function setupSocket(socket,roomId) {
       }
     });
 
-    //TODO - delete file
   });
 }
 
@@ -316,8 +208,8 @@ function emit(eventName,eventData,roomId,socket) {
 var eventCounter = 0;
 
 function saveSocketEvent(socketEvent) {
-  var eventToSave = new Event();
-  eventToSave.eventId = eventCounter++;
+  var eventToSave = new db.drawEvent();
+  eventToSave.drawEventId = eventCounter++;
   eventToSave.roomId = socketEvent.roomId;
   eventToSave.state = socketEvent.state;
   eventToSave.eraser = socketEvent.eraser;
@@ -326,7 +218,7 @@ function saveSocketEvent(socketEvent) {
 }
 
 function saveImageFromSocket(imageEvent) {
-  var imageMediaToSave = new ImageMedia();
+  var imageMediaToSave = new db.imageMedia();
   imageMediaToSave.imageId = imageEvent.imageId
   imageMediaToSave.roomId = imageEvent.roomId;
   imageMediaToSave.imageInfo = imageEvent.imageInfo;
@@ -335,7 +227,7 @@ function saveImageFromSocket(imageEvent) {
 }
 
 function saveVideoFromSocket(videoEvent) {
-  var videoMediaToSave = new VideoMedia();
+  var videoMediaToSave = new db.videoMedia();
   videoMediaToSave.videoId = videoEvent.videoId;
   videoMediaToSave.roomId = videoEvent.roomId;
   videoMediaToSave.videoInfo = videoEvent.videoInfo;
@@ -346,49 +238,41 @@ function saveVideoFromSocket(videoEvent) {
 var mediaURLS = {};
 
 //Images upload
-app.post('/api/images',function(req,res) {
+app.post(config.APIImages,function(req,res) {
   var serverPath = req.files.myImage.path;
-  var pathComponents = serverPath.split('/');
-  pathComponents.shift();
-  serverPath = pathComponents.join('/');
-  serverPath = imageBaseURL + serverPath;
-  var timestamp = new Date().getTime();
-  var newImageId = md5(timestamp+Math.random());
-  mediaURLS[newImageId] = serverPath;
-
-  console.log('saved IN MEDIA URLS: '+mediaURLS[newImageId]);
+  var newMediaId = createAndSaveNewMediaId(serverPath);
   res.send({
-      imageId : newImageId
+      imageId : newMediaId
   });
 });
 
-app.post('/api/videos',function(req,res) {
+app.post(config.APIVideos,function(req,res) {
   var serverPath = req.files.myVideo.path;
-  var pathComponents = serverPath.split('/');
-  pathComponents.shift();
-  serverPath = pathComponents.join('/');
-  serverPath = imageBaseURL + serverPath;
-  var timestamp = new Date().getTime();
-  var newVideoId = md5(timestamp+Math.random());
-  mediaURLS[newVideoId] = serverPath;
+  var newMediaId = createAndSaveNewMediaId(serverPath);
   res.send({
-      videoId : newVideoId
+      videoId : newMediaId
   });
 });
 
-var Set = function() {};
-Set.prototype.add = function(bla) {
-  if (typeof bla != "undefined") {
-    this[bla] = true;
-    return true;
-  }
-  return false;
+function createAndSaveNewMediaId(serverPath) {
+  var pathComponents = serverPath.split('/');
+  console.log('IMG path '+serverPath);
+  //cut '../web/'
+  pathComponents.shift();
+  pathComponents.shift();
+  var newPath = pathComponents.join('/');
+  newPath = mediaBaseURL + newPath;
+  var timestamp = new Date().getTime();
+  var newMediaId = md5(timestamp+Math.random());
+  mediaURLS[newMediaId] = newPath;
+  console.log('saved IN MEDIA URLS: '+mediaURLS[newMediaId]);
+
+  return newMediaId;
 }
-Set.prototype.remove = function(bla) {delete this[bla];}
 
 var rooms = new Set();
 
-app.get('/api/room/:id',function(req,res){
+app.get(config.APIRoom+':id',function(req,res){
   console.log('got ID: '+req.params.id);
   var roomId = req.params.id;
   var roomExists = false;
@@ -406,7 +290,7 @@ app.get('/api/room/:id',function(req,res){
   });
 });
 
-app.post('/api/room/',function(req,res){
+app.post(config.APIRoom,function(req,res){
   var roomId = req.body.roomId;
   console.log('roomId to create: '+roomId);
   console.log(rooms);
@@ -429,4 +313,3 @@ app.post('/api/room/',function(req,res){
     created : roomCreated
   });
 });
-

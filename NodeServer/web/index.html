@@ -82,8 +82,10 @@
 
 //var baseURL = "http://192.168.0.10";
 //var port = 8080
-var baseURL = 'http://54.76.227.228';
-var port = 80
+//var baseURL = 'http://54.76.227.228';
+//var port = 80
+var baseURL = 'http://192.168.0.105';
+var port = 8080
 
 var roomEndpoint = "/api/room/";
 
@@ -160,6 +162,7 @@ function connect() {
   });
 
   socket.on('serverImage',function(msg){
+    console.log('server Image arrived');
     addImage(msg);
   });
 
@@ -295,6 +298,7 @@ function connect() {
     }
     image.id = imageMedia.imageId;
     image.src = imageMedia.imageURL;
+    console.log('URL '+imageMedia.imageURL);
   }
 
   function placeImage(image,x,y,width,height){
@@ -381,12 +385,6 @@ function connect() {
     return newDrawer;
   }
 }
-
-  
-
-
-
-  
 
 </script>
 <body>
