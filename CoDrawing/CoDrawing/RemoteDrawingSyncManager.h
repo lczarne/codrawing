@@ -27,15 +27,9 @@
 //static NSString* const kAPIURL = @"http://54.76.227.228";
 
 //local
-//static NSString* const kBaseURL = @"192.168.0.10";
-//static int const kServerPort = 8080;
-//static NSString* const kAPIURL = @"http://192.168.0.10:8080";
-
-
-static NSString* const kBaseURL = @"192.168.0.105";
+static NSString* const kBaseURL = @"192.168.0.10";
 static int const kServerPort = 8080;
-static NSString* const kAPIURL = @"http://192.168.0.105:8080";
-
+static NSString* const kAPIURL = @"http://192.168.0.10:8080";
 
 static NSString* const kAPIImageUploadPath = @"/api/images/";
 static NSString* const kAPIVideoUploadPath = @"/api/videos/";

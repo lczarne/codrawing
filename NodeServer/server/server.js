@@ -277,17 +277,18 @@ app.get(config.APIRoom+':id',function(req,res){
   var roomId = req.params.id;
   var roomExists = false;
   if (roomId in rooms) {
-    console.log('room exists');
     roomExists = true;
   }
   else {
-    console.log('room exists');
     roomExists = false;
   }
 
-  res.send({
-    exists : roomExists
-  });
+  setTimeout(function() {
+    res.send({
+      exists : roomExists
+    });
+  },1500);
+  
 });
 
 app.post(config.APIRoom,function(req,res){

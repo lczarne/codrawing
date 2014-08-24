@@ -78,14 +78,12 @@
 
 <script src="/js/socket.io.js"></script> 
 <script src="/js/paper/paper.js"></script>
-<script type="text/paperscript" canvas="myCanvas">
+<script type="text/paperscript" canvas="drawCanvas">
 
-//var baseURL = "http://192.168.0.10";
-//var port = 8080
+var baseURL = "http://192.168.0.10";
+var port = 8080
 //var baseURL = 'http://54.76.227.228';
 //var port = 80
-var baseURL = 'http://192.168.0.105';
-var port = 8080
 
 var roomEndpoint = "/api/room/";
 
@@ -126,7 +124,7 @@ var myRoomId = '';
   }
 
   function setupCanvas(){
-    var canvas = document.getElementById("myCanvas");
+    var canvas = document.getElementById("drawCanvas");
     var roomChoiceView = document.getElementById("roomChoice");
     roomChoiceView.style.display = 'none';
     canvas.style.display = 'block';
@@ -284,7 +282,7 @@ function connect() {
     var localImageNumber = imageCount++;
     image.onload = function(newImage) {
       imageLayer.activate();
-      var container = document.getElementById("myCanvas");
+      var container = document.getElementById("drawCanvas");
       container.appendChild(newImage.target);
       var raster = new Raster(imageMedia.imageId);
       imagesArray[imageMedia.imageId] = raster;
@@ -397,7 +395,7 @@ function connect() {
   </div>
 </div> 
 
-  <canvas id="myCanvas" style="position:absolute;z-index:-1;display:none" resize></canvas>
+  <canvas id="drawCanvas" style="position:absolute;z-index:-1;display:none" resize></canvas>
 
 </body>
 </html>
