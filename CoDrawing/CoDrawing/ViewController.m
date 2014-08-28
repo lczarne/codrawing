@@ -137,7 +137,12 @@ BOOL eraserMode = NO;
     self.drawingScrollView.contentSize = self.drawingImageView.frame.size;
 
     self.drawingScrollView.maximumZoomScale = 1.0;
-    self.drawingScrollView.minimumZoomScale = 0.67;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        self.drawingScrollView.minimumZoomScale = 0.67;
+    }
+    else {
+        self.drawingScrollView.minimumZoomScale = 0.37;
+    }
     self.drawingScrollView.zoomScale = 1.0;
     
     self.drawingScrollView.delegate = self;
@@ -415,7 +420,7 @@ BOOL eraserMode = NO;
         CGContextSetLineWidth(context, self.drawingScrollView.zoomScale*2 );
         CGContextSetRGBStrokeColor(context, 0.f, 0.f, 0.f, 1.0);
         if (erasing) {
-            CGContextSetLineWidth(context, 20);
+            CGContextSetLineWidth(context, 10);
             CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
         }
         CGContextSetBlendMode(context, kCGBlendModeNormal);
@@ -463,6 +468,8 @@ BOOL eraserMode = NO;
     BOOL remoteErasing = [paintEvent[@"eraser"] boolValue];
     //RemoteDrawer *remoteDrawer = self.remoteDrawersImageViews
     NSNumber *remoteDrawerKey = [NSNumber numberWithInt:identifier];
+    
+    NSLog(@"DRAWER ID: %d",identifier);
     
     switch (state) {
         case 0:
@@ -622,7 +629,7 @@ BOOL eraserMode = NO;
 }
 
 - (BOOL)shouldAutorotate {
-    return YES;
+    return NO;
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
@@ -707,6 +714,10 @@ BOOL eraserMode = NO;
         [self didPickMovie:moviePath];
     }
 
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 

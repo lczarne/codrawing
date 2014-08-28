@@ -113,6 +113,17 @@ function leaveRoom(socket) {
   else console.log('no room found with id: '+aRoomId);
 }
 
+function checkSocketId(socket,roomId) {
+  var socketsInRoom = roomSockets[roomId];
+  for (var i = socketsInRoom.length - 1; i >= 0; i--) {
+      var peer = socketsInRoom[i];
+      if (peer == socket) {
+        return i;
+      };
+  };
+  return -1;
+}
+
 function setupSocket(socket,roomId) {
   sendDrawingStateToSocket(socket,roomId);
 
@@ -124,6 +135,7 @@ function setupSocket(socket,roomId) {
     paintEvent.paint = msg.paint;
     paintEvent.state = msg.state;
     paintEvent.eraser = msg.eraser;
+    paintEvent.socketId = checkSocketId(this,roomId);
     saveSocketEvent(paintEvent);
     emit('serverPaint',paintEvent,roomId,this);
   });
@@ -157,13 +169,13 @@ function setupSocket(socket,roomId) {
     console.log('media delteing ID ' + mediaDeleteEvent.mediaId)
     emit('serverMediaDelete',mediaDeleteEvent,roomId,this);
 
-    ImageMedia.remove({imageId : msg.mediaId},function (err){
+    db.imageMedia.remove({imageId : msg.mediaId},function (err){
       if (!err) {
         console.log("Image "+msg.mediaId+" deleted");        
       }
     });
 
-    VideoMedia.remove({videoId : msg.mediaId},function (err){
+    db.videoMedia.remove({videoId : msg.mediaId},function (err){
       if (!err) {
         console.log("Video "+msg.mediaId+" deleted");        
       }

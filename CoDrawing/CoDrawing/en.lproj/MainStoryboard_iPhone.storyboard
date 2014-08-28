@@ -1,11 +1,169 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="6154.17" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="6154.17" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="dfi-3O-tqX">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
         <development version="4600" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6153.11"/>
     </dependencies>
     <scenes>
+        <!--Room Choice View Controller-->
+        <scene sceneID="UBt-sB-586">
+            <objects>
+                <viewController id="dfi-3O-tqX" customClass="RoomChoiceViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Jlh-YW-gcu">
+                        <rect key="frame" x="0.0" y="0.0" width="568" height="300"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" id="MUH-Lg-rrU">
+                                <rect key="frame" x="162" y="42" width="258" height="180"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="weQ-2y-zPB">
+                                        <rect key="frame" x="36" y="56" width="186" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Start New Room">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="showCreateRoomView:" destination="dfi-3O-tqX" eventType="touchUpInside" id="62m-PO-4FJ"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="cA9-J6-tRt">
+                                        <rect key="frame" x="52" y="105" width="155" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Join Room">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="showJoinRoomView:" destination="dfi-3O-tqX" eventType="touchUpInside" id="uSR-TU-2SF"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.23864269890000001" green="0.54401991319999998" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" id="Hx7-JY-jys">
+                                <rect key="frame" x="162" y="42" width="258" height="180"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="T9T-Te-3AU">
+                                        <rect key="frame" x="139" y="121" width="60" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Start">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="createRoom:" destination="dfi-3O-tqX" eventType="touchUpInside" id="TTG-bR-ELL"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="akg-DR-SGu">
+                                        <rect key="frame" x="53" y="121" width="60" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Cancel">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancelCreatingRoom:" destination="dfi-3O-tqX" eventType="touchUpInside" id="IyC-Te-DZu"/>
+                                        </connections>
+                                    </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="4hl-aj-ohv">
+                                        <rect key="frame" x="81" y="75" width="97" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter New Room ID" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="UIP-Rn-O00">
+                                        <rect key="frame" x="32" y="46" width="195" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ID is already used" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VyZ-Xo-irW">
+                                        <rect key="frame" x="27" y="104" width="204" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" id="QcB-JV-ljh">
+                                        <rect key="frame" x="186" y="80" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.23864269890000001" green="0.54401991319999998" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" id="K16-o2-VzO">
+                                <rect key="frame" x="162" y="42" width="258" height="180"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="z5M-q2-9ue">
+                                        <rect key="frame" x="50" y="121" width="64" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Cancel">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancelJoiningRoom:" destination="dfi-3O-tqX" eventType="touchUpInside" id="nB3-Kh-GKO"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="KGc-xc-zl2">
+                                        <rect key="frame" x="139" y="121" width="67" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Join">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="joinRoom:" destination="dfi-3O-tqX" eventType="touchUpInside" id="8Kn-xy-gdx"/>
+                                        </connections>
+                                    </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="q9Q-z9-Lbh">
+                                        <rect key="frame" x="81" y="75" width="97" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Room ID" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="z1B-Ph-Yvq">
+                                        <rect key="frame" x="43" y="46" width="172" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No room with this ID" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QNQ-71-fNv">
+                                        <rect key="frame" x="27" y="104" width="204" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" id="AYp-YU-OmX">
+                                        <rect key="frame" x="186" y="80" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.23864269890000001" green="0.54401991319999998" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <connections>
+                        <outlet property="createRoomButton" destination="T9T-Te-3AU" id="rs5-lu-YMi"/>
+                        <outlet property="createRoomErrorLabel" destination="VyZ-Xo-irW" id="oNw-FG-sEn"/>
+                        <outlet property="createRoomIdTextField" destination="4hl-aj-ohv" id="zBS-ZU-Hsl"/>
+                        <outlet property="createRoomSpinner" destination="QcB-JV-ljh" id="5gR-vT-YPj"/>
+                        <outlet property="createRoomView" destination="Hx7-JY-jys" id="I08-Pv-nBu"/>
+                        <outlet property="initialChoiceView" destination="MUH-Lg-rrU" id="fH4-zC-Z2t"/>
+                        <outlet property="joinRoomButton" destination="KGc-xc-zl2" id="2cN-dg-Mt9"/>
+                        <outlet property="joinRoomErrorLabel" destination="QNQ-71-fNv" id="CKw-aG-jn1"/>
+                        <outlet property="joinRoomIdTextField" destination="q9Q-z9-Lbh" id="Sye-To-oAb"/>
+                        <outlet property="joinRoomSpinner" destination="AYp-YU-OmX" id="NG1-de-jz5"/>
+                        <outlet property="joinRoomView" destination="K16-o2-VzO" id="pE6-9a-1Ds"/>
+                        <segue destination="2" kind="modal" identifier="goToRoom" modalTransitionStyle="crossDissolve" id="5ds-YU-NNu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="v11-QM-ERj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-806" y="38"/>
+        </scene>
         <!--View Controller-->
         <scene sceneID="5">
             <objects>
@@ -19,19 +177,19 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" id="sbp-SQ-bkx">
-                                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1536" height="1152"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="brc-zm-Xat">
-                                                <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1536" height="1152"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="Quh-ws-fdg">
-                                                <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1536" height="1152"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
                                             <view contentMode="scaleToFill" id="pe6-nO-vCW">
-                                                <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1536" height="1152"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </view>
@@ -40,59 +198,78 @@
                                     </view>
                                 </subviews>
                             </scrollView>
-                            <view contentMode="scaleToFill" id="hRb-r8-NHD">
-                                <rect key="frame" x="90" y="0.0" width="389" height="44"/>
+                            <view contentMode="scaleToFill" id="mqp-JR-mlB">
+                                <rect key="frame" x="43" y="0.0" width="482" height="43"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="8Yx-05-9N9">
-                                        <rect key="frame" x="48" y="9" width="50" height="31"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="Erase">
-                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="cKf-7Y-UtT">
+                                        <rect key="frame" x="246" y="6" width="70" height="30"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <state key="normal" title="Navigate" backgroundImage="blue.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <state key="selected" backgroundImage="green.png"/>
                                         <connections>
-                                            <action selector="erasingMode:" destination="2" eventType="touchUpInside" id="sI8-4h-xsY"/>
+                                            <action selector="navigationMode:" destination="2" eventType="touchUpInside" id="k1T-kn-HZ1"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="X9U-Oy-wZR">
-                                        <rect key="frame" x="108" y="9" width="83" height="31"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="navigation">
-                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="xr6-cl-we8">
+                                        <rect key="frame" x="326" y="6" width="70" height="30"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <state key="normal" title="Capture" backgroundImage="orange.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="navigationMode:" destination="2" eventType="touchUpInside" id="XwP-gj-SEb"/>
+                                            <action selector="captureScreenshot:" destination="2" eventType="touchUpInside" id="C9Y-Lv-oGF"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="M5l-FU-c3p">
-                                        <rect key="frame" x="258" y="9" width="83" height="31"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="media">
-                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="V4i-kD-Fht">
+                                        <rect key="frame" x="166" y="6" width="70" height="30"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <state key="normal" title="Media" backgroundImage="blue.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <state key="selected" backgroundImage="green.png"/>
                                         <connections>
-                                            <action selector="mediaMode:" destination="2" eventType="touchUpInside" id="R8P-Bm-Vjg"/>
+                                            <action selector="mediaMode:" destination="2" eventType="touchUpInside" id="yCU-dE-rYX"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="bsc-CL-yfd">
-                                        <rect key="frame" x="191" y="9" width="83" height="31"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="cyw-x0-Ivx">
+                                        <rect key="frame" x="6" y="6" width="70" height="30"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <state key="normal" title="Draw" backgroundImage="blue.png">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="selected" backgroundImage="green.png"/>
+                                        <connections>
+                                            <action selector="drawingMode:" destination="2" eventType="touchUpInside" id="8Cy-Qp-Zoi"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Giw-GO-yZx">
+                                        <rect key="frame" x="86" y="6" width="70" height="30"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <state key="normal" title="Erase" backgroundImage="blue.png">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="selected" backgroundImage="green.png"/>
+                                        <connections>
+                                            <action selector="erasingMode:" destination="2" eventType="touchUpInside" id="u05-o4-OOL"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="day-LY-AhW">
+                                        <rect key="frame" x="406" y="6" width="70" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="drawing">
-                                            <color key="titleColor" red="0.35122034670000002" green="0.80132299269999996" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <state key="normal" title="Close" backgroundImage="red.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="drawingMode:" destination="2" eventType="touchUpInside" id="Pb1-x1-adC"/>
+                                            <action selector="closeDrawing:" destination="2" eventType="touchUpInside" id="acn-NF-Alp"/>
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.14999999999999999" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -101,12 +278,14 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="allMediaView" destination="pe6-nO-vCW" id="9L9-wQ-4r4"/>
-                        <outlet property="drawingButton" destination="bsc-CL-yfd" id="did-a8-6dg"/>
+                        <outlet property="closeButton" destination="day-LY-AhW" id="rxg-RO-sfN"/>
+                        <outlet property="drawingButton" destination="cyw-x0-Ivx" id="eqr-0e-2H2"/>
                         <outlet property="drawingImageView" destination="brc-zm-Xat" id="lGr-j9-r7A"/>
                         <outlet property="drawingScrollView" destination="ZY7-8A-zlG" id="bPi-w9-s2W"/>
-                        <outlet property="eraseButton" destination="8Yx-05-9N9" id="LS7-vM-oez"/>
-                        <outlet property="mediaButton" destination="M5l-FU-c3p" id="j1d-Y5-6Vf"/>
-                        <outlet property="navigationButton" destination="X9U-Oy-wZR" id="6Zn-TR-cjz"/>
+                        <outlet property="eraseButton" destination="Giw-GO-yZx" id="AIR-8w-lal"/>
+                        <outlet property="mediaButton" destination="V4i-kD-Fht" id="vGt-80-hVu"/>
+                        <outlet property="menuView" destination="mqp-JR-mlB" id="9ty-NJ-KrW"/>
+                        <outlet property="navigationButton" destination="cKf-7Y-UtT" id="fR6-a4-aPu"/>
                         <outlet property="tempDrawingImageView" destination="Quh-ws-fdg" id="YGc-e5-bPg"/>
                         <outlet property="zoomableView" destination="sbp-SQ-bkx" id="tE0-Ml-NDA"/>
                     </connections>
@@ -115,20 +294,13 @@
             </objects>
             <point key="canvasLocation" x="-82" y="38"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="wGQ-iS-CMp">
-            <objects>
-                <viewController id="oBK-X2-eUi" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Mlw-I6-tUJ">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="DsF-JH-din" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
     </scenes>
+    <resources>
+        <image name="blue.png" width="146" height="63"/>
+        <image name="green.png" width="146" height="63"/>
+        <image name="orange.png" width="146" height="63"/>
+        <image name="red.png" width="146" height="63"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

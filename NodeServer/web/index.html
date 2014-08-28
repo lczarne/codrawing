@@ -334,15 +334,15 @@ function connect() {
     {
       case 0: {
           var newPoint = new Point(paintData.paint.x,paintData.paint.y);
-          createRemoteDrawer(newPoint,paintData.Id);
+          createRemoteDrawer(newPoint,paintData.socketId);
       }
         break;
       case 1: {
           console.log("my server coordinates: "+paintData.paint.x+" "+paintData.paint.y);
           var newPoint = new Point(paintData.paint.x,paintData.paint.y);
-          var currentDrawer = remoteDrawers[paintData.Id];
+          var currentDrawer = remoteDrawers[paintData.socketId];
           if (typeof currentDrawer == "undefined") {
-            currentDrawer = createRemoteDrawer(newPoint,paintData.Id);
+            currentDrawer = createRemoteDrawer(newPoint,paintData.socketId);
           }
           currentDrawer.path.moveTo(currentDrawer.currentPoint);
           currentDrawer.path.lineTo(newPoint);

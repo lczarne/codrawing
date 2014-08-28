@@ -74,9 +74,11 @@ static CGFloat kChoiceViewsTopOffset = 200.f;
 }
 
 - (void)moveViewToCenter:(UIView *)viewToMove {
-    CGRect viewFrame = viewToMove.frame;
-    viewFrame.origin.y = kChoiceViewsTopOffset;
-    viewToMove.frame = viewFrame;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        CGRect viewFrame = viewToMove.frame;
+        viewFrame.origin.y = kChoiceViewsTopOffset;
+        viewToMove.frame = viewFrame;
+    }
 }
 
 - (IBAction)showCreateRoomView:(id)sender {
@@ -184,6 +186,11 @@ static CGFloat kChoiceViewsTopOffset = 200.f;
     self.createRoomErrorLabel.hidden = YES;
     self.joinRoomErrorLabel.hidden = YES;
 
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
     return YES;
 }
 
