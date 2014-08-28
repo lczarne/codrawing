@@ -21,6 +21,7 @@ var drawEventSchema = mongoose.Schema({
   roomId: String,
   state: Number,
   eraser: Boolean,
+  socketId: Number,
   paint: {
     x: Number,
     y: Number

@@ -22,14 +22,14 @@
 @end
 
 //Amazon EC2 instance address Ireland
-//static NSString* const kBaseURL = @"54.77.139.214";
-//static int const kServerPort = 80;
-//static NSString* const kAPIURL = @"http://54.77.139.214";
+static NSString* const kBaseURL = @"54.77.139.214";
+static int const kServerPort = 80;
+static NSString* const kAPIURL = @"http://54.77.139.214";
 
 //local
-static NSString* const kBaseURL = @"192.168.0.10";
-static int const kServerPort = 8080;
-static NSString* const kAPIURL = @"http://192.168.0.10:8080";
+//static NSString* const kBaseURL = @"192.168.0.10";
+//static int const kServerPort = 8080;
+//static NSString* const kAPIURL = @"http://192.168.0.10:8080";
 
 static NSString* const kAPIImageUploadPath = @"/api/images/";
 static NSString* const kAPIVideoUploadPath = @"/api/videos/";

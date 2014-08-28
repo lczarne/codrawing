@@ -171,6 +171,11 @@ BOOL eraserMode = NO;
     [super viewDidLoad];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.drawingScrollView zoomToRect:self.drawingImageView.frame animated:NO];
+}
+
 - (void)setupInitialState {
     [self setupDrawing];
     [self drawingMode:nil];

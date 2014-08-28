@@ -225,6 +225,7 @@ function saveSocketEvent(socketEvent) {
   eventToSave.roomId = socketEvent.roomId;
   eventToSave.state = socketEvent.state;
   eventToSave.eraser = socketEvent.eraser;
+  eventToSave.socketId = socketEvent.socketId;
   eventToSave.paint = socketEvent.paint;
   eventToSave.save(savingEventCallback)
 }
